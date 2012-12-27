@@ -20,18 +20,15 @@ struct TupCanvas::Private
    bool pressed;
 };
 
-TupCanvas::TupCanvas(QGraphicsScene *scene, QWidget *parent) : QGraphicsView(scene, parent), k(new Private)
+TupCanvas::TupCanvas(QGraphicsScene *scene, const QPen pen, QWidget *parent) : QGraphicsView(scene, parent), k(new Private)
 {
     centerOn(k->scene->sceneRect().center());
-
-    qDebug() << "TupCanvas::TupCanvas() - w: " << k->scene->sceneRect().width();
-    qDebug() << "TupCanvas::TupCanvas() - h: " << k->scene->sceneRect().height();
-
     setInteractive(true);
     setMouseTracking(true);
     setScene(scene);
 
     k->scene = scene;
+    k->pen = pen;
     k->frame = new TupFrame();
     k->pressed = false;
     k->size = 8;
@@ -53,7 +50,7 @@ void TupCanvas::mousePressEvent(QMouseEvent *event)
     k->pressed = true;
 
     k->item = new TupPathItem();
-    k->pen = QPen(Qt::black, k->size, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+    // k->pen = QPen(Qt::black, k->size, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     k->item->setPen(k->pen);
 
     k->scene->addItem(k->item);
@@ -133,11 +130,14 @@ void TupCanvas::drawBackground(QPainter *painter, const QRectF &rect)
     painter->setPen(QPen(QColor(0, 0, 0, 80), 1));
     
     QRectF area = QRectF(QPointF(0, 0), QSize(520, 380));
-
-    // painter->fillRect(rect, k->bgcolor);
     painter->drawRect(area);
 
     painter->setRenderHint(QPainter::Antialiasing, hasAntialiasing);
     painter->restore();
+}
+
+void TupCanvas::updatePenSize(int size)
+{
+    k->pen.setWidth(size);
 }
 

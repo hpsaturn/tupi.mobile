@@ -1,23 +1,31 @@
 #include "tupmainwindow.h"
 #include "tupcanvas.h"
+#include "tuppendialog.h"
 #include "tupnethandler.h"
 
 #include <QtGui>
 #include <QGraphicsScene>
 #include <QInputDialog>
+#include <QDesktopWidget>
 
 struct TupMainWindow::Private
 {
    TupCanvas *canvas;
    QGraphicsScene *scene;
    TupNetHandler *net;
+   TupBrushManager *brushManager;
    QSize screen;
 };
 
 TupMainWindow::TupMainWindow() : QMainWindow(), k(new Private)
 {
-    setWindowTitle(tr("Tupi"));
+    setWindowFlags(Qt::FramelessWindowHint);
     setMouseTracking(true);
+
+    k->brushManager = new TupBrushManager(this);
+    QPen pen(Qt::black, 8, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+    k->brushManager->setPen(pen);
+
     setToolBar();
     setCanvas();
 
@@ -36,11 +44,18 @@ void TupMainWindow::closeEvent(QCloseEvent *event)
 
 void TupMainWindow::setToolBar()
 {
-    QAction *post = new QAction(QIcon("images/post.png"), tr("&Post"), this);
+    QImage image(":images/pen_properties.png"); 
+    QAction *brush = new QAction(QIcon(QPixmap::fromImage(image)), tr("&Pen Size"), this);
+    brush->setStatusTip(tr("Pen Size"));
+    connect(brush, SIGNAL(triggered()), this, SLOT(penDialog()));
+
+    QImage image2(":images/post.png");
+    QAction *post = new QAction(QIcon(QPixmap::fromImage(image2)), tr("&Post"), this);
     post->setStatusTip(tr("Post in Tupitube"));
     connect(post, SIGNAL(triggered()), this, SLOT(postIt()));
 
     QToolBar *toolbar = new QToolBar(); 
+    toolbar->addAction(brush);
     toolbar->addAction(post);
 
     addToolBar(Qt::BottomToolBarArea, toolbar);
@@ -54,10 +69,7 @@ void TupMainWindow::setCanvas()
     k->scene = new QGraphicsScene;
     k->scene->setSceneRect(rect);
 
-    qDebug() << "TupMainWindow::setCanvas() - w: " << k->screen.width();
-    qDebug() << "TupMainWindow::setCanvas() - h: " << k->screen.height();
-
-    k->canvas = new TupCanvas(k->scene, this);
+    k->canvas = new TupCanvas(k->scene, k->brushManager->pen(), this);
     k->canvas->setRenderHints(QPainter::Antialiasing);
 
     setCentralWidget(k->canvas);
@@ -65,12 +77,8 @@ void TupMainWindow::setCanvas()
 
 void TupMainWindow::postIt()
 {
-    // QRect rect = k->canvas->rect();
     int w = k->screen.width();
     int h = k->screen.height();
-    qDebug() << "TupMainWindow::postIt() - w: " << w;
-    qDebug() << "TupMainWindow::postIt() - h: " << h;
-
     TupFrame *frame = k->canvas->frame();
 
     QDomDocument doc;
@@ -96,4 +104,23 @@ void TupMainWindow::showDialog(const QString &message)
                                          message, &ok);
     if (ok && !text.isEmpty())
         qDebug() << "Posting message in social networks..."; 
+}
+
+void TupMainWindow::penDialog()
+{
+    QDesktopWidget desktop;
+    TupPenDialog *dialog = new TupPenDialog(k->brushManager, this);
+    connect(dialog, SIGNAL(updatePen(int)), this, SLOT(updatePenSize(int)));
+
+    QApplication::restoreOverrideCursor();
+
+    dialog->show();
+    dialog->move((int) (desktop.screenGeometry().width() - dialog->width())/2 ,
+                        (int) (desktop.screenGeometry().height() - dialog->height())/2);
+}
+
+void TupMainWindow::updatePenSize(int size)
+{
+    k->brushManager->setPenSize(size);    
+    k->canvas->updatePenSize(size);
 }

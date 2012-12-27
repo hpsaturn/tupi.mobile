@@ -12,9 +12,10 @@ class TupCanvas : public QGraphicsView
     Q_OBJECT
 
     public:
-        TupCanvas(QGraphicsScene *scene, QWidget *parent);
+        TupCanvas(QGraphicsScene *scene, const QPen pen, QWidget *parent);
         ~TupCanvas();
         TupFrame * frame();
+        void updatePenSize(int size);
 
     protected:
         virtual void drawBackground(QPainter *painter, const QRectF &rect);

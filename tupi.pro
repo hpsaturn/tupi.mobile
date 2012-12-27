@@ -1,4 +1,5 @@
 QT += xml network
+RESOURCES = images.qrc
 
 HEADERS += tupmainwindow.h \
            tupcanvas.h \
@@ -8,6 +9,9 @@ HEADERS += tupmainwindow.h \
            tuppathitem.h \
            tupsvg2qt.h \
            tupgraphicalgorithm.h \
+           tuppenthicknesswidget.h \
+           tupbrushmanager.h \
+           tuppendialog.h \
            tupframe.h
 
 SOURCES += main.cpp \
@@ -19,4 +23,7 @@ SOURCES += main.cpp \
            tuppathitem.cpp \
            tupsvg2qt.cpp \
            tupgraphicalgorithm.cpp \
+           tuppenthicknesswidget.cpp \
+           tupbrushmanager.cpp \
+           tuppendialog.cpp \
            tupframe.cpp

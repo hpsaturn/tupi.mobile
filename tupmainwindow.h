@@ -24,6 +24,8 @@ class TupMainWindow : public QMainWindow
     private slots:
         void postIt();
         void showDialog(const QString &message);
+        void penDialog();
+        void updatePenSize(int size);
 };
 
 #endif
