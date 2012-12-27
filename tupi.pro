@@ -10,7 +10,6 @@ HEADERS += tupmainwindow.h \
            tupsvg2qt.h \
            tupgraphicalgorithm.h \
            tuppenthicknesswidget.h \
-           tupbrushmanager.h \
            tuppendialog.h \
            tupframe.h
 
@@ -24,6 +23,5 @@ SOURCES += main.cpp \
            tupsvg2qt.cpp \
            tupgraphicalgorithm.cpp \
            tuppenthicknesswidget.cpp \
-           tupbrushmanager.cpp \
            tuppendialog.cpp \
            tupframe.cpp

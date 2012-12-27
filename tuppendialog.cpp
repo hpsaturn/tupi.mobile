@@ -11,18 +11,18 @@ struct TupPenDialog::Private
 {
     QVBoxLayout *innerLayout;
     TupPenThicknessWidget *thickPreview;
-    TupBrushManager *brushManager;
+    QPen pen;
     QLabel *sizeLabel;
     int currentSize;
 };
 
-TupPenDialog::TupPenDialog(TupBrushManager *brushManager, QWidget *parent) : QDialog(parent), k(new Private)
+TupPenDialog::TupPenDialog(const QPen pen, QWidget *parent) : QDialog(parent), k(new Private)
 {
     setModal(true);
     setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::ToolTip);
 
-    k->brushManager = brushManager;
-    k->currentSize = k->brushManager->penWidth();
+    k->pen = pen;
+    k->currentSize = k->pen.width();
 
     QBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(3, 3, 3, 3);
@@ -44,6 +44,7 @@ TupPenDialog::TupPenDialog(TupBrushManager *brushManager, QWidget *parent) : QDi
     QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
     buttonBox->addButton(closeButton, QDialogButtonBox::ActionRole);
 
+    k->innerLayout->addSpacing(10);
     k->innerLayout->addWidget(buttonBox);
 
     layout->addLayout(k->innerLayout);
@@ -61,8 +62,8 @@ QSize TupPenDialog::sizeHint() const
 void TupPenDialog::setBrushCanvas()
 {
     k->thickPreview = new TupPenThicknessWidget(this);
-    k->thickPreview->setColor(k->brushManager->penColor());
-    k->thickPreview->setBrush(k->brushManager->brush().style());
+    k->thickPreview->setColor(k->pen.color());
+    k->thickPreview->setBrush(k->pen.brush().style());
     k->thickPreview->render(k->currentSize);
     
     k->innerLayout->addWidget(k->thickPreview);
@@ -88,6 +89,7 @@ void TupPenDialog::setButtonsPanel()
     connect(minus, SIGNAL(clicked()), this, SLOT(onePointLess()));
 
     k->sizeLabel = new QLabel(QString::number(k->currentSize));
+    k->sizeLabel->setAlignment(Qt::AlignHCenter);
     k->sizeLabel->setFont(QFont("Arial", 24, QFont::Bold));
     k->sizeLabel->setFixedWidth(40);
 

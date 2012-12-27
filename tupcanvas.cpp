@@ -50,7 +50,6 @@ void TupCanvas::mousePressEvent(QMouseEvent *event)
     k->pressed = true;
 
     k->item = new TupPathItem();
-    // k->pen = QPen(Qt::black, k->size, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     k->item->setPen(k->pen);
 
     k->scene->addItem(k->item);
@@ -136,8 +135,8 @@ void TupCanvas::drawBackground(QPainter *painter, const QRectF &rect)
     painter->restore();
 }
 
-void TupCanvas::updatePenSize(int size)
+void TupCanvas::updatePenSize(int width)
 {
-    k->pen.setWidth(size);
+    k->pen.setWidth(width);
 }
 

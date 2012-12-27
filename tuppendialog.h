@@ -1,7 +1,6 @@
 #ifndef TUPPENDIALOG_H
 #define TUPPENDIALOG_H
 
-#include "tupbrushmanager.h"
 #include <QDialog>
 
 class TupPenDialog : public QDialog
@@ -9,13 +8,13 @@ class TupPenDialog : public QDialog
     Q_OBJECT
 
     public:
-        TupPenDialog(TupBrushManager *brushManager, QWidget *parent);
+        TupPenDialog(const QPen pen, QWidget *parent);
         ~TupPenDialog();
 
         QSize sizeHint() const;
 
     signals:
-        void updatePen(int);
+        void updatePen(int width);
 
     private slots:
         void fivePointsLess();

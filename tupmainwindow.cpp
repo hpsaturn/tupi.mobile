@@ -13,7 +13,7 @@ struct TupMainWindow::Private
    TupCanvas *canvas;
    QGraphicsScene *scene;
    TupNetHandler *net;
-   TupBrushManager *brushManager;
+   QPen pen;
    QSize screen;
 };
 
@@ -22,15 +22,11 @@ TupMainWindow::TupMainWindow() : QMainWindow(), k(new Private)
     setWindowFlags(Qt::FramelessWindowHint);
     setMouseTracking(true);
 
-    k->brushManager = new TupBrushManager(this);
-    QPen pen(Qt::black, 8, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-    k->brushManager->setPen(pen);
-
     setToolBar();
     setCanvas();
 
     k->net = new TupNetHandler();
-    connect(k->net, SIGNAL(postReady(const QString &)), this, SLOT(showDialog(const QString &)));
+    connect(k->net, SIGNAL(postReady(const QString &)), this, SLOT(showURLDialog(const QString &)));
 }
 
 TupMainWindow::~TupMainWindow()
@@ -63,13 +59,14 @@ void TupMainWindow::setToolBar()
 
 void TupMainWindow::setCanvas()
 {
+    k->pen = QPen(Qt::black, 8, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     // k->screen = QSize(width(), height());
     k->screen = QSize(520, 380);
     QRectF rect = QRectF(QPointF(0, 0), k->screen);
     k->scene = new QGraphicsScene;
     k->scene->setSceneRect(rect);
 
-    k->canvas = new TupCanvas(k->scene, k->brushManager->pen(), this);
+    k->canvas = new TupCanvas(k->scene, k->pen, this);
     k->canvas->setRenderHints(QPainter::Antialiasing);
 
     setCentralWidget(k->canvas);
@@ -96,7 +93,7 @@ void TupMainWindow::postIt()
     k->net->sendPackage(doc);
 }
 
-void TupMainWindow::showDialog(const QString &message)
+void TupMainWindow::showURLDialog(const QString &message)
 {
     bool ok;
     QString text = QInputDialog::getText(this, "Let's share!",
@@ -109,7 +106,7 @@ void TupMainWindow::showDialog(const QString &message)
 void TupMainWindow::penDialog()
 {
     QDesktopWidget desktop;
-    TupPenDialog *dialog = new TupPenDialog(k->brushManager, this);
+    TupPenDialog *dialog = new TupPenDialog(k->pen, this);
     connect(dialog, SIGNAL(updatePen(int)), this, SLOT(updatePenSize(int)));
 
     QApplication::restoreOverrideCursor();
@@ -119,8 +116,8 @@ void TupMainWindow::penDialog()
                         (int) (desktop.screenGeometry().height() - dialog->height())/2);
 }
 
-void TupMainWindow::updatePenSize(int size)
+void TupMainWindow::updatePenSize(int width)
 {
-    k->brushManager->setPenSize(size);    
-    k->canvas->updatePenSize(size);
+    k->pen.setWidth(width);
+    k->canvas->updatePenSize(width);
 }
