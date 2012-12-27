@@ -128,7 +128,8 @@ void TupCanvas::drawBackground(QPainter *painter, const QRectF &rect)
     painter->setRenderHint(QPainter::Antialiasing, true);
     painter->setPen(QPen(QColor(0, 0, 0, 80), 1));
     
-    QRectF area = QRectF(QPointF(0, 0), QSize(520, 380));
+    QRectF area = k->scene->sceneRect();
+
     painter->drawRect(area);
 
     painter->setRenderHint(QPainter::Antialiasing, hasAntialiasing);

@@ -13,6 +13,7 @@ class TupMainWindow : public QMainWindow
 
     protected:
         void closeEvent(QCloseEvent *event);
+        void resizeEvent ( QResizeEvent * event );
 
     private:
         void setToolBar();

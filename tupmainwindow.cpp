@@ -19,6 +19,9 @@ struct TupMainWindow::Private
 
 TupMainWindow::TupMainWindow() : QMainWindow(), k(new Private)
 {
+    k->scene = 0;
+    k->canvas = 0;
+
     setWindowFlags(Qt::FramelessWindowHint);
     setMouseTracking(true);
 
@@ -26,6 +29,8 @@ TupMainWindow::TupMainWindow() : QMainWindow(), k(new Private)
     setCanvas();
 
     k->net = new TupNetHandler();
+
+
     connect(k->net, SIGNAL(postReady(const QString &)), this, SLOT(showURLDialog(const QString &)));
 }
 
@@ -36,6 +41,13 @@ TupMainWindow::~TupMainWindow()
 void TupMainWindow::closeEvent(QCloseEvent *event)
 {
     Q_UNUSED(event);
+}
+
+void TupMainWindow::resizeEvent ( QResizeEvent * event )
+{
+    Q_UNUSED(event);
+
+    setCanvas();
 }
 
 void TupMainWindow::setToolBar()
@@ -59,9 +71,15 @@ void TupMainWindow::setToolBar()
 
 void TupMainWindow::setCanvas()
 {
+    if(k->scene)
+        delete k->scene;
+
+    if(k->canvas)
+        delete k->canvas;
+
     k->pen = QPen(Qt::black, 8, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-    // k->screen = QSize(width(), height());
-    k->screen = QSize(520, 380);
+
+    k->screen = this->size();
     QRectF rect = QRectF(QPointF(0, 0), k->screen);
     k->scene = new QGraphicsScene;
     k->scene->setSceneRect(rect);
