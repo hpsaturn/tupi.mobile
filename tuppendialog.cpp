@@ -75,7 +75,7 @@ void TupPenDialog::setButtonsPanel()
 
     connect(minus5, SIGNAL(clicked()), this, SLOT(fivePointsLess()));
 
-    QPixmap pixmap2(":images/minus_sign_medium.png");
+    QPixmap pixmap2(":images/minus_sign_small.png");
     QIcon buttonIcon2(pixmap2);
     QPushButton *minus = new QPushButton(this);
     minus->setToolTip(tr("-1"));
@@ -88,7 +88,7 @@ void TupPenDialog::setButtonsPanel()
     k->sizeLabel->setAlignment(Qt::AlignHCenter);
     k->sizeLabel->setFixedWidth(40);
 
-    QPixmap pixmap3(":images/plus_sign_medium.png");
+    QPixmap pixmap3(":images/plus_sign_small.png");
     QIcon buttonIcon3(pixmap3);
     QPushButton *plus = new QPushButton(this);
     plus->setToolTip(tr("+1"));

@@ -154,6 +154,11 @@ void TupCanvas::updatePenSize(int width)
     k->pen.setWidth(width);
 }
 
+void TupCanvas::updateColor(const QColor color)
+{
+    k->pen.setColor(color);
+}
+
 void TupCanvas::updatePenOpacity(double opacity)
 {
     k->opacity = opacity;

@@ -52,8 +52,12 @@ void TupMainWindow::resizeEvent(QResizeEvent *event)
 
 void TupMainWindow::setToolBar()
 {
-    QImage image(":images/width.png"); 
-    QAction *brush = new QAction(QIcon(QPixmap::fromImage(image)), "", this);
+    QImage image(":images/palette.png");
+    QAction *palette = new QAction(QIcon(QPixmap::fromImage(image)), "", this);
+    connect(palette, SIGNAL(triggered()), this, SLOT(colorDialog()));
+
+    QImage image1(":images/width.png"); 
+    QAction *brush = new QAction(QIcon(QPixmap::fromImage(image1)), "", this);
     connect(brush, SIGNAL(triggered()), this, SLOT(penDialog()));
 
     QImage image2(":images/opacity.png");
@@ -65,6 +69,7 @@ void TupMainWindow::setToolBar()
     connect(post, SIGNAL(triggered()), this, SLOT(postIt()));
 
     QToolBar *toolbar = new QToolBar(); 
+    toolbar->addAction(palette);
     toolbar->addAction(brush);
     toolbar->addAction(opacity);
     toolbar->addAction(post);
@@ -131,6 +136,12 @@ void TupMainWindow::penDialog()
     TupPenDialog *dialog = new TupPenDialog(k->pen, this);
     connect(dialog, SIGNAL(updatePen(int)), this, SLOT(updatePenSize(int)));
     dialog->showMaximized();
+}
+
+void TupMainWindow::colorDialog()
+{
+    QColor color = QColorDialog::getColor(k->pen.color(), this);
+    k->canvas->updateColor(color);
 }
 
 void TupMainWindow::opacityDialog()

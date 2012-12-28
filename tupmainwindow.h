@@ -28,6 +28,7 @@ class TupMainWindow : public QMainWindow
         void penDialog();
         void opacityDialog();
         void updatePenSize(int width);
+        void colorDialog();
         void setOnionOpacity(double opacity);
 };
 

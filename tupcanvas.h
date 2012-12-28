@@ -16,6 +16,7 @@ class TupCanvas : public QGraphicsView
         ~TupCanvas();
         TupFrame * frame();
         void updatePenSize(int width);
+        void updateColor(const QColor color);
         void updatePenOpacity(double opacity);
 
     protected:
