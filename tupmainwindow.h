@@ -13,7 +13,7 @@ class TupMainWindow : public QMainWindow
 
     protected:
         void closeEvent(QCloseEvent *event);
-        void resizeEvent ( QResizeEvent * event );
+        void resizeEvent(QResizeEvent *event);
 
     private:
         void setToolBar();
@@ -26,7 +26,9 @@ class TupMainWindow : public QMainWindow
         void postIt();
         void showURLDialog(const QString &message);
         void penDialog();
+        void opacityDialog();
         void updatePenSize(int width);
+        void setOnionOpacity(double opacity);
 };
 
 #endif

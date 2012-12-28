@@ -11,6 +11,7 @@ HEADERS += tupmainwindow.h \
            tupgraphicalgorithm.h \
            tuppenthicknesswidget.h \
            tuppendialog.h \
+           tuponionopacitydialog.h \
            tupframe.h
 
 SOURCES += main.cpp \
@@ -24,4 +25,5 @@ SOURCES += main.cpp \
            tupgraphicalgorithm.cpp \
            tuppenthicknesswidget.cpp \
            tuppendialog.cpp \
+           tuponionopacitydialog.cpp \
            tupframe.cpp

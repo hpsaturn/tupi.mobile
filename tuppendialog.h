@@ -11,8 +11,6 @@ class TupPenDialog : public QDialog
         TupPenDialog(const QPen pen, QWidget *parent);
         ~TupPenDialog();
 
-        QSize sizeHint() const;
-
     signals:
         void updatePen(int width);
 

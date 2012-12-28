@@ -12,10 +12,11 @@ class TupCanvas : public QGraphicsView
     Q_OBJECT
 
     public:
-        TupCanvas(QGraphicsScene *scene, const QPen pen, QWidget *parent);
+        TupCanvas(QGraphicsScene *scene, const QPen pen, double opacity, QWidget *parent);
         ~TupCanvas();
         TupFrame * frame();
         void updatePenSize(int width);
+        void updatePenOpacity(double opacity);
 
     protected:
         virtual void drawBackground(QPainter *painter, const QRectF &rect);
@@ -25,6 +26,8 @@ class TupCanvas : public QGraphicsView
 
     private:
         void smoothPath(QPainterPath &path, double smoothness, int from = 0, int to = -1);
+        int alphaValue(double opacity);
+
         struct Private;
         Private *const k;
 };

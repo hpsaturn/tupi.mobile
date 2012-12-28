@@ -16,11 +16,12 @@ struct TupCanvas::Private
    QPointF oldPos;
    QPen pen;
    int size;
+   double opacity;
 
    bool pressed;
 };
 
-TupCanvas::TupCanvas(QGraphicsScene *scene, const QPen pen, QWidget *parent) : QGraphicsView(scene, parent), k(new Private)
+TupCanvas::TupCanvas(QGraphicsScene *scene, const QPen pen, double opacity, QWidget *parent) : QGraphicsView(scene, parent), k(new Private)
 {
     centerOn(k->scene->sceneRect().center());
     setInteractive(true);
@@ -32,6 +33,7 @@ TupCanvas::TupCanvas(QGraphicsScene *scene, const QPen pen, QWidget *parent) : Q
     k->frame = new TupFrame();
     k->pressed = false;
     k->size = 8;
+    k->opacity = opacity;
 }
 
 TupCanvas::~TupCanvas()
@@ -50,9 +52,20 @@ void TupCanvas::mousePressEvent(QMouseEvent *event)
     k->pressed = true;
 
     k->item = new TupPathItem();
+    QColor color = k->pen.color();
+    color.setAlpha(alphaValue(k->opacity));
+    k->pen.setColor(color);
     k->item->setPen(k->pen);
+    // k->item->setOpacity(k->opacity);
 
     k->scene->addItem(k->item);
+}
+
+int TupCanvas::alphaValue(double opacity)
+{
+    double alpha = 255 * opacity;
+    int value = (int) alpha;
+    return value;
 }
 
 void TupCanvas::mouseMoveEvent(QMouseEvent *event)
@@ -139,5 +152,10 @@ void TupCanvas::drawBackground(QPainter *painter, const QRectF &rect)
 void TupCanvas::updatePenSize(int width)
 {
     k->pen.setWidth(width);
+}
+
+void TupCanvas::updatePenOpacity(double opacity)
+{
+    k->opacity = opacity;
 }
 
