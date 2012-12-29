@@ -13,16 +13,15 @@ struct TupOpacityDialog::Private
     QVBoxLayout *innerLayout;
     TupPenPreviewCanvas *opacityPreview;
     QLabel *sizeLabel;
-    QColor color;
+    QPen pen;
     double currentOpacity;
 };
 
-TupOpacityDialog::TupOpacityDialog(const QColor &color, double opacity, QWidget *parent) : QDialog(parent), k(new Private)
+TupOpacityDialog::TupOpacityDialog(QPen pen, double opacity, QWidget *parent) : QDialog(parent), k(new Private)
 {
     setModal(true);
     setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::ToolTip);
-
-    k->color = color;
+    k->pen = pen;
     k->currentOpacity = opacity;
 
     QBoxLayout *layout = new QHBoxLayout(this);
@@ -58,8 +57,7 @@ TupOpacityDialog::~TupOpacityDialog()
 
 void TupOpacityDialog::setOpacityCanvas()
 {
-    k->opacityPreview = new TupPenPreviewCanvas(100, k->color, k->currentOpacity, this);
-
+    k->opacityPreview = new TupPenPreviewCanvas(k->pen, k->currentOpacity, this);
     k->innerLayout->addWidget(k->opacityPreview);
 }
 
@@ -69,7 +67,7 @@ void TupOpacityDialog::setLabelPanel()
     if (number.length() == 3)
         number = number + "0";
 
-    k->sizeLabel = new QLabel(number);
+    k->sizeLabel = new QLabel("Opacity: " + number);
     k->sizeLabel->setFont(QFont("Arial", 24, QFont::Bold));
     k->sizeLabel->setAlignment(Qt::AlignHCenter);
 
@@ -151,14 +149,14 @@ void TupOpacityDialog::modifySize(double value)
         k->currentOpacity = 0;
 
     if (k->currentOpacity == 0) {
-        k->sizeLabel->setText("0.00");
+        k->sizeLabel->setText("Opacity: 0.00");
     } else if (k->currentOpacity == 1) {
-        k->sizeLabel->setText("1.00");
+        k->sizeLabel->setText("Opacity: 1.00");
     } else {
         QString number = QString::number(k->currentOpacity);
         if (number.length() == 3)
             number = number + "0";
-        k->sizeLabel->setText(number);
+        k->sizeLabel->setText("Opacity: " + number);
     }
 
     k->opacityPreview->render(k->currentOpacity);

@@ -7,11 +7,11 @@ struct TupPenPreviewCanvas::Private
     QColor color;
 };
 
-TupPenPreviewCanvas::TupPenPreviewCanvas(int width, const QColor color, double opacity, QWidget *parent) : QWidget(parent), k(new Private)
+TupPenPreviewCanvas::TupPenPreviewCanvas(QPen pen, double opacity, QWidget *parent) : QWidget(parent), k(new Private)
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    k->width = width;
-    k->color = color;
+    k->width = pen.width();
+    k->color = pen.color();
     k->opacity = opacity;
 }
 

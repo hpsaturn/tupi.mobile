@@ -141,22 +141,21 @@ void TupMainWindow::showURLDialog(const QString &message)
 
 void TupMainWindow::penWidthDialog()
 {
-    TupPenWidthDialog *dialog = new TupPenWidthDialog(k->pen, this);
+    TupPenWidthDialog *dialog = new TupPenWidthDialog(k->pen, k->opacity, this);
     connect(dialog, SIGNAL(updatePen(int)), this, SLOT(updatePenWidth(int)));
     dialog->showMaximized();
 }
 
 void TupMainWindow::colorDialog()
 {
-    // QColor color = QColorDialog::getColor(k->pen.color(), this);
-    TupPaletteDialog *dialog = new TupPaletteDialog(k->pen.color(), this);
+    TupPaletteDialog *dialog = new TupPaletteDialog(k->pen.color(), k->screen, this);
     connect(dialog, SIGNAL(updateColor(const QColor)), this, SLOT(updatePenColor(const QColor)));
     dialog->showMaximized();
 }
 
 void TupMainWindow::opacityDialog()
 {
-    TupOpacityDialog *dialog = new TupOpacityDialog(k->pen.color(), k->opacity, this);
+    TupOpacityDialog *dialog = new TupOpacityDialog(k->pen, k->opacity, this);
     connect(dialog, SIGNAL(updateOpacity(double)), this, SLOT(updateOnionOpacity(double)));
     dialog->showMaximized();
 }

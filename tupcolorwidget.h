@@ -11,18 +11,18 @@ class TupColorWidget : public QWidget
     Q_OBJECT
 
     public:
-        TupColorWidget();
+        TupColorWidget(int index, const QBrush &brush);
         ~TupColorWidget();
-        void setBrush(const QBrush &brush);
         QSize sizeHint() const;
         QColor color();
+        void unselect();
 
     protected:
         void paintEvent(QPaintEvent *painter);
         void mousePressEvent(QMouseEvent *event);
 
     signals:
-        void clicked();        
+        void clicked(int index);        
 
     private:
         struct Private;

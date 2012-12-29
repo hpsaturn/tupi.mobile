@@ -8,7 +8,7 @@ class TupPenWidthDialog : public QDialog
     Q_OBJECT
 
     public:
-        TupPenWidthDialog(const QPen pen, QWidget *parent);
+        TupPenWidthDialog(QPen pen, double opacity, QWidget *parent);
         ~TupPenWidthDialog();
 
     signals:

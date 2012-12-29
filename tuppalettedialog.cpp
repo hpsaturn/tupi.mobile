@@ -1,4 +1,5 @@
 #include "tuppalettedialog.h"
+#include "tupcolorwidget.h"
 
 #include <QBoxLayout>
 #include <QPixmap>
@@ -8,16 +9,24 @@
 struct TupPaletteDialog::Private
 {
     QVBoxLayout *innerLayout;
+    QList<TupColorWidget *> colors;
+    int currentColorIndex;
+    QColor color;
+    QSize size;
 };
 
-TupPaletteDialog::TupPaletteDialog(const QColor color, QWidget *parent) : QDialog(parent), k(new Private)
+TupPaletteDialog::TupPaletteDialog(const QColor color, const QSize size, QWidget *parent) : QDialog(parent), k(new Private)
 {
+    k->color = color;
+    k->size = size;
+    k->currentColorIndex = -1;
+
     setModal(true);
     setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::ToolTip);
 
     QBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(3, 3, 3, 3);
-    layout->setSpacing(2);
+    layout->setSpacing(10);
 
     k->innerLayout = new QVBoxLayout;
 
@@ -29,7 +38,7 @@ TupPaletteDialog::TupPaletteDialog(const QColor color, QWidget *parent) : QDialo
     closeButton->setIcon(buttonIcon);
     closeButton->setIconSize(pixmap.rect().size());
     closeButton->setDefault(true);
-    connect(closeButton, SIGNAL(clicked()), this, SLOT(close()));
+    connect(closeButton, SIGNAL(clicked()), this, SLOT(closeDialog()));
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
     buttonBox->addButton(closeButton, QDialogButtonBox::ActionRole);
@@ -46,5 +55,48 @@ TupPaletteDialog::~TupPaletteDialog()
 
 void TupPaletteDialog::setColorsArray()
 {
-    // k->innerLayout->addWidget(k->sizeLabel);
+    int w = k->size.width();
+    int h = k->size.height();
+    int rows = w / 100;
+    int columns = h / 50;
+
+    int index = 0;
+    for (int j=0; j<rows; j++) {
+         QBoxLayout *matrix = new QHBoxLayout;
+         matrix->setSpacing(10);
+
+         for (int i=0; i<columns; i++) {
+              int r = qrand() % (255 + 1);
+              int g = qrand() % (255 + 1);
+              int b = qrand() % (255 + 1);
+
+              QColor color(r, g, b);
+              TupColorWidget *button = new TupColorWidget(index, color);
+              connect(button, SIGNAL(clicked(int)), this, SLOT(updateMatrix(int)));
+              index++;
+              k->colors << button;
+              matrix->addWidget(button);
+         }
+
+         k->innerLayout->addLayout(matrix);
+    }
+}
+
+void TupPaletteDialog::updateMatrix(int index)
+{
+    if (index != k->currentColorIndex) {
+        if (k->currentColorIndex >= 0) {
+            TupColorWidget *button = (TupColorWidget *) k->colors.at(k->currentColorIndex);
+            button->unselect();
+        }
+        TupColorWidget *selection = (TupColorWidget *) k->colors.at(index);
+        k->color = selection->color();
+        k->currentColorIndex = index;
+    }
+}
+
+void TupPaletteDialog::closeDialog()
+{
+    emit updateColor(k->color);
+    close();
 }

@@ -12,16 +12,18 @@ struct TupPenWidthDialog::Private
     QVBoxLayout *innerLayout;
     TupPenPreviewCanvas *thickPreview;
     QPen pen;
+    double opacity;
     QLabel *sizeLabel;
     int currentSize;
 };
 
-TupPenWidthDialog::TupPenWidthDialog(const QPen pen, QWidget *parent) : QDialog(parent), k(new Private)
+TupPenWidthDialog::TupPenWidthDialog(QPen pen, double opacity, QWidget *parent) : QDialog(parent), k(new Private)
 {
     setModal(true);
     setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::ToolTip);
 
     k->pen = pen;
+    k->opacity = opacity;
     k->currentSize = k->pen.width();
 
     QBoxLayout *layout = new QHBoxLayout(this);
@@ -57,13 +59,13 @@ TupPenWidthDialog::~TupPenWidthDialog()
 
 void TupPenWidthDialog::setBrushCanvas()
 {
-    k->thickPreview = new TupPenPreviewCanvas(k->currentSize, k->pen.color(), 1.0, this);
+    k->thickPreview = new TupPenPreviewCanvas(k->pen, k->opacity, this);
     k->innerLayout->addWidget(k->thickPreview);
 }
 
 void TupPenWidthDialog::setLabelPanel()
 {
-    k->sizeLabel = new QLabel(QString::number(k->currentSize));
+    k->sizeLabel = new QLabel("Width: " + QString::number(k->currentSize));
     k->sizeLabel->setFont(QFont("Arial", 24, QFont::Bold));
     k->sizeLabel->setAlignment(Qt::AlignHCenter);
 
@@ -146,7 +148,7 @@ void TupPenWidthDialog::modifySize(int value)
         k->currentSize = 1;
 
     k->thickPreview->render(k->currentSize);
-    k->sizeLabel->setText(QString::number(k->currentSize));
+    k->sizeLabel->setText("Width: " + QString::number(k->currentSize));
 
     emit updatePen(k->currentSize);
 }

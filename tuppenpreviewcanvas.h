@@ -12,7 +12,7 @@ class TupPenPreviewCanvas : public QWidget
     Q_OBJECT
 
     public:
-        TupPenPreviewCanvas(int width, const QColor color, double opacity, QWidget *parent = 0);
+        TupPenPreviewCanvas(QPen pen, double opacity, QWidget *parent = 0);
         ~TupPenPreviewCanvas();
 
         QSize minimumSizeHint() const;

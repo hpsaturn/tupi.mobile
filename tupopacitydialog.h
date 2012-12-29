@@ -9,7 +9,7 @@ class TupOpacityDialog : public QDialog
     Q_OBJECT
 
     public:
-        TupOpacityDialog(const QColor &color, double opacity, QWidget *parent);
+        TupOpacityDialog(QPen pen, double opacity, QWidget *parent);
         ~TupOpacityDialog();
 
     signals:
