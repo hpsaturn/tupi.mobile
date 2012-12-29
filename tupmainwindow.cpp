@@ -26,9 +26,8 @@ TupMainWindow::TupMainWindow() : QMainWindow(), k(new Private)
 
     setWindowFlags(Qt::FramelessWindowHint);
     setMouseTracking(true);
-
-    setToolBar();
     setCanvas();
+    setToolBar();
 
     k->net = new TupNetHandler();
     connect(k->net, SIGNAL(postReady(const QString &)), this, SLOT(showURLDialog(const QString &)));
@@ -50,43 +49,8 @@ void TupMainWindow::resizeEvent(QResizeEvent *event)
     setCanvas();
 }
 
-void TupMainWindow::setToolBar()
-{
-    QImage image(":images/palette.png");
-    QAction *palette = new QAction(QIcon(QPixmap::fromImage(image)), "", this);
-    connect(palette, SIGNAL(triggered()), this, SLOT(colorDialog()));
-
-    QImage image1(":images/width.png"); 
-    QAction *brush = new QAction(QIcon(QPixmap::fromImage(image1)), "", this);
-    connect(brush, SIGNAL(triggered()), this, SLOT(penDialog()));
-
-    QImage image2(":images/opacity.png");
-    QAction *opacity = new QAction(QIcon(QPixmap::fromImage(image2)), "", this);
-    connect(opacity, SIGNAL(triggered()), this, SLOT(opacityDialog()));
-
-    QImage image3(":images/post.png");
-    QAction *post = new QAction(QIcon(QPixmap::fromImage(image3)), "", this);
-    connect(post, SIGNAL(triggered()), this, SLOT(postIt()));
-
-    QToolBar *toolbar = new QToolBar(); 
-    toolbar->addAction(palette);
-    toolbar->addAction(brush);
-    toolbar->addAction(opacity);
-    toolbar->addAction(post);
-
-    addToolBar(Qt::BottomToolBarArea, toolbar);
-}
-
 void TupMainWindow::setCanvas()
 {
-    /*
-    if(k->scene)
-        delete k->scene;
-
-    if(k->canvas)
-        delete k->canvas;
-    */
-
     k->pen = QPen(Qt::black, 8, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
 
     k->screen = this->size();
@@ -98,6 +62,48 @@ void TupMainWindow::setCanvas()
     k->canvas->setRenderHints(QPainter::Antialiasing);
 
     setCentralWidget(k->canvas);
+}
+
+void TupMainWindow::setToolBar()
+{
+    QImage image0(":images/undo.png");
+    QAction *undo = new QAction(QIcon(QPixmap::fromImage(image0)), "", this);
+    connect(undo, SIGNAL(triggered()), this, SLOT(undo()));
+
+    QImage image1(":images/redo.png");
+    QAction *redo = new QAction(QIcon(QPixmap::fromImage(image1)), "", this);
+    connect(redo, SIGNAL(triggered()), this, SLOT(redo()));
+
+    QImage image2(":images/palette.png");
+    QAction *palette = new QAction(QIcon(QPixmap::fromImage(image2)), "", this);
+    connect(palette, SIGNAL(triggered()), this, SLOT(colorDialog()));
+
+    QImage image3(":images/width.png"); 
+    QAction *brush = new QAction(QIcon(QPixmap::fromImage(image3)), "", this);
+    connect(brush, SIGNAL(triggered()), this, SLOT(penDialog()));
+
+    QImage image4(":images/opacity.png");
+    QAction *opacity = new QAction(QIcon(QPixmap::fromImage(image4)), "", this);
+    connect(opacity, SIGNAL(triggered()), this, SLOT(opacityDialog()));
+
+    QImage image5(":images/post.png");
+    QAction *post = new QAction(QIcon(QPixmap::fromImage(image5)), "", this);
+    connect(post, SIGNAL(triggered()), this, SLOT(postIt()));
+
+    QImage image6(":images/new.png");
+    QAction *clear = new QAction(QIcon(QPixmap::fromImage(image6)), "", this);
+    connect(clear, SIGNAL(triggered()), this, SLOT(newCanvas()));
+
+    QToolBar *toolbar = new QToolBar(); 
+    toolbar->addAction(undo);
+    toolbar->addAction(redo);
+    toolbar->addAction(palette);
+    toolbar->addAction(brush);
+    toolbar->addAction(opacity);
+    toolbar->addAction(post);
+    toolbar->addAction(clear);
+
+    addToolBar(Qt::BottomToolBarArea, toolbar);
 }
 
 void TupMainWindow::postIt()
@@ -162,3 +168,22 @@ void TupMainWindow::setOnionOpacity(double opacity)
     k->opacity = opacity;
     k->canvas->updatePenOpacity(opacity);
 }
+
+void TupMainWindow::undo()
+{
+    k->canvas->undo();
+}
+
+void TupMainWindow::redo()
+{
+    k->canvas->redo();
+}
+
+void TupMainWindow::newCanvas()
+{
+    k->canvas->clear();
+}
+
+
+
+

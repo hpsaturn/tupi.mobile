@@ -50,7 +50,13 @@ void TupFrame::addItem(TupPathItem *item)
     qDebug() << newDoc;
 }
 
-void TupFrame::removeItem(int index)
+TupPathItem * TupFrame::takeItem(int index)
 {
-    k->graphics.remove(index);
+    TupPathItem *item = (TupPathItem *) k->graphics.take(index);
+    return item;
+}
+
+void TupFrame::clear()
+{
+    k->graphics.clear();
 }

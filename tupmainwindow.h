@@ -30,6 +30,9 @@ class TupMainWindow : public QMainWindow
         void updatePenSize(int width);
         void colorDialog();
         void setOnionOpacity(double opacity);
+        void undo();
+        void redo();
+        void newCanvas();
 };
 
 #endif

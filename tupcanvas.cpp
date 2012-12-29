@@ -10,6 +10,7 @@ struct TupCanvas::Private
    QGraphicsScene *scene;
    TupFrame *frame;
    TupPathItem *item;
+   QList<TupPathItem *> undoList;
 
    QPainterPath path;
    QPointF firstPoint;
@@ -164,3 +165,29 @@ void TupCanvas::updatePenOpacity(double opacity)
     k->opacity = opacity;
 }
 
+void TupCanvas::undo()
+{
+    int index = k->scene->items().count();
+    if (index > 0) {
+        TupPathItem *item = (TupPathItem *) k->frame->takeItem(index - 1);
+        k->scene->removeItem(item);
+        k->undoList.append(item);
+    }
+}
+
+void TupCanvas::redo()
+{
+    int index = k->undoList.size();
+    if (k->undoList.size() > 0) {
+        TupPathItem *item = (TupPathItem *) k->undoList.takeAt(index - 1);
+        k->scene->addItem(item);
+        k->frame->addItem(item);
+    }
+}
+
+void TupCanvas::clear()
+{
+    k->scene->clear();
+    k->frame->clear();
+    k->undoList.clear();
+}

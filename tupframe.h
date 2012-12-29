@@ -11,7 +11,8 @@ class TupFrame : public QObject
        TupFrame();
        ~TupFrame();
        void addItem(TupPathItem *item);
-       void removeItem(int index);
+       TupPathItem * takeItem(int index);
+       void clear();
        
     public:
        QDomElement toXml(QDomDocument &doc) const;

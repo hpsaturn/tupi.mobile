@@ -18,6 +18,9 @@ class TupCanvas : public QGraphicsView
         void updatePenSize(int width);
         void updateColor(const QColor color);
         void updatePenOpacity(double opacity);
+        void undo();
+        void redo();
+        void clear();
 
     protected:
         virtual void drawBackground(QPainter *painter, const QRectF &rect);
