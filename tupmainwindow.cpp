@@ -53,7 +53,8 @@ void TupMainWindow::setCanvas()
 {
     k->pen = QPen(Qt::black, 8, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
 
-    k->screen = this->size();
+    // k->screen = this->size();
+    k->screen = QSize(width() - 100, height() - 100);
     QRectF rect = QRectF(QPointF(0, 0), k->screen);
     k->scene = new QGraphicsScene;
     k->scene->setSceneRect(rect);
