@@ -1,15 +1,15 @@
-#ifndef TUPPENDIALOG_H
-#define TUPPENDIALOG_H
+#ifndef TUPPENWIDTHDIALOG_H
+#define TUPPENWIDTHDIALOG_H
 
 #include <QDialog>
 
-class TupPenDialog : public QDialog
+class TupPenWidthDialog : public QDialog
 {
     Q_OBJECT
 
     public:
-        TupPenDialog(const QPen pen, QWidget *parent);
-        ~TupPenDialog();
+        TupPenWidthDialog(const QPen pen, QWidget *parent);
+        ~TupPenWidthDialog();
 
     signals:
         void updatePen(int width);
@@ -22,6 +22,7 @@ class TupPenDialog : public QDialog
 
     private:
         void setBrushCanvas();
+        void setLabelPanel();
         void setButtonsPanel();
         void modifySize(int value);
 

@@ -1,5 +1,5 @@
-#include "tuponionopacitydialog.h"
-#include "tuppenthicknesswidget.h"
+#include "tupopacitydialog.h"
+#include "tuppenpreviewcanvas.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -8,16 +8,16 @@
 #include <QPushButton>
 #include <cmath>
 
-struct TupOnionOpacityDialog::Private
+struct TupOpacityDialog::Private
 {
     QVBoxLayout *innerLayout;
-    TupPenThicknessWidget *opacityPreview;
+    TupPenPreviewCanvas *opacityPreview;
     QLabel *sizeLabel;
     QColor color;
     double currentOpacity;
 };
 
-TupOnionOpacityDialog::TupOnionOpacityDialog(const QColor &color, double opacity, QWidget *parent) : QDialog(parent), k(new Private)
+TupOpacityDialog::TupOpacityDialog(const QColor &color, double opacity, QWidget *parent) : QDialog(parent), k(new Private)
 {
     setModal(true);
     setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::ToolTip);
@@ -32,6 +32,7 @@ TupOnionOpacityDialog::TupOnionOpacityDialog(const QColor &color, double opacity
     k->innerLayout = new QVBoxLayout;
 
     setOpacityCanvas();
+    setLabelPanel();
     setButtonsPanel();
 
     QPixmap pixmap(":images/close_big.png");
@@ -51,21 +52,31 @@ TupOnionOpacityDialog::TupOnionOpacityDialog(const QColor &color, double opacity
     layout->addLayout(k->innerLayout);
 }
 
-TupOnionOpacityDialog::~TupOnionOpacityDialog()
+TupOpacityDialog::~TupOpacityDialog()
 {
 }
 
-void TupOnionOpacityDialog::setOpacityCanvas()
+void TupOpacityDialog::setOpacityCanvas()
 {
-    k->opacityPreview = new TupPenThicknessWidget(this);
-    k->opacityPreview->setColor(k->color);
-    k->opacityPreview->setBrush(Qt::SolidPattern);
-    k->opacityPreview->render(k->currentOpacity);
-    
+    k->opacityPreview = new TupPenPreviewCanvas(100, k->color, k->currentOpacity, this);
+
     k->innerLayout->addWidget(k->opacityPreview);
 }
 
-void TupOnionOpacityDialog::setButtonsPanel()
+void TupOpacityDialog::setLabelPanel()
+{
+    QString number = QString::number(k->currentOpacity);
+    if (number.length() == 3)
+        number = number + "0";
+
+    k->sizeLabel = new QLabel(number);
+    k->sizeLabel->setFont(QFont("Arial", 24, QFont::Bold));
+    k->sizeLabel->setAlignment(Qt::AlignHCenter);
+
+    k->innerLayout->addWidget(k->sizeLabel);
+}
+
+void TupOpacityDialog::setButtonsPanel()
 {
     QPixmap pixmap(":images/minus_sign_big.png");
     QIcon buttonIcon(pixmap);
@@ -82,15 +93,6 @@ void TupOnionOpacityDialog::setButtonsPanel()
     minus->setIcon(buttonIcon2);
     minus->setIconSize(pixmap2.rect().size());
     connect(minus, SIGNAL(clicked()), this, SLOT(onePointLess()));
-
-    QString number = QString::number(k->currentOpacity);
-    if (number.length() == 3)
-        number = number + "0";
-
-    k->sizeLabel = new QLabel(number);
-    k->sizeLabel->setFont(QFont("Arial", 24, QFont::Bold));
-    k->sizeLabel->setAlignment(Qt::AlignHCenter);
-    k->sizeLabel->setFixedWidth(65);
 
     QPixmap pixmap3(":images/plus_sign_small.png");
     QIcon buttonIcon3(pixmap3);
@@ -111,34 +113,33 @@ void TupOnionOpacityDialog::setButtonsPanel()
     QBoxLayout *layout = new QHBoxLayout;
     layout->addWidget(minus5);
     layout->addWidget(minus);
-    layout->addWidget(k->sizeLabel);
     layout->addWidget(plus);
     layout->addWidget(plus5);
 
     k->innerLayout->addLayout(layout);
 }
 
-void TupOnionOpacityDialog::fivePointsLess()
+void TupOpacityDialog::fivePointsLess()
 {
     modifySize(-0.05);
 }
 
-void TupOnionOpacityDialog::onePointLess()
+void TupOpacityDialog::onePointLess()
 {
     modifySize(-0.01);
 }
 
-void TupOnionOpacityDialog::onePointMore()
+void TupOpacityDialog::onePointMore()
 {
     modifySize(0.01);
 }
 
-void TupOnionOpacityDialog::fivePointsMore()
+void TupOpacityDialog::fivePointsMore()
 {
     modifySize(0.05);
 }
 
-void TupOnionOpacityDialog::modifySize(double value)
+void TupOpacityDialog::modifySize(double value)
 {
     k->currentOpacity = (100 * k->currentOpacity)/100;
     k->currentOpacity += value;

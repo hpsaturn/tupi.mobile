@@ -25,11 +25,12 @@ class TupMainWindow : public QMainWindow
     private slots:
         void postIt();
         void showURLDialog(const QString &message);
-        void penDialog();
-        void opacityDialog();
-        void updatePenSize(int width);
+        void penWidthDialog();
         void colorDialog();
-        void setOnionOpacity(double opacity);
+        void opacityDialog();
+        void updatePenWidth(int width);
+        void updatePenColor(const QColor color);
+        void updateOnionOpacity(double opacity);
         void undo();
         void redo();
         void newCanvas();

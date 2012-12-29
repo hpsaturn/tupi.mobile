@@ -1,7 +1,8 @@
 #include "tupmainwindow.h"
 #include "tupcanvas.h"
-#include "tuppendialog.h"
-#include "tuponionopacitydialog.h"
+#include "tuppalettedialog.h"
+#include "tuppenwidthdialog.h"
+#include "tupopacitydialog.h"
 #include "tupnethandler.h"
 
 #include <QtGui>
@@ -81,7 +82,7 @@ void TupMainWindow::setToolBar()
 
     QImage image3(":images/width.png"); 
     QAction *brush = new QAction(QIcon(QPixmap::fromImage(image3)), "", this);
-    connect(brush, SIGNAL(triggered()), this, SLOT(penDialog()));
+    connect(brush, SIGNAL(triggered()), this, SLOT(penWidthDialog()));
 
     QImage image4(":images/opacity.png");
     QAction *opacity = new QAction(QIcon(QPixmap::fromImage(image4)), "", this);
@@ -138,33 +139,41 @@ void TupMainWindow::showURLDialog(const QString &message)
         qDebug() << "Posting message in social networks..."; 
 }
 
-void TupMainWindow::penDialog()
+void TupMainWindow::penWidthDialog()
 {
-    TupPenDialog *dialog = new TupPenDialog(k->pen, this);
-    connect(dialog, SIGNAL(updatePen(int)), this, SLOT(updatePenSize(int)));
+    TupPenWidthDialog *dialog = new TupPenWidthDialog(k->pen, this);
+    connect(dialog, SIGNAL(updatePen(int)), this, SLOT(updatePenWidth(int)));
     dialog->showMaximized();
 }
 
 void TupMainWindow::colorDialog()
 {
-    QColor color = QColorDialog::getColor(k->pen.color(), this);
-    k->canvas->updateColor(color);
+    // QColor color = QColorDialog::getColor(k->pen.color(), this);
+    TupPaletteDialog *dialog = new TupPaletteDialog(k->pen.color(), this);
+    connect(dialog, SIGNAL(updateColor(const QColor)), this, SLOT(updatePenColor(const QColor)));
+    dialog->showMaximized();
 }
 
 void TupMainWindow::opacityDialog()
 {
-    TupOnionOpacityDialog *dialog = new TupOnionOpacityDialog(k->pen.color(), k->opacity, this);
-    connect(dialog, SIGNAL(updateOpacity(double)), this, SLOT(setOnionOpacity(double)));
+    TupOpacityDialog *dialog = new TupOpacityDialog(k->pen.color(), k->opacity, this);
+    connect(dialog, SIGNAL(updateOpacity(double)), this, SLOT(updateOnionOpacity(double)));
     dialog->showMaximized();
 }
 
-void TupMainWindow::updatePenSize(int width)
+void TupMainWindow::updatePenWidth(int width)
 {
     k->pen.setWidth(width);
     k->canvas->updatePenSize(width);
 }
 
-void TupMainWindow::setOnionOpacity(double opacity)
+void TupMainWindow::updatePenColor(const QColor color)
+{
+    k->pen.setColor(color); 
+    k->canvas->updateColor(color);
+}
+
+void TupMainWindow::updateOnionOpacity(double opacity)
 {
     k->opacity = opacity;
     k->canvas->updatePenOpacity(opacity);

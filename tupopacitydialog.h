@@ -1,16 +1,16 @@
-#ifndef TUPONIONOPACITYDIALOG_H
-#define TUPONIONOPACITYDIALOG_H
+#ifndef TUPOPACITYDIALOG_H
+#define TUPOPACITYDIALOG_H
 
 #include <QDialog>
 #include <QColor>
 
-class TupOnionOpacityDialog : public QDialog
+class TupOpacityDialog : public QDialog
 {
     Q_OBJECT
 
     public:
-        TupOnionOpacityDialog(const QColor &color, double opacity, QWidget *parent);
-        ~TupOnionOpacityDialog();
+        TupOpacityDialog(const QColor &color, double opacity, QWidget *parent);
+        ~TupOpacityDialog();
 
     signals:
         void updateOpacity(double);
@@ -23,6 +23,7 @@ class TupOnionOpacityDialog : public QDialog
 
     private:
         void setOpacityCanvas();
+        void setLabelPanel();
         void setButtonsPanel();
         void modifySize(double value);
 

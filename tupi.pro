@@ -9,13 +9,14 @@ HEADERS += tupmainwindow.h \
            tuppathitem.h \
            tupsvg2qt.h \
            tupgraphicalgorithm.h \
-           tuppenthicknesswidget.h \
-           tuppendialog.h \
-           tuponionopacitydialog.h \
+           tupcolorwidget.h \
+           tuppalettedialog.h \
+           tuppenpreviewcanvas.h \
+           tuppenwidthdialog.h \
+           tupopacitydialog.h \
            tupframe.h
 
-SOURCES += main.cpp \
-           tupmainwindow.cpp \
+SOURCES += tupmainwindow.cpp \
            tupcanvas.cpp \
            tupserializer.cpp \
            tupworkmanager.cpp \
@@ -23,7 +24,10 @@ SOURCES += main.cpp \
            tuppathitem.cpp \
            tupsvg2qt.cpp \
            tupgraphicalgorithm.cpp \
-           tuppenthicknesswidget.cpp \
-           tuppendialog.cpp \
-           tuponionopacitydialog.cpp \
-           tupframe.cpp
+           tupcolorwidget.cpp \
+           tuppalettedialog.cpp \
+           tuppenpreviewcanvas.cpp \
+           tuppenwidthdialog.cpp \
+           tupopacitydialog.cpp \
+           tupframe.cpp \
+           main.cpp
