@@ -29,6 +29,7 @@ class TupCanvas : public QGraphicsView
         void mousePressEvent(QMouseEvent *event);
         void mouseMoveEvent(QMouseEvent *event);
         void mouseReleaseEvent(QMouseEvent *event);
+        // bool event(QEvent *event);
 
     private:
         void smoothPath(QPainterPath &path, double smoothness, int from = 0, int to = -1);

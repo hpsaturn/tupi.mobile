@@ -198,3 +198,61 @@ void TupCanvas::clear()
     k->frame->clear();
     k->undoList.clear();
 }
+
+/*
+bool TupCanvas::event(QEvent *event)
+{
+    switch (event->type()) {
+      case QEvent::TouchBegin:
+      {
+        QList<QTouchEvent::TouchPoint> touchPoints = static_cast<QTouchEvent *>(event)->touchPoints();
+        foreach (const QTouchEvent::TouchPoint &touchPoint, touchPoints) {
+                 // Initialize all the points
+        }
+      }
+      break;
+      case QEvent::TouchUpdate:
+      {
+        QList<QTouchEvent::TouchPoint> touchPoints = static_cast<QTouchEvent *>(event)->touchPoints();
+        foreach (const QTouchEvent::TouchPoint &touchPoint, touchPoints) {
+                 // Update all the points
+        }
+      }
+      break;
+      case QEvent::TouchEnd:
+      {
+        QList<QTouchEvent::TouchPoint> touchPoints = static_cast<QTouchEvent *>(event)->touchPoints();
+        foreach (const QTouchEvent::TouchPoint &touchPoint, touchPoints) {
+                 switch (touchPoint.state()) {
+                         case Qt::TouchPointStationary:
+                         // don't do anything if this touch point hasn't moved
+                         continue;
+                         default:
+                         {
+                           QRectF rect = touchPoint.rect();
+                           if (rect.isEmpty()) {
+                               qreal diameter = qreal(50) * touchPoint.pressure();
+                               rect.setSize(QSizeF(diameter, diameter));
+                           }
+
+                           QPainter painter(&image);
+                           painter.setPen(Qt::NoPen);
+                           painter.setBrush(myPenColors.at(touchPoint.id() % myPenColors.count()));
+                           painter.drawEllipse(rect);
+                           painter.end();
+
+                           modified = true;
+                           int rad = 2;
+                           update(rect.toRect().adjusted(-rad,-rad, +rad, +rad));
+                         }
+                         break;
+                 }
+        }
+        break;
+      }
+      default:
+         return QWidget::event(event);
+    }
+    return true;
+}
+*/
