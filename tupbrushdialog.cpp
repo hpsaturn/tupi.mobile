@@ -20,6 +20,7 @@ TupBrushDialog::TupBrushDialog(const QPen pen, double opacity, QWidget *parent) 
 {
     setModal(true);
     setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::ToolTip);
+    setStyleSheet("* { background-color: rgb(232,232,232) }");
  
     k->pen = pen;
     k->currentBrushIndex = -1;

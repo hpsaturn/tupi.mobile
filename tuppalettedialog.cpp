@@ -18,12 +18,13 @@ struct TupPaletteDialog::Private
 
 TupPaletteDialog::TupPaletteDialog(const QBrush brush, const QSize size, QWidget *parent) : QDialog(parent), k(new Private)
 {
+    setModal(true);
+    setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::ToolTip);
+    setStyleSheet("* { background-color: rgb(232,232,232) }");
+
     k->brush = brush;
     k->size = size;
     k->currentColorIndex = -1;
-
-    setModal(true);
-    setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::ToolTip);
 
     QBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(3, 3, 3, 3);
