@@ -28,9 +28,13 @@ class TupMainWindow : public QMainWindow
         void penWidthDialog();
         void colorDialog();
         void opacityDialog();
+        void brushDialog();
+
         void updatePenWidth(int width);
         void updatePenColor(const QColor color);
-        void updateOnionOpacity(double opacity);
+        void updatePenOpacity(double opacity);
+        void updatePenBrush(Qt::BrushStyle style);
+
         void undo();
         void redo();
         void newCanvas();

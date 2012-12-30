@@ -36,7 +36,7 @@ TupPenWidthDialog::TupPenWidthDialog(QPen pen, double opacity, QWidget *parent) 
     setLabelPanel();
     setButtonsPanel();
 
-    QPixmap pixmap(":images/close_big.png");
+    QPixmap pixmap(":images/close.png");
     QIcon buttonIcon(pixmap);
     QPushButton *closeButton = new QPushButton(this);
     closeButton->setIcon(buttonIcon);
@@ -69,7 +69,6 @@ void TupPenWidthDialog::setLabelPanel()
     k->sizeLabel->setFont(QFont("Arial", 24, QFont::Bold));
     k->sizeLabel->setAlignment(Qt::AlignHCenter);
 
-    // k->innerLayout->addWidget(k->sizeLabel, Qt::AlignHCenter);
     k->innerLayout->addWidget(k->sizeLabel);
 }
 

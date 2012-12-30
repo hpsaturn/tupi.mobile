@@ -9,11 +9,6 @@
 
 class QGraphicsItem;
 
-/**
- * @author David Cuadrado
- * 
-*/
-
 class TupSerializer
 {
     public:

@@ -8,7 +8,7 @@ class TupPaletteDialog : public QDialog
     Q_OBJECT
 
     public:
-        TupPaletteDialog(const QColor color, const QSize size, QWidget *parent);
+        TupPaletteDialog(const QBrush brush, const QSize size, QWidget *parent);
         ~TupPaletteDialog();
 
     signals:

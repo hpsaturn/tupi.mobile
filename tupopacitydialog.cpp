@@ -34,7 +34,7 @@ TupOpacityDialog::TupOpacityDialog(QPen pen, double opacity, QWidget *parent) : 
     setLabelPanel();
     setButtonsPanel();
 
-    QPixmap pixmap(":images/close_big.png");
+    QPixmap pixmap(":images/close.png");
     QIcon buttonIcon(pixmap);
     QPushButton *closeButton = new QPushButton(this);
     closeButton->setIcon(buttonIcon);

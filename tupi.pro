@@ -4,7 +4,6 @@ RESOURCES = images.qrc
 HEADERS += tupmainwindow.h \
            tupcanvas.h \
            tupserializer.h \
-           tupworkmanager.h \
            tupnethandler.h \
            tuppathitem.h \
            tupsvg2qt.h \
@@ -14,12 +13,12 @@ HEADERS += tupmainwindow.h \
            tuppenpreviewcanvas.h \
            tuppenwidthdialog.h \
            tupopacitydialog.h \
+           tupbrushdialog.h \
            tupframe.h
 
 SOURCES += tupmainwindow.cpp \
            tupcanvas.cpp \
            tupserializer.cpp \
-           tupworkmanager.cpp \
            tupnethandler.cpp \
            tuppathitem.cpp \
            tupsvg2qt.cpp \
@@ -29,5 +28,6 @@ SOURCES += tupmainwindow.cpp \
            tuppenpreviewcanvas.cpp \
            tuppenwidthdialog.cpp \
            tupopacitydialog.cpp \
+           tupbrushdialog.cpp \
            tupframe.cpp \
            main.cpp

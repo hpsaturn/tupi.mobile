@@ -4,10 +4,6 @@
 #include <QGraphicsPathItem>
 #include <QDomElement>
 
-/**
- * @author David Cuadrado
-*/
-
 class TupPathItem : public QGraphicsPathItem
 {
     public:

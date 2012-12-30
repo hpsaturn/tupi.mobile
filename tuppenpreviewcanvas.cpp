@@ -5,6 +5,7 @@ struct TupPenPreviewCanvas::Private
     int width;
     double opacity;
     QColor color;
+    Qt::BrushStyle style;
 };
 
 TupPenPreviewCanvas::TupPenPreviewCanvas(QPen pen, double opacity, QWidget *parent) : QWidget(parent), k(new Private)
@@ -13,6 +14,7 @@ TupPenPreviewCanvas::TupPenPreviewCanvas(QPen pen, double opacity, QWidget *pare
     k->width = pen.width();
     k->color = pen.color();
     k->opacity = opacity;
+    k->style = pen.brush().style();
 }
 
 TupPenPreviewCanvas::~TupPenPreviewCanvas()
@@ -55,7 +57,7 @@ void TupPenPreviewCanvas::paintEvent(QPaintEvent *)
      painter.translate(width() / 2, height() / 2);
 
      QBrush brush;
-     brush = QBrush(k->color, Qt::SolidPattern);
+     brush = QBrush(k->color, k->style);
 
      QPen pen(Qt::NoPen);
      painter.setPen(pen);

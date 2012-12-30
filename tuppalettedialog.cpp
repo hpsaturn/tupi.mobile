@@ -11,13 +11,14 @@ struct TupPaletteDialog::Private
     QVBoxLayout *innerLayout;
     QList<TupColorWidget *> colors;
     int currentColorIndex;
+    QBrush brush;
     QColor color;
     QSize size;
 };
 
-TupPaletteDialog::TupPaletteDialog(const QColor color, const QSize size, QWidget *parent) : QDialog(parent), k(new Private)
+TupPaletteDialog::TupPaletteDialog(const QBrush brush, const QSize size, QWidget *parent) : QDialog(parent), k(new Private)
 {
-    k->color = color;
+    k->brush = brush;
     k->size = size;
     k->currentColorIndex = -1;
 
@@ -32,7 +33,7 @@ TupPaletteDialog::TupPaletteDialog(const QColor color, const QSize size, QWidget
 
     setColorsArray();
 
-    QPixmap pixmap(":images/close_big.png");
+    QPixmap pixmap(":images/close.png");
     QIcon buttonIcon(pixmap);
     QPushButton *closeButton = new QPushButton(this);
     closeButton->setIcon(buttonIcon);
@@ -71,7 +72,8 @@ void TupPaletteDialog::setColorsArray()
               int b = qrand() % (255 + 1);
 
               QColor color(r, g, b);
-              TupColorWidget *button = new TupColorWidget(index, color);
+              QBrush brush(color, k->brush.style());
+              TupColorWidget *button = new TupColorWidget(index, brush);
               connect(button, SIGNAL(clicked(int)), this, SLOT(updateMatrix(int)));
               index++;
               k->colors << button;

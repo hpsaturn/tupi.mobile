@@ -17,6 +17,7 @@ struct TupCanvas::Private
    QPointF oldPos;
    QPen pen;
    int size;
+   Qt::BrushStyle brushStyle;
    double opacity;
 
    bool pressed;
@@ -31,6 +32,7 @@ TupCanvas::TupCanvas(QGraphicsScene *scene, const QPen pen, double opacity, QWid
 
     k->scene = scene;
     k->pen = pen;
+    k->brushStyle = pen.brush().style();
     k->frame = new TupFrame();
     k->pressed = false;
     k->size = 8;
@@ -55,9 +57,9 @@ void TupCanvas::mousePressEvent(QMouseEvent *event)
     k->item = new TupPathItem();
     QColor color = k->pen.color();
     color.setAlpha(alphaValue(k->opacity));
-    k->pen.setColor(color);
+    QBrush brush(color, k->brushStyle);
+    k->pen.setBrush(brush);
     k->item->setPen(k->pen);
-    // k->item->setOpacity(k->opacity);
 
     k->scene->addItem(k->item);
 }
@@ -143,7 +145,6 @@ void TupCanvas::drawBackground(QPainter *painter, const QRectF &rect)
     painter->setPen(QPen(QColor(0, 0, 0, 80), 1));
     
     QRectF area = k->scene->sceneRect();
-
     painter->drawRect(area);
 
     painter->setRenderHint(QPainter::Antialiasing, hasAntialiasing);
@@ -155,14 +156,20 @@ void TupCanvas::updatePenSize(int width)
     k->pen.setWidth(width);
 }
 
-void TupCanvas::updateColor(const QColor color)
+void TupCanvas::updatePenColor(const QColor color)
 {
-    k->pen.setColor(color);
+    QBrush brush(color, k->brushStyle);
+    k->pen.setBrush(brush);
 }
 
 void TupCanvas::updatePenOpacity(double opacity)
 {
     k->opacity = opacity;
+}
+
+void TupCanvas::updatePenBrush(Qt::BrushStyle brushStyle)
+{
+    k->brushStyle = brushStyle;
 }
 
 void TupCanvas::undo()

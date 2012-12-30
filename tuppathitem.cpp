@@ -1,6 +1,5 @@
 #include "tuppathitem.h"
 #include "tupsvg2qt.h"
-// #include "tupgraphicalgorithm.h"
 #include "tupserializer.h"
 
 #include <QMimeData>

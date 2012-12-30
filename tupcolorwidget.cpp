@@ -33,6 +33,8 @@ void TupColorWidget::paintEvent(QPaintEvent *event)
         QRect border = rect();
         painter.setPen(QPen(QColor(200, 200, 200), 10, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
         painter.drawRect(border);
+        painter.setPen(QPen(QColor(190, 190, 190), 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+        painter.drawRect(border);
         painter.setPen(QPen(QColor(150, 150, 150), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
         painter.drawRect(border);
     }
