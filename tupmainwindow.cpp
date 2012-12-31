@@ -104,7 +104,7 @@ void TupMainWindow::setToolBar()
     connect(exit, SIGNAL(triggered()), this, SLOT(close()));
 
     QToolBar *toolbar = new QToolBar(); 
-    toolbar->setIconSize(QSize(48, 48));
+    toolbar->setIconSize(QSize(60, 60));
     toolbar->addAction(undo);
     toolbar->addAction(redo);
     toolbar->addAction(palette);
@@ -172,7 +172,7 @@ void TupMainWindow::opacityDialog()
 
 void TupMainWindow::brushDialog()
 {
-    TupBrushDialog *dialog = new TupBrushDialog(k->pen, k->opacity, this);
+    TupBrushDialog *dialog = new TupBrushDialog(k->pen, this);
     connect(dialog, SIGNAL(updatePenBrush(Qt::BrushStyle)), this, SLOT(updatePenBrush(Qt::BrushStyle)));
     dialog->showMaximized();
 }

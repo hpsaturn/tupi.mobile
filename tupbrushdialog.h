@@ -9,7 +9,7 @@ class TupBrushDialog : public QDialog
     Q_OBJECT
 
     public:
-        TupBrushDialog(const QPen pen, double opacity, QWidget *parent);
+        TupBrushDialog(const QPen pen, QWidget *parent);
         ~TupBrushDialog();
 
     signals:

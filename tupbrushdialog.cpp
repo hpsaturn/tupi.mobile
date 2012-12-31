@@ -16,7 +16,7 @@ struct TupBrushDialog::Private
     QSize size;
 };
 
-TupBrushDialog::TupBrushDialog(const QPen pen, double opacity, QWidget *parent) : QDialog(parent), k(new Private)
+TupBrushDialog::TupBrushDialog(const QPen pen, QWidget *parent) : QDialog(parent), k(new Private)
 {
     setModal(true);
     setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::ToolTip);

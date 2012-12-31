@@ -1,5 +1,7 @@
 #include "tupnethandler.h"
 
+#include <QMessageBox>
+
 struct TupNetHandler::Private
 {
     QTcpSocket *socket;
@@ -23,6 +25,9 @@ void TupNetHandler::sendPackage(const QDomDocument &doc)
     k->socket = new QTcpSocket;
     k->socket->connectToHost("tupitube.com", 8080, QIODevice::ReadWrite);
     connect(k->socket, SIGNAL(readyRead ()), this, SLOT(readFromServer()));
+    connect(k->socket, SIGNAL(error(QAbstractSocket::SocketError)),
+            this, SLOT(displayError(QAbstractSocket::SocketError)));
+   
     bool connected = k->socket->waitForConnected(1000);
 
     if (connected) {
@@ -30,6 +35,8 @@ void TupNetHandler::sendPackage(const QDomDocument &doc)
             QTextStream stream(k->socket);
             stream << data.toLocal8Bit().toBase64() << "%%" << endl;
         }
+    } else {
+        errorDialog();
     }
 }
 
@@ -55,3 +62,18 @@ void TupNetHandler::readFromServer()
 
     k->socket->disconnectFromHost();
 }
+
+void TupNetHandler::displayError(QAbstractSocket::SocketError error)
+{
+    Q_UNUSED(error);
+    errorDialog();
+}
+
+void TupNetHandler::errorDialog()
+{
+    QMessageBox msgBox(QMessageBox::Warning, tr("Fatal Error"),
+                       tr("Tupitube service is down! :( \nPlease, try it later."), 0);
+    msgBox.addButton(tr("Ok"), QMessageBox::AcceptRole);
+    msgBox.exec();
+}
+

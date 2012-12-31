@@ -18,8 +18,10 @@ class TupNetHandler : public QObject
 
     private slots:
         void readFromServer();
+        void displayError(QAbstractSocket::SocketError error);
 
     private:
+        void errorDialog();
         struct Private;
         Private *const k;
 };
