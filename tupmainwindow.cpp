@@ -5,10 +5,12 @@
 #include "tupopacitydialog.h"
 #include "tupbrushdialog.h"
 #include "tupnethandler.h"
+#include "tupurldialog.h"
 
 #include <QtGui>
 #include <QGraphicsScene>
 #include <QInputDialog>
+#include <QDesktopServices>
 
 struct TupMainWindow::Private
 {
@@ -139,14 +141,13 @@ void TupMainWindow::postIt()
     k->net->sendPackage(doc);
 }
 
-void TupMainWindow::showURLDialog(const QString &message)
+void TupMainWindow::showURLDialog(const QString &url)
 {
-    bool ok;
-    QString text = QInputDialog::getText(this, "Let's share!",
-                                         "Post it?", QLineEdit::Normal,
-                                         message, &ok);
-    if (ok && !text.isEmpty())
-        qDebug() << "Posting message in social networks..."; 
+    TupUrlDialog *dialog = new TupUrlDialog(url, this);
+    if (dialog->exec()) {  
+        qDebug() << "Posting message in social networks...";
+        QDesktopServices::openUrl(QUrl(url, QUrl::StrictMode));
+    }
 }
 
 void TupMainWindow::penWidthDialog()

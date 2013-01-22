@@ -24,7 +24,7 @@ class TupMainWindow : public QMainWindow
 
     private slots:
         void postIt();
-        void showURLDialog(const QString &message);
+        void showURLDialog(const QString &url);
         void penWidthDialog();
         void colorDialog();
         void opacityDialog();
