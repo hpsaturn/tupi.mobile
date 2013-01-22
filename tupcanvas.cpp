@@ -25,7 +25,6 @@ struct TupCanvas::Private
 
 TupCanvas::TupCanvas(QGraphicsScene *scene, const QPen pen, double opacity, QWidget *parent) : QGraphicsView(scene, parent), k(new Private)
 {
-    centerOn(k->scene->sceneRect().center());
     setInteractive(true);
     setMouseTracking(true);
     setScene(scene);
