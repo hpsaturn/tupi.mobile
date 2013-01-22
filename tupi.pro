@@ -14,7 +14,6 @@ HEADERS += tupmainwindow.h \
            tuppenwidthdialog.h \
            tupopacitydialog.h \
            tupbrushdialog.h \
-           tupurldialog.h \
            tupframe.h
 
 SOURCES += tupmainwindow.cpp \
@@ -30,6 +29,5 @@ SOURCES += tupmainwindow.cpp \
            tuppenwidthdialog.cpp \
            tupopacitydialog.cpp \
            tupbrushdialog.cpp \
-           tupurldialog.cpp \
            tupframe.cpp \
            main.cpp

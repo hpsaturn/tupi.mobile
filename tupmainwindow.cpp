@@ -5,7 +5,6 @@
 #include "tupopacitydialog.h"
 #include "tupbrushdialog.h"
 #include "tupnethandler.h"
-#include "tupurldialog.h"
 
 #include <QtGui>
 #include <QGraphicsScene>
@@ -143,11 +142,7 @@ void TupMainWindow::postIt()
 
 void TupMainWindow::showURLDialog(const QString &url)
 {
-    TupUrlDialog *dialog = new TupUrlDialog(url, this);
-    if (dialog->exec()) {  
-        qDebug() << "Posting message in social networks...";
-        QDesktopServices::openUrl(QUrl(url, QUrl::StrictMode));
-    }
+    QDesktopServices::openUrl(QUrl(url, QUrl::StrictMode));
 }
 
 void TupMainWindow::penWidthDialog()
