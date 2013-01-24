@@ -5,11 +5,63 @@
 #include "tupopacitydialog.h"
 #include "tupbrushdialog.h"
 #include "tupnethandler.h"
+#include "android_intents.h"
 
 #include <QtGui>
+#include <QMessageBox>
 #include <QGraphicsScene>
 #include <QInputDialog>
 #include <QDesktopServices>
+#include <stdlib.h>
+
+#if 0
+#include <jni.h>
+
+static JavaVM *m_javaVM = NULL;
+static JNIEnv *m_env = NULL;
+
+typedef union {
+    JNIEnv* nativeEnvironment;
+    void* venv;
+} UnionJNIEnvToVoid;
+
+Q_DECL_EXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* /*reserved*/)
+{
+    UnionJNIEnvToVoid uenv;
+    uenv.venv = NULL;
+
+    if( vm->AttachCurrentThread(&uenv.nativeEnvironment, NULL) != JNI_OK )
+    {
+        return JNI_ERR;
+    }
+    /*
+    if (vm->GetEnv(&uenv.venv, JNI_VERSION_1_4) != JNI_OK)
+    {
+        return -1;
+    }
+    */
+    m_env = uenv.nativeEnvironment;
+
+    m_javaVM = vm;
+    return JNI_VERSION_1_4;
+}
+
+
+
+int callIntent()
+{
+
+    jvalue args[2];
+    args[0].i = 1;
+    args[1].i = 2;
+
+    jclass cls = m_env->FindClass("org/kde/necessitas/origo/QtActivity/HelloWorld");
+  //  jclass javaClass = m_env->NewGlobalRef(cls);
+  //  jmethodID javaMethod = m_env->GetMethodID(javaClass, "Test", "(II)Z");
+
+  //  jbool result = m_env->CallBooleanMethod(myObject, javaMethod, args);
+}
+#endif
 
 struct TupMainWindow::Private
 {
@@ -142,7 +194,25 @@ void TupMainWindow::postIt()
 
 void TupMainWindow::showURLDialog(const QString &url)
 {
-    QDesktopServices::openUrl(QUrl(url, QUrl::StrictMode));
+    QMessageBox msgBox;
+
+    AndroidIntents ai;
+    ai.setUrl("http://www.youtube.com/watch?v=_Vj092UgKwQ");
+
+
+#if 0
+    if(m_javaVM && m_env)
+    {
+       // callIntent();
+        msgBox.setText("m_javaVM && m_env not NULL");
+        msgBox.exec();
+    }
+    else
+    {
+        msgBox.setText("m_javaVM && m_env == FALSE");
+        msgBox.exec();
+    }
+#endif
 }
 
 void TupMainWindow::penWidthDialog()
