@@ -5,23 +5,16 @@ import android.content.Intent;
 import android.util.Log;
  
 
-public class QAndroidIntent extends Activity {
-    Intent m_i;
+public class QAndroidIntent {
  
     public QAndroidIntent() {
-        m_i = new Intent(Intent.ACTION_SEND);
     }
  
-    boolean setUrl(String path)
+    boolean setUrl(String url)
     {
         try {
-             Log.d("TUPI",this.getClass().getCanonicalName());
-
-
-             m_i.setType("text/plain");
-             m_i.putExtra(Intent.EXTRA_SUBJECT, "Sharing URL");
-             m_i.putExtra(Intent.EXTRA_TEXT, path);
-             startActivity(Intent.createChooser(m_i, "Share URL"));
+             Log.d("TUPI class: ", this.getClass().getCanonicalName());
+             Log.d("TUPI url:   ", url);
 
         } catch (Exception e) {
             e.printStackTrace();
