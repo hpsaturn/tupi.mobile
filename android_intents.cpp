@@ -3,13 +3,9 @@
 
 
 static JavaVM* s_javaVM = 0;
-static jclass s_audioPlayerClassID = 0;
-static jmethodID s_audioPlayerConstructorMethodID=0;
-static jmethodID s_audioPlayerSetUrlMethodID=0;
-static jmethodID s_audioPlayerPlayMethodID=0;
-static jmethodID s_audioPlayerPauseMethodID=0;
-static jmethodID s_audioPlayerStopMethodID=0;
-static jmethodID s_audioPlayerReleaseMethodID=0;
+static jclass s_androidIntentClassID = 0;
+static jmethodID s_androidIntentConstructorMethodID=0;
+static jmethodID s_androidIntentSetUrlMethodID=0;
 
 AndroidIntents::AndroidIntents()
 {
@@ -22,7 +18,7 @@ AndroidIntents::AndroidIntents()
     }
 
     // Create a new instance of QSimpleAudioPlayer
-    m_intentObject = env->NewGlobalRef(env->NewObject(s_audioPlayerClassID, s_audioPlayerConstructorMethodID));
+    m_intentObject = env->NewGlobalRef(env->NewObject(s_androidIntentClassID, s_androidIntentConstructorMethodID));
     if (!m_intentObject)
     {
         qCritical()<<"Can't create the player";
@@ -45,9 +41,6 @@ AndroidIntents::~AndroidIntents()
         return;
     }
 
-    if (!env->CallBooleanMethod(m_intentObject, s_audioPlayerReleaseMethodID))
-        qCritical()<<"Releasing media player object failed";
-
     s_javaVM->DetachCurrentThread();
 }
 
@@ -63,7 +56,7 @@ bool AndroidIntents::setUrl(const QString &url)
         return false;
     }
     jstring str = env->NewString(reinterpret_cast<const jchar*>(url.constData()), url.length());
-    jboolean res = env->CallBooleanMethod(m_intentObject, s_audioPlayerSetUrlMethodID, str);
+    jboolean res = env->CallBooleanMethod(m_intentObject, s_androidIntentSetUrlMethodID, str);
     env->DeleteLocalRef(str);
     s_javaVM->DetachCurrentThread();
     return res;
@@ -98,33 +91,24 @@ JNIEXPORT jint JNI_OnLoad(JavaVM* vm, void* /*reserved*/)
         return -1;
     }
     // keep a global reference to it
-    s_audioPlayerClassID = (jclass)env->NewGlobalRef(clazz);
+    s_androidIntentClassID = (jclass)env->NewGlobalRef(clazz);
 
     // search for its contructor
-    s_audioPlayerConstructorMethodID = env->GetMethodID(s_audioPlayerClassID, "<init>", "()V");
-    if (!s_audioPlayerConstructorMethodID)
+    s_androidIntentConstructorMethodID = env->GetMethodID(s_androidIntentClassID, "<init>", "()V");
+    if (!s_androidIntentConstructorMethodID)
     {
         qCritical()<<"Can't find QSimpleAudioPlayer class contructor";
         return -1;
     }
 
     // search for setUrl method
-    s_audioPlayerSetUrlMethodID = env->GetMethodID(s_audioPlayerClassID, "setUrl", "(Ljava/lang/String;)Z");
-    if (!s_audioPlayerSetUrlMethodID)
+    s_androidIntentSetUrlMethodID = env->GetMethodID(s_androidIntentClassID, "setUrl", "(Ljava/lang/String;)Z");
+    if (!s_androidIntentSetUrlMethodID)
     {
         qCritical()<<"Can't find setUrl method";
         return -1;
     }
 
-    // search for release method
-    s_audioPlayerReleaseMethodID = env->GetMethodID(s_audioPlayerClassID, "release", "()Z");
-    if (!s_audioPlayerReleaseMethodID)
-    {
-        qCritical()<<"Can't find release method";
-        return -1;
-    }
 
-
-    qDebug()<<"Yahooo !";
     return JNI_VERSION_1_6;
 }
