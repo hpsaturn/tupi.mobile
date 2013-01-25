@@ -1,20 +1,23 @@
 package org.kde.necessitas.origo;
  
-import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
- 
+import android.net.Uri;
+
+import org.kde.necessitas.origo.QtActivity;
 
 public class QAndroidIntent {
  
     public QAndroidIntent() {
     }
  
-    boolean setUrl(String url)
+    boolean setUrl(String data)
     {
         try {
-             Log.d("TUPI class: ", this.getClass().getCanonicalName());
-             Log.d("TUPI url:   ", url);
+            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
+            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT,  data );
+            QtActivity.getQtActivityInstance().startActivity(Intent.createChooser(sharingIntent,"Share using"));
 
         } catch (Exception e) {
             e.printStackTrace();
