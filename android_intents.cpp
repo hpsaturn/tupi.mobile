@@ -1,6 +1,32 @@
+/***************************************************************************
+ *   Project TUPI: Open 2D Magic                                           *
+ *   Component: tupi.mobile                                                *
+ *   Project Contact: info@maefloresta.com                                 *
+ *   Project Website: http://www.maefloresta.com                           *
+ *                                                                         *
+ *   Developers:                                                           *
+ *   2012:                                                                 *
+ *    Gustavo Gonzalez / @xtingray                                         *
+ *    Andres Calderon / @andresfcalderon                                   *
+ *    Antonio Vanegas / @hpsaturn                                          *
+ *                                                                         *
+ *   License:                                                              *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 3 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ ***************************************************************************/
+
 #include "android_intents.h"
 #include <QDebug>
-
 
 static JavaVM* s_javaVM = 0;
 static jclass s_androidIntentClassID = 0;
@@ -11,16 +37,14 @@ AndroidIntents::AndroidIntents()
 {
     JNIEnv* env;
     // Qt is running in a different thread than Java UI, so you always Java VM *MUST* be attached to current thread
-    if (s_javaVM->AttachCurrentThread(&env, NULL)<0)
-    {
+    if (s_javaVM->AttachCurrentThread(&env, NULL)<0) {
         qCritical()<<"AttachCurrentThread failed";
         return;
     }
 
     // Create a new instance of QSimpleAudioPlayer
     m_intentObject = env->NewGlobalRef(env->NewObject(s_androidIntentClassID, s_androidIntentConstructorMethodID));
-    if (!m_intentObject)
-    {
+    if (!m_intentObject) {
         qCritical()<<"Can't create the player";
         return;
     }
@@ -35,8 +59,7 @@ AndroidIntents::~AndroidIntents()
         return;
 
     JNIEnv* env;
-    if (s_javaVM->AttachCurrentThread(&env, NULL)<0)
-    {
+    if (s_javaVM->AttachCurrentThread(&env, NULL) < 0) {
         qCritical()<<"AttachCurrentThread failed";
         return;
     }
@@ -50,23 +73,23 @@ bool AndroidIntents::setUrl(const QString &url)
         return false;
 
     JNIEnv* env;
-    if (s_javaVM->AttachCurrentThread(&env, NULL)<0)
-    {
+    if (s_javaVM->AttachCurrentThread(&env, NULL) < 0) {
         qCritical()<<"AttachCurrentThread failed";
         return false;
     }
+
     jstring str = env->NewString(reinterpret_cast<const jchar*>(url.constData()), url.length());
     jboolean res = env->CallBooleanMethod(m_intentObject, s_androidIntentSetUrlMethodID, str);
     env->DeleteLocalRef(str);
     s_javaVM->DetachCurrentThread();
+
     return res;
 }
-
 
 // our native method, it is called by the java code above
 static int addTwoNumbers(JNIEnv * /*env*/, jobject /*thiz*/,int a, int b)
 {
-    return a+b;
+    return a + b;
 }
 
 static JNINativeMethod methods[] = {
@@ -85,8 +108,7 @@ JNIEXPORT jint JNI_OnLoad(JavaVM* vm, void* /*reserved*/)
     s_javaVM = vm;
     // search for our class
     jclass clazz=env->FindClass("org/kde/necessitas/origo/QAndroidIntent");
-    if (!clazz)
-    {
+    if (!clazz) {
         qCritical()<<"Can't find QSimpleAudioPlayer class";
         return -1;
     }
@@ -95,20 +117,17 @@ JNIEXPORT jint JNI_OnLoad(JavaVM* vm, void* /*reserved*/)
 
     // search for its contructor
     s_androidIntentConstructorMethodID = env->GetMethodID(s_androidIntentClassID, "<init>", "()V");
-    if (!s_androidIntentConstructorMethodID)
-    {
+    if (!s_androidIntentConstructorMethodID) {
         qCritical()<<"Can't find QSimpleAudioPlayer class contructor";
         return -1;
     }
 
     // search for setUrl method
     s_androidIntentSetUrlMethodID = env->GetMethodID(s_androidIntentClassID, "setUrl", "(Ljava/lang/String;)Z");
-    if (!s_androidIntentSetUrlMethodID)
-    {
+    if (!s_androidIntentSetUrlMethodID) {
         qCritical()<<"Can't find setUrl method";
         return -1;
     }
-
 
     return JNI_VERSION_1_6;
 }

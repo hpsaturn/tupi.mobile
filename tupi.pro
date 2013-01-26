@@ -14,8 +14,7 @@ HEADERS += tupmainwindow.h \
            tuppenwidthdialog.h \
            tupopacitydialog.h \
            tupbrushdialog.h \
-           tupframe.h \
-    android_intents.h
+           tupframe.h
 
 SOURCES += tupmainwindow.cpp \
            tupcanvas.cpp \
@@ -36,7 +35,6 @@ SOURCES += tupmainwindow.cpp \
 android {
     SOURCES += android_intents.cpp
     HEADERS += android_intents.h
-}
 
 OTHER_FILES += \
     android/AndroidManifest.xml \
@@ -73,3 +71,4 @@ OTHER_FILES += \
     android/res/values-ro/strings.xml \
     android/version.xml \
     android/src/org/kde/necessitas/origo/QAndroidIntent.java
+}

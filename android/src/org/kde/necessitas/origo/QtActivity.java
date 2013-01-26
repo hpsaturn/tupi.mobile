@@ -100,11 +100,11 @@ public class QtActivity extends Activity
     private static final String QT_PROVIDER_KEY="qt.provider";
     private static final String MINIMUM_MINISTRO_API_KEY="minimum.ministro.api";
     private static final String MINIMUM_QT_VERSION_KEY="minimum.qt.version";
-//    private static final String REPOSITORIES="3rd.party.repositories"; // needs MINISTRO_API_LEVEL >=2 !!!
-                                                                       // Use this key to specify any 3rd party repositories urls
-                                                                       // Ministro will download these repositories into thier
-                                                                       // own folders, check http://community.kde.org/Necessitas/Ministro
-                                                                       // for more details.
+    // private static final String REPOSITORIES="3rd.party.repositories"; // needs MINISTRO_API_LEVEL >=2 !!!
+                                                                          // Use this key to specify any 3rd party repositories urls
+                                                                          // Ministro will download these repositories into thier
+                                                                          // own folders, check http://community.kde.org/Necessitas/Ministro
+                                                                          // for more details.
 
     private static final String APPLICATION_PARAMETERS=null; // use this variable to pass any parameters to your application,
                                                              // the parameters must not contain any white spaces
@@ -133,13 +133,10 @@ public class QtActivity extends Activity
     private void loadApplication(Bundle loaderParams)
     {
         QtActivity.QtActivityInstance = this;
-        try
-        {
+        try {
             final int errorCode = loaderParams.getInt(ERROR_CODE_KEY);
-            if (errorCode != 0)
-            {
-                if (errorCode == INCOMPATIBLE_MINISTRO_VERSION)
-                {
+            if (errorCode != 0) {
+                if (errorCode == INCOMPATIBLE_MINISTRO_VERSION) {
                     downloadUpgradeMinistro(loaderParams.getString(ERROR_MESSAGE_KEY));
                     return;
                 }
@@ -159,11 +156,11 @@ public class QtActivity extends Activity
 
             // add all bundled Qt libs to loader params
             ArrayList<String> libs = new ArrayList<String>();
-            if ( m_activityInfo.metaData.containsKey("android.app.bundled_libs_resource_id") )
+            if (m_activityInfo.metaData.containsKey("android.app.bundled_libs_resource_id"))
                 libs.addAll(Arrays.asList(getResources().getStringArray(m_activityInfo.metaData.getInt("android.app.bundled_libs_resource_id"))));
 
             String libName = null;
-            if ( m_activityInfo.metaData.containsKey("android.app.lib_name") ) {
+            if (m_activityInfo.metaData.containsKey("android.app.lib_name")) {
                 libName = m_activityInfo.metaData.getString("android.app.lib_name");
                 loaderParams.putString(MAIN_LIBRARY_KEY, libName); //main library contains main() function
             }
@@ -218,8 +215,7 @@ public class QtActivity extends Activity
         {
             m_service = IMinistro.Stub.asInterface(service);
             try {
-                if (m_service!=null)
-                {
+                if (m_service!=null) {
                     Bundle parameters= new Bundle();
                     parameters.putStringArray(REQUIRED_MODULES_KEY, m_qtLibs);
                     parameters.putString(APPLICATION_TITLE_KEY, (String)QtActivity.this.getTitle());
@@ -266,8 +262,7 @@ public class QtActivity extends Activity
         downloadDialog.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                try
-                {
+                try {
                     Uri uri = Uri.parse("market://search?q=pname:org.kde.necessitas.ministro");
                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                     startActivityForResult(intent, MINISTRO_INSTALL_REQUEST_CODE);
@@ -308,17 +303,14 @@ public class QtActivity extends Activity
 
     private void startApp(final boolean firstStart)
     {
-        try
-        {
+        try {
             ActivityInfo ai=getPackageManager().getActivityInfo(getComponentName(), PackageManager.GET_META_DATA);
-            if (ai.metaData.containsKey("android.app.qt_libs_resource_id"))
-            {
+            if (ai.metaData.containsKey("android.app.qt_libs_resource_id")) {
                 int resourceId = ai.metaData.getInt("android.app.qt_libs_resource_id");
                 m_qtLibs=getResources().getStringArray(resourceId);
             }
             if (getIntent().getExtras()!= null && getIntent().getExtras().containsKey("use_local_qt_libs")
-                    && getIntent().getExtras().getString("use_local_qt_libs").equals("true"))
-            {
+                    && getIntent().getExtras().getString("use_local_qt_libs").equals("true")) {
                 ArrayList<String> libraryList= new ArrayList<String>();
 
                 String localPrefix="/data/local/qt/";
@@ -326,13 +318,11 @@ public class QtActivity extends Activity
                     localPrefix=getIntent().getExtras().getString("libs_prefix");
 
                 if (m_qtLibs != null)
-                    for(int i=0;i<m_qtLibs.length;i++)
-                    {
+                    for(int i=0;i<m_qtLibs.length;i++) {
                         libraryList.add(localPrefix+"lib/lib"+m_qtLibs[i]+".so");
                     }
 
-                if (getIntent().getExtras().containsKey("load_local_libs"))
-                {
+                if (getIntent().getExtras().containsKey("load_local_libs")) {
                     String []extraLibs=getIntent().getExtras().getString("load_local_libs").split(":");
                     for (String lib:extraLibs)
                         if (lib.length()>0)
@@ -341,12 +331,10 @@ public class QtActivity extends Activity
 
                 String dexPaths = new String();
                 String pathSeparator = System.getProperty("path.separator", ":");
-                if (getIntent().getExtras().containsKey("load_local_jars"))
-                {
+                if (getIntent().getExtras().containsKey("load_local_jars")) {
                     String []jarFiles=getIntent().getExtras().getString("load_local_jars").split(":");
                     for (String jar:jarFiles)
-                        if (jar.length()>0)
-                        {
+                        if (jar.length()>0) {
                             if (dexPaths.length()>0)
                                 dexPaths+=pathSeparator;
                             dexPaths+=localPrefix+jar;
@@ -370,15 +358,12 @@ public class QtActivity extends Activity
                 if (!bindService(new Intent(org.kde.necessitas.ministro.IMinistro.class.getCanonicalName()), m_ministroConnection, Context.BIND_AUTO_CREATE))
                     throw new SecurityException("");
             } catch (Exception e) {
-                if (firstStart)
-                {
+                if (firstStart) {
                     String msg="This application requires Ministro service. Would you like to install it?";
                     if (m_activityInfo != null && m_activityInfo.metaData.containsKey("android.app.ministro_needed_msg"))
                         msg=m_activityInfo.metaData.getString("android.app.ministro_needed_msg");
                     downloadUpgradeMinistro(msg);
-                }
-                else
-                {
+                } else {
                     ministroNotFound();
                 }
             }
@@ -388,8 +373,6 @@ public class QtActivity extends Activity
             Log.e(QtApplication.QtTAG, "Can't create main activity", e);
         }
     }
-
-
 
     /////////////////////////// forward all notifications ////////////////////////////
     /////////////////////////// Super class calls ////////////////////////////////////

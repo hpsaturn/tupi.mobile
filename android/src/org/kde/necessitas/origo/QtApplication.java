@@ -124,20 +124,17 @@ public class QtApplication extends Application
             if (f.getDeclaringClass().getName().equals(QtApplication.class.getName()))
                 applicationFields.add(f);
 
-        for (Method delegateMethod:delegateMethods)
-        {
+        for (Method delegateMethod:delegateMethods) {
             try {
                 QtActivity.class.getDeclaredMethod(delegateMethod.getName(), delegateMethod.getParameterTypes());
                 if (QtApplication.m_delegateMethods.containsKey(delegateMethod.getName()))
                     QtApplication.m_delegateMethods.get(delegateMethod.getName()).add(delegateMethod);
-                else
-                {
+                else {
                     ArrayList<Method> delegateSet = new ArrayList<Method>();
                     delegateSet.add(delegateMethod);
                     QtApplication.m_delegateMethods.put(delegateMethod.getName(), delegateSet);
                 }
-                for(Field applicationField:applicationFields)
-                {
+                for (Field applicationField:applicationFields) {
                     if (applicationField.getName().equals(delegateMethod.getName()))
                     {
                         try {
@@ -147,9 +144,7 @@ public class QtApplication extends Application
                         }
                     }
                 }
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
             }
         }
     }
@@ -174,12 +169,10 @@ public class QtApplication extends Application
         if (m_delegateObject==null)
             return result;
         StackTraceElement[] elements=Thread.currentThread().getStackTrace();
-        if (-1 == stackDeep)
-        {
+        if (-1 == stackDeep) {
             String activityClassName=QtActivity.class.getCanonicalName();
             for(int it=0;it<elements.length;it++)
-                if (elements[it].getClassName().equals(activityClassName))
-                {
+                if (elements[it].getClassName().equals(activityClassName)) {
                     stackDeep=it;
                     break;
                 }
@@ -189,8 +182,7 @@ public class QtApplication extends Application
             return result;
 
         for (Method m:m_delegateMethods.get(methodName))
-            if (m.getParameterTypes().length == args.length)
-            {
+            if (m.getParameterTypes().length == args.length) {
                 result.methodReturns=invokeDelegateMethod(m, args);
                 result.invoked=true;
                 return result;
