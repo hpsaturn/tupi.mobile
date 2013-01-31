@@ -96,7 +96,7 @@ TupPaletteDialog::~TupPaletteDialog()
 
 void TupPaletteDialog::setColorsArray()
 {
-    /* SQA: Enhanced code under development
+    /* SQA: Enhanced code under development 
     int w = k->size.width();
     int h = k->size.height();
     int rows = w / 100;

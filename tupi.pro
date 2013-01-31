@@ -33,8 +33,8 @@ SOURCES += tupmainwindow.cpp \
            main.cpp
 
 android {
-    SOURCES += android_intents.cpp
-    HEADERS += android_intents.h
+    SOURCES += tupandroidintents.cpp
+    HEADERS += tupandroidintents.h
 
 OTHER_FILES += \
     android/AndroidManifest.xml \

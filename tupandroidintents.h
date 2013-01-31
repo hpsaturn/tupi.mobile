@@ -25,17 +25,17 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
 
-#ifndef ANDROID_INTENTS_H
-#define ANDROID_INTENTS_H
+#ifndef TUPANDROIDINTENTS_H
+#define TUPANDROIDINTENTS_H
 
 #include <jni.h>
 #include <QString>
 
-class AndroidIntents
+class TupAndroidIntents
 {
     public:
-        AndroidIntents();
-        ~AndroidIntents();
+        TupAndroidIntents();
+        ~TupAndroidIntents();
         bool setUrl(const QString &url);
 
     private:

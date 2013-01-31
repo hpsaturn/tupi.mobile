@@ -25,7 +25,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
 
-#include "android_intents.h"
+#include "tupandroidintents.h"
 #include <QDebug>
 
 static JavaVM* s_javaVM = 0;
@@ -33,7 +33,7 @@ static jclass s_androidIntentClassID = 0;
 static jmethodID s_androidIntentConstructorMethodID=0;
 static jmethodID s_androidIntentSetUrlMethodID=0;
 
-AndroidIntents::AndroidIntents()
+TupAndroidIntents::TupAndroidIntents()
 {
     JNIEnv* env;
     // Qt is running in a different thread than Java UI, so you always Java VM *MUST* be attached to current thread
@@ -53,7 +53,7 @@ AndroidIntents::AndroidIntents()
     s_javaVM->DetachCurrentThread();
 }
 
-AndroidIntents::~AndroidIntents()
+TupAndroidIntents::~TupAndroidIntents()
 {
     if (!m_intentObject)
         return;
@@ -67,7 +67,7 @@ AndroidIntents::~AndroidIntents()
     s_javaVM->DetachCurrentThread();
 }
 
-bool AndroidIntents::setUrl(const QString &url)
+bool TupAndroidIntents::setUrl(const QString &url)
 {
     if (!m_intentObject)
         return false;

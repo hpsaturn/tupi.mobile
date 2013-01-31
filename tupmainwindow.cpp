@@ -186,12 +186,12 @@ void TupMainWindow::postIt()
 void TupMainWindow::showURLDialog(const QString &url)
 {
 #ifdef Q_OS_ANDROID
-    AndroidIntents ai;
-    ai.setUrl(url);
+    AndroidIntents intent;
+    intent.setUrl(url);
 #endif
 
 #ifndef Q_OS_ANDROID
-    Q_UNUSED(url);
+    QDesktopServices::openUrl(url);
 #endif
 }
 
