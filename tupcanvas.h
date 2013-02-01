@@ -68,6 +68,10 @@ class TupCanvas : public QGraphicsView
         void mouseMoveEvent(QMouseEvent *event);
         void mouseReleaseEvent(QMouseEvent *event);
         // bool event(QEvent *event);
+#ifndef Q_OS_ANDROID
+        virtual void enterEvent(QEvent *event);
+        virtual void leaveEvent(QEvent *event);
+#endif
 
     private:
         void smoothPath(QPainterPath &path, double smoothness, int from = 0, int to = -1);

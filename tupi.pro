@@ -18,6 +18,7 @@ HEADERS += tupmainwindow.h \
            tupopacitydialog.h \
            tupbrushdialog.h \
            tupframe.h \
+           tupmetadatadialog.h \
            tupdialog.h
 
 SOURCES += tupmainwindow.cpp \
@@ -35,6 +36,7 @@ SOURCES += tupmainwindow.cpp \
            tupbrushdialog.cpp \
            tupframe.cpp \
            tupdialog.cpp \
+           tupmetadatadialog.cpp \
            main.cpp
 
 android {

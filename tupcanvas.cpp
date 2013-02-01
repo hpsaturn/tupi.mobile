@@ -243,6 +243,22 @@ bool TupCanvas::isEmpty()
     return true;
 }
 
+#ifndef Q_OS_ANDROID
+void TupCanvas::enterEvent(QEvent *event)
+{
+    Q_UNUSED(event);
+    QImage image0(":images/cursors/pencil.png");
+    QCursor cursor = QCursor(QPixmap::fromImage(image0), 0, 16);
+    setCursor(cursor);
+}
+
+void TupCanvas::leaveEvent(QEvent *event)
+{
+    Q_UNUSED(event);
+    setCursor(QCursor(Qt::ArrowCursor));
+}
+#endif
+
 /*
 bool TupCanvas::event(QEvent *event)
 {

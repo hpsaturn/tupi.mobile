@@ -43,9 +43,10 @@
 #include "tupbrushdialog.h"
 #include "tupnethandler.h"
 #include "tupdialog.h"
+#include "tupmetadatadialog.h"
 
 #ifdef Q_OS_ANDROID
-#include "android_intents.h"
+#include "tupandroidintents.h"
 #endif
 
 #include <QtGui>
@@ -53,6 +54,7 @@
 #include <QGraphicsScene>
 #include <QInputDialog>
 #include <QDesktopServices>
+#include <QDesktopWidget>
 #include <stdlib.h>
 #include <QDebug>
 
@@ -64,6 +66,9 @@ struct TupMainWindow::Private
    QPen pen;
    double opacity;
    QSize screen;
+   QString title;
+   QString topics;
+   QString description;
 };
 
 TupMainWindow::TupMainWindow() : QMainWindow(), k(new Private)
@@ -77,6 +82,9 @@ TupMainWindow::TupMainWindow() : QMainWindow(), k(new Private)
     k->scene = 0;
     k->canvas = 0;
     k->opacity = 1.0;
+    k->title = "";
+    k->topics = "";
+    k->description = "";
 
     setWindowFlags(Qt::FramelessWindowHint);
     setMouseTracking(true);
@@ -84,7 +92,7 @@ TupMainWindow::TupMainWindow() : QMainWindow(), k(new Private)
     setToolBar();
 
     k->net = new TupNetHandler();
-    connect(k->net, SIGNAL(postReady(const QString &)), this, SLOT(showURLDialog(const QString &)));
+    connect(k->net, SIGNAL(postReady(const QString &)), this, SLOT(shareURL(const QString &)));
 }
 
 TupMainWindow::~TupMainWindow()
@@ -136,6 +144,9 @@ void TupMainWindow::setToolBar()
     QImage image1(":images/undo.png");
     QAction *undo = new QAction(QIcon(QPixmap::fromImage(image1)), undoLabel, this);
     connect(undo, SIGNAL(triggered()), this, SLOT(undo()));
+#ifndef Q_OS_ANDROID
+    undo->setShortcut(QKeySequence(tr("Ctrl+Z")));
+#endif
 
 #ifndef Q_OS_ANDROID
     QString redoLabel = "Redo";
@@ -145,6 +156,9 @@ void TupMainWindow::setToolBar()
     QImage image2(":images/redo.png");
     QAction *redo = new QAction(QIcon(QPixmap::fromImage(image2)), redoLabel, this);
     connect(redo, SIGNAL(triggered()), this, SLOT(redo()));
+#ifndef Q_OS_ANDROID
+    redo->setShortcut(QKeySequence(tr("Ctrl+Y")));
+#endif
 
 #ifndef Q_OS_ANDROID
     QString colorLabel = "Palette Color";
@@ -183,21 +197,33 @@ void TupMainWindow::setToolBar()
     connect(brush, SIGNAL(triggered()), this, SLOT(brushDialog()));
 
 #ifndef Q_OS_ANDROID
+    QString titleLabel = "Set Title & Description";
+#else
+    QString titleLabel = "";
+#endif
+    QImage image7(":images/metadata.png");
+    QAction *metadata = new QAction(QIcon(QPixmap::fromImage(image7)), titleLabel, this);
+    connect(metadata, SIGNAL(triggered()), this, SLOT(setMetadata()));
+
+#ifndef Q_OS_ANDROID
     QString postLabel = "Post Image";
+    QImage image8(":images/post.png");
 #else
     QString postLabel = "";
+    QImage image8(":images/share.png");
 #endif
-    QImage image7(":images/post.png");
-    QAction *post = new QAction(QIcon(QPixmap::fromImage(image7)), postLabel, this);
+    QAction *post = new QAction(QIcon(QPixmap::fromImage(image8)), postLabel, this);
     connect(post, SIGNAL(triggered()), this, SLOT(postIt()));
 
 #ifndef Q_OS_ANDROID
-    QImage image8(":images/close.png");
-    QAction *exit = new QAction(QIcon(QPixmap::fromImage(image8)), tr("Exit"), this);
+    QImage image9(":images/close.png");
+    QAction *exit = new QAction(QIcon(QPixmap::fromImage(image9)), tr("Exit"), this);
     connect(exit, SIGNAL(triggered()), this, SLOT(close()));
 #endif
 
     QToolBar *toolbar = new QToolBar(); 
+    toolbar->setFloatable(true);
+
 #ifndef Q_OS_ANDROID
     toolbar->setIconSize(QSize(32, 32));
 #else
@@ -211,6 +237,7 @@ void TupMainWindow::setToolBar()
     toolbar->addAction(width);
     toolbar->addAction(opacity);
     toolbar->addAction(brush);
+    toolbar->addAction(metadata);
     toolbar->addAction(post);
 
 #ifndef Q_OS_ANDROID
@@ -218,6 +245,21 @@ void TupMainWindow::setToolBar()
 #endif
 
     addToolBar(Qt::BottomToolBarArea, toolbar);
+}
+
+void TupMainWindow::setMetadata()
+{
+    TupMetadataDialog *dialog = new TupMetadataDialog(k->title, k->topics, k->description, this);
+    dialog->show();
+    QDesktopWidget desktop;
+    dialog->move((int) (desktop.screenGeometry().width() - dialog->width())/2,
+                 (int) (desktop.screenGeometry().height() - dialog->height())/2);
+
+    if (dialog->exec() == QDialog::Accepted) {
+        k->title = dialog->imageTitle();
+        k->topics = dialog->imageTopics();
+        k->description = dialog->imageDescription();
+    }
 }
 
 void TupMainWindow::postIt()
@@ -236,6 +278,34 @@ void TupMainWindow::postIt()
         QDomElement root = doc.createElement("mobile");
         doc.appendChild(root);
 
+        if (k->title.length() > 0) {
+#ifdef TUP_DEBUG
+            qDebug() << "TupMainWindow::postIt() -> Title:" << k->title;
+#endif
+            QDomElement title = doc.createElement("title");
+            QDomText value = doc.createTextNode(k->title);
+            title.appendChild(value);
+            root.appendChild(title);
+        }
+        if (k->topics.length() > 0) {
+#ifdef TUP_DEBUG
+            qDebug() << "TupMainWindow::postIt() -> Topics:" << k->topics;
+#endif
+            QDomElement topics = doc.createElement("topics");
+            QDomText value = doc.createTextNode(k->topics);
+            topics.appendChild(value);
+            root.appendChild(topics);
+        }
+        if (k->description.length() > 0) {
+#ifdef TUP_DEBUG
+            qDebug() << "TupMainWindow::postIt() -> Description:" << k->description;
+#endif
+            QDomElement description = doc.createElement("description");
+            QDomText value = doc.createTextNode(k->description);
+            description.appendChild(value);
+            root.appendChild(description);
+        }
+
         QDomElement dimension = doc.createElement("dimension");
         QDomText size = doc.createTextNode(QString::number(w) + "," + QString::number(h));
         dimension.appendChild(size);
@@ -248,10 +318,10 @@ void TupMainWindow::postIt()
     }
 }
 
-void TupMainWindow::showURLDialog(const QString &url)
+void TupMainWindow::shareURL(const QString &url)
 {
 #ifdef Q_OS_ANDROID
-    AndroidIntents intent;
+    TupAndroidIntents intent;
     intent.setUrl(url);
 #else
     QDesktopServices::openUrl(url);
@@ -325,5 +395,6 @@ void TupMainWindow::redo()
 
 void TupMainWindow::newCanvas()
 {
-    k->canvas->clear();
+    if (!k->canvas->isEmpty())
+        k->canvas->clear();
 }
