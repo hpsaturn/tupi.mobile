@@ -55,17 +55,24 @@ void TupNetHandler::sendPackage(const QDomDocument &doc)
 {
     QString data = doc.toString();
 
-    qDebug() << "Tracing TupNetHandler::sendPackage()";
+#ifdef TUP_DEBUG
+    qDebug() << "TupNetHandler::sendPackage() - Package:";
     qDebug() << data;
+#endif
 
     k->socket = new QTcpSocket;
     k->socket->connectToHost("tupitube.com", 8080, QIODevice::ReadWrite);
     connect(k->socket, SIGNAL(readyRead ()), this, SLOT(readFromServer()));
     connect(k->socket, SIGNAL(error(QAbstractSocket::SocketError)),
             this, SLOT(displayError(QAbstractSocket::SocketError)));
-   
-    bool connected = k->socket->waitForConnected(1000);
 
+#ifndef Q_OS_ANDROID
+    int timer = 10000;
+#else
+    int timer = 1000;
+#endif
+   
+    bool connected = k->socket->waitForConnected(timer);
     if (connected) {
         if (k->socket->state() == QAbstractSocket::ConnectedState) {
             QTextStream stream(k->socket);

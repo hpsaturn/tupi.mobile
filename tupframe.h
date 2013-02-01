@@ -50,6 +50,7 @@ class TupFrame : public QObject
        void addItem(TupPathItem *item);
        TupPathItem * takeItem(int index);
        void clear();
+       int count();
        
     public:
        QDomElement toXml(QDomDocument &doc) const;

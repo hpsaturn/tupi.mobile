@@ -60,6 +60,7 @@ class TupCanvas : public QGraphicsView
         void undo();
         void redo();
         void clear();
+        bool isEmpty();
 
     protected:
         virtual void drawBackground(QPainter *painter, const QRectF &rect);

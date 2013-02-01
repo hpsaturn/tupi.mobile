@@ -42,6 +42,7 @@
 #include "tupopacitydialog.h"
 #include "tupbrushdialog.h"
 #include "tupnethandler.h"
+#include "tupdialog.h"
 
 #ifdef Q_OS_ANDROID
 #include "android_intents.h"
@@ -53,6 +54,7 @@
 #include <QInputDialog>
 #include <QDesktopServices>
 #include <stdlib.h>
+#include <QDebug>
 
 struct TupMainWindow::Private
 {
@@ -66,6 +68,12 @@ struct TupMainWindow::Private
 
 TupMainWindow::TupMainWindow() : QMainWindow(), k(new Private)
 {
+#ifndef Q_OS_ANDROID
+    setWindowTitle(tr("Tupi: Open 2D Magic"));
+    QImage image(":images/tupi.png");
+    setWindowIcon(QIcon(QPixmap::fromImage(image)));
+#endif
+
     k->scene = 0;
     k->canvas = 0;
     k->opacity = 1.0;
@@ -111,41 +119,83 @@ void TupMainWindow::setCanvas()
 
 void TupMainWindow::setToolBar()
 {
+#ifndef Q_OS_ANDROID
+    QString clearLabel = "Clear Canvas";
+#else
+    QString clearLabel = "";
+#endif
     QImage image0(":images/new.png");
-    QAction *clear = new QAction(QIcon(QPixmap::fromImage(image0)), "", this);
+    QAction *clear = new QAction(QIcon(QPixmap::fromImage(image0)), tr("%1").arg(clearLabel), this);
     connect(clear, SIGNAL(triggered()), this, SLOT(newCanvas()));
 
+#ifndef Q_OS_ANDROID
+    QString undoLabel = "Undo";
+#else
+    QString undoLabel = "";
+#endif
     QImage image1(":images/undo.png");
-    QAction *undo = new QAction(QIcon(QPixmap::fromImage(image1)), "", this);
+    QAction *undo = new QAction(QIcon(QPixmap::fromImage(image1)), undoLabel, this);
     connect(undo, SIGNAL(triggered()), this, SLOT(undo()));
 
+#ifndef Q_OS_ANDROID
+    QString redoLabel = "Redo";
+#else
+    QString redoLabel = "";
+#endif
     QImage image2(":images/redo.png");
-    QAction *redo = new QAction(QIcon(QPixmap::fromImage(image2)), "", this);
+    QAction *redo = new QAction(QIcon(QPixmap::fromImage(image2)), redoLabel, this);
     connect(redo, SIGNAL(triggered()), this, SLOT(redo()));
 
+#ifndef Q_OS_ANDROID
+    QString colorLabel = "Palette Color";
+#else
+    QString colorLabel = "";
+#endif
     QImage image3(":images/palette.png");
-    QAction *palette = new QAction(QIcon(QPixmap::fromImage(image3)), "", this);
+    QAction *palette = new QAction(QIcon(QPixmap::fromImage(image3)), colorLabel, this);
     connect(palette, SIGNAL(triggered()), this, SLOT(colorDialog()));
 
+#ifndef Q_OS_ANDROID
+    QString widthLabel = "Stroke Size";
+#else
+    QString widthLabel = "";
+#endif
     QImage image4(":images/width.png"); 
-    QAction *width = new QAction(QIcon(QPixmap::fromImage(image4)), "", this);
+    QAction *width = new QAction(QIcon(QPixmap::fromImage(image4)), widthLabel, this);
     connect(width, SIGNAL(triggered()), this, SLOT(penWidthDialog()));
 
+#ifndef Q_OS_ANDROID
+    QString opacityLabel = "Stroke Opacity";
+#else
+    QString opacityLabel = "";
+#endif
     QImage image5(":images/opacity.png");
-    QAction *opacity = new QAction(QIcon(QPixmap::fromImage(image5)), "", this);
+    QAction *opacity = new QAction(QIcon(QPixmap::fromImage(image5)), opacityLabel, this);
     connect(opacity, SIGNAL(triggered()), this, SLOT(opacityDialog()));
 
+#ifndef Q_OS_ANDROID
+    QString brushLabel = "Stroke Brush";
+#else
+    QString brushLabel = "";
+#endif
     QImage image6(":images/brush.png");
-    QAction *brush = new QAction(QIcon(QPixmap::fromImage(image6)), "", this);
+    QAction *brush = new QAction(QIcon(QPixmap::fromImage(image6)), brushLabel, this);
     connect(brush, SIGNAL(triggered()), this, SLOT(brushDialog()));
 
+#ifndef Q_OS_ANDROID
+    QString postLabel = "Post Image";
+#else
+    QString postLabel = "";
+#endif
     QImage image7(":images/post.png");
-    QAction *post = new QAction(QIcon(QPixmap::fromImage(image7)), "", this);
+    QAction *post = new QAction(QIcon(QPixmap::fromImage(image7)), postLabel, this);
     connect(post, SIGNAL(triggered()), this, SLOT(postIt()));
 
+#ifndef Q_OS_ANDROID
     QImage image8(":images/close.png");
-    QAction *exit = new QAction(QIcon(QPixmap::fromImage(image8)), "", this);
+    QAction *exit = new QAction(QIcon(QPixmap::fromImage(image8)), tr("Exit"), this);
     connect(exit, SIGNAL(triggered()), this, SLOT(close()));
+#endif
 
     QToolBar *toolbar = new QToolBar(); 
     toolbar->setIconSize(QSize(60, 60));
@@ -157,30 +207,40 @@ void TupMainWindow::setToolBar()
     toolbar->addAction(opacity);
     toolbar->addAction(brush);
     toolbar->addAction(post);
+
+#ifndef Q_OS_ANDROID
     toolbar->addAction(exit);
+#endif
 
     addToolBar(Qt::BottomToolBarArea, toolbar);
 }
 
 void TupMainWindow::postIt()
 {
-    int w = k->screen.width();
-    int h = k->screen.height();
-    TupFrame *frame = k->canvas->frame();
+    if (k->canvas->isEmpty()) {
+        TupDialog::self()->display(tr("Wow!"), tr("Canvas is empty. Please, draw something! ;)"), TupDialog::Error);
+#ifdef TUP_DEBUG
+        qDebug() << "TupMainWindow::postIt() -> Canvas is empty. Please, draw something! ;)";
+#endif
+    } else {
+        int w = k->screen.width();
+        int h = k->screen.height();
+        TupFrame *frame = k->canvas->frame();
 
-    QDomDocument doc;
-    QDomElement root = doc.createElement("mobile");
-    doc.appendChild(root);
+        QDomDocument doc;
+        QDomElement root = doc.createElement("mobile");
+        doc.appendChild(root);
 
-    QDomElement dimension = doc.createElement("dimension");
-    QDomText size = doc.createTextNode(QString::number(w) + "," + QString::number(h));
-    dimension.appendChild(size);
-    root.appendChild(dimension);
+        QDomElement dimension = doc.createElement("dimension");
+        QDomText size = doc.createTextNode(QString::number(w) + "," + QString::number(h));
+        dimension.appendChild(size);
+        root.appendChild(dimension);
 
-    QDomElement package = frame->toXml(doc);
-    root.appendChild(package);
+        QDomElement package = frame->toXml(doc);
+        root.appendChild(package);
 
-    k->net->sendPackage(doc);
+        k->net->sendPackage(doc);
+    }
 }
 
 void TupMainWindow::showURLDialog(const QString &url)
@@ -188,9 +248,7 @@ void TupMainWindow::showURLDialog(const QString &url)
 #ifdef Q_OS_ANDROID
     AndroidIntents intent;
     intent.setUrl(url);
-#endif
-
-#ifndef Q_OS_ANDROID
+#else
     QDesktopServices::openUrl(url);
 #endif
 }

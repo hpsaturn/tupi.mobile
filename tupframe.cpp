@@ -83,8 +83,10 @@ void TupFrame::addItem(TupPathItem *item)
     QTextStream text(&newDoc);
     text << xml;
 
-    qDebug() << "Object!";
+#ifdef TUP_DEBUG
+    qDebug() << "TupFrame::addItem() - Object:";
     qDebug() << newDoc;
+#endif
 }
 
 TupPathItem * TupFrame::takeItem(int index)
@@ -96,4 +98,9 @@ TupPathItem * TupFrame::takeItem(int index)
 void TupFrame::clear()
 {
     k->graphics.clear();
+}
+
+int TupFrame::count()
+{
+    return k->graphics.size();
 }

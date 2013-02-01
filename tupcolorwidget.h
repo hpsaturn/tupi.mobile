@@ -52,7 +52,9 @@ class TupColorWidget : public QWidget
         ~TupColorWidget();
         QSize sizeHint() const;
         QColor color();
-        void unselect();
+        void unselected();
+        void selected();
+        void setBrush(const QBrush &brush);
 
     protected:
         void paintEvent(QPaintEvent *painter);

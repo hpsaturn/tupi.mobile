@@ -235,6 +235,14 @@ void TupCanvas::clear()
     k->undoList.clear();
 }
 
+bool TupCanvas::isEmpty()
+{
+    if (k->frame->count() > 0)
+        return false;
+
+    return true;
+}
+
 /*
 bool TupCanvas::event(QEvent *event)
 {

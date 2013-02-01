@@ -35,74 +35,65 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
 
-#include "tupcolorwidget.h"
-#include <QPainter>
+#ifndef TUPDIALOG_H
+#define TUPDIALOG_H
 
-struct TupColorWidget::Private
+#include <QWidget>
+#include <QPixmap>
+#include <QPaintEvent>
+#include <QTimer>
+#include <QTextDocument>
+
+/*
+ * @author David Cuadrado
+*/
+
+class TupDialog : public QWidget
 {
-    QBrush brush;
-    int index;
-    bool selected;
+    Q_OBJECT
+
+    private:
+        TupDialog(QWidget *parent = 0);
+
+    public:
+        enum Level
+        {
+           None = -1,
+           Info,
+           Warning,
+           Error,
+           Fatal
+        };
+        ~TupDialog();
+	
+        void display(const QString &title, const QString & message, Level level = Info, int ms = -1);
+
+        static TupDialog *self();
+
+    private slots:
+        void animate();
+
+    protected:
+        void paintEvent(QPaintEvent *event);
+        void mousePressEvent(QMouseEvent *event);
+
+    private:
+        void drawPixmap(const QBrush &background, const QBrush &foreground);
+
+    private:
+        static TupDialog *s_osd;
+        QPixmap m_pixmap;
+        QTimer *m_timer;
+        QPalette m_palette; 
+
+        struct Animation
+        {
+          QTimer timer;
+          Level level;
+          bool on;
+        } *m_animator;
+
+        QTextDocument *m_document;
 };
 
-TupColorWidget::TupColorWidget(int index, const QBrush &brush) : k(new Private)
-{
-    k->index = index;
-    k->selected = false;
-    k->brush = brush;
-}
-
-TupColorWidget::~TupColorWidget()
-{
-}
-
-QSize TupColorWidget::sizeHint() const 
-{
-    return QSize(50, 50);
-}
-
-void TupColorWidget::paintEvent(QPaintEvent *event)
-{
-    Q_UNUSED(event);
-    QPainter painter(this);
-    painter.fillRect(rect(), k->brush);
-    if (k->selected) {
-        QRect border = rect();
-        painter.setPen(QPen(QColor(200, 200, 200), 10, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-        painter.drawRect(border);
-        painter.setPen(QPen(QColor(190, 190, 190), 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-        painter.drawRect(border);
-        painter.setPen(QPen(QColor(150, 150, 150), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-        painter.drawRect(border);
-    }
-}
-
-void TupColorWidget::mousePressEvent(QMouseEvent *event)
-{
-    Q_UNUSED(event);
-    emit clicked(k->index);
-    selected();
-}
-
-QColor TupColorWidget::color()
-{
-    return k->brush.color();
-}
-
-void TupColorWidget::unselected()
-{
-    k->selected = false;
-    update();
-}
-
-void TupColorWidget::selected()
-{
-    k->selected = true;
-    update();
-}
-
-void TupColorWidget::setBrush(const QBrush &brush) {
-    k->brush = brush;
-    update();
-}
-
+#endif

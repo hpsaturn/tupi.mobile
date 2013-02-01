@@ -116,7 +116,7 @@ void TupBrushDialog::updateSelection(int index)
     if (index != k->currentBrushIndex) {
         if (k->currentBrushIndex > 0) {
             TupColorWidget *button = (TupColorWidget *) k->brushes.at(k->currentBrushIndex - 1);
-            button->unselect();
+            button->unselected();
         }
         k->currentBrushIndex = index;
     }

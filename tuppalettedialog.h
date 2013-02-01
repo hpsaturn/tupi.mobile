@@ -45,6 +45,8 @@ class TupPaletteDialog : public QDialog
     Q_OBJECT
 
     public:
+        enum Color { Red = 0, Green, Blue, White };
+
         TupPaletteDialog(const QBrush brush, const QSize size, QWidget *parent);
         ~TupPaletteDialog();
 
@@ -52,11 +54,12 @@ class TupPaletteDialog : public QDialog
         void updateColor(const QColor color);
 
     private slots:
-        void updateMatrix(int index);
+        void updateSelection(int index);
+        void updateMatrix(int newColor);
         void closeDialog();
 
     private:
-        void setColorsArray();
+        void initColorsArray();
         struct Private;
         Private *const k;
 };

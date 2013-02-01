@@ -49,10 +49,14 @@ struct TupPaletteDialog::Private
 {
     QVBoxLayout *innerLayout;
     QList<TupColorWidget *> colors;
+    QList<TupColorWidget *> baseColors;
     int currentColorIndex;
+    int currentBaseColor;
     QBrush brush;
     QColor color;
     QSize size;
+    int rows;
+    int columns;
 };
 
 TupPaletteDialog::TupPaletteDialog(const QBrush brush, const QSize size, QWidget *parent) : QDialog(parent), k(new Private)
@@ -64,6 +68,10 @@ TupPaletteDialog::TupPaletteDialog(const QBrush brush, const QSize size, QWidget
     k->brush = brush;
     k->size = size;
     k->currentColorIndex = -1;
+    int w = k->size.width();
+    int h = k->size.height();
+    k->rows = w/100;
+    k->columns = h/50;
 
     QBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(3, 3, 3, 3);
@@ -71,7 +79,7 @@ TupPaletteDialog::TupPaletteDialog(const QBrush brush, const QSize size, QWidget
 
     k->innerLayout = new QVBoxLayout;
 
-    setColorsArray();
+    initColorsArray();
 
     QPixmap pixmap(":images/close.png");
     QIcon buttonIcon(pixmap);
@@ -81,11 +89,43 @@ TupPaletteDialog::TupPaletteDialog(const QBrush brush, const QSize size, QWidget
     closeButton->setDefault(true);
     connect(closeButton, SIGNAL(clicked()), this, SLOT(closeDialog()));
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
-    buttonBox->addButton(closeButton, QDialogButtonBox::ActionRole);
+    k->currentBaseColor = 0;
+    QColor redColor(255, 0, 0);
+    QBrush redBrush(redColor, k->brush.style());
+    TupColorWidget *red = new TupColorWidget(0, redBrush);
+    red->selected();
+    connect(red, SIGNAL(clicked(int)), this, SLOT(updateMatrix(int)));
+    k->baseColors << red;
+
+    QColor greenColor(0, 255, 0);
+    QBrush greenBrush(greenColor, k->brush.style());
+    TupColorWidget *green = new TupColorWidget(1, greenBrush);
+    connect(green, SIGNAL(clicked(int)), this, SLOT(updateMatrix(int)));
+    k->baseColors << green;
+
+    QColor blueColor(0, 0, 255);
+    QBrush blueBrush(blueColor, k->brush.style());
+    TupColorWidget *blue = new TupColorWidget(2, blueBrush);
+    connect(blue, SIGNAL(clicked(int)), this, SLOT(updateMatrix(int)));
+    k->baseColors << blue;
+
+    QColor whiteColor(255, 255, 255);
+    QBrush whiteBrush(whiteColor, k->brush.style());
+    TupColorWidget *white = new TupColorWidget(3, whiteBrush);
+    connect(white, SIGNAL(clicked(int)), this, SLOT(updateMatrix(int)));
+    k->baseColors << white;
+
+    QBoxLayout *down = new QHBoxLayout;
+    down->setContentsMargins(3, 3, 3, 3);
+    down->setSpacing(10);
+    down->addWidget(red);
+    down->addWidget(green);
+    down->addWidget(blue);
+    down->addWidget(white);
+    down->addWidget(closeButton);
 
     k->innerLayout->addSpacing(10);
-    k->innerLayout->addWidget(buttonBox);
+    k->innerLayout->addLayout(down);
 
     layout->addLayout(k->innerLayout);
 }
@@ -94,89 +134,45 @@ TupPaletteDialog::~TupPaletteDialog()
 {
 }
 
-void TupPaletteDialog::setColorsArray()
+void TupPaletteDialog::initColorsArray()
 {
-    /* SQA: Enhanced code under development 
-    int w = k->size.width();
-    int h = k->size.height();
-    int rows = w / 100;
-    int columns =  h / 50;
-    int deltaX = 255/rows;
-    int deltaY = 255/columns;
-
-    qDebug() << "rows: " << rows;
-    qDebug() << "columns: " << columns;
-    qDebug() << "deltaX: " << deltaX;
-    qDebug() << "deltaY: " << deltaY;
-
-    int r = 0;
+    int deltaX = 255/k->rows;
+    int deltaY = 255/k->columns;
+    int r = 255;
     int g = 0;
     int b = 0;
-    int deltaXY = 0;
     int index = 0;
-    for (int i=0; i<rows; i++) {
+
+    for (int i=0; i < k->rows; i++) {
          QBoxLayout *matrix = new QHBoxLayout;
          matrix->setSpacing(10);
-         for (int j=0; j<columns; j++) {
-              r = (i*deltaX);    
-              g = (j*deltaY); 
-              deltaXY += qrand() % (5 + 1);
-              b = deltaXY;
+         for (int j=0; j < k->columns; j++) {
+              g = (i*deltaY); 
+              b = (j*deltaX);
 
-              qDebug() << "[" << i << ", " << j << "] -> (" << r << ", " << g << ", " << b << ")";
-              if (r > 255)
-                  r = 255;
               if (g > 255)
                   g = 255;
               if (b > 255)
                   b = 255;
-              QColor color(r, g, b);
-              QBrush brush(color, k->brush.style());
+
+              QColor cellColor(r, g, b);
+              QBrush brush(cellColor, k->brush.style());
               TupColorWidget *button = new TupColorWidget(index, brush);
-              connect(button, SIGNAL(clicked(int)), this, SLOT(updateMatrix(int)));
+              connect(button, SIGNAL(clicked(int)), this, SLOT(updateSelection(int)));
               index++;
               k->colors << button;
               matrix->addWidget(button);
          }
-
-         k->innerLayout->addLayout(matrix);
-    }
-    */
-
-    int w = k->size.width();
-    int h = k->size.height();
-    int rows = w / 100;
-    int columns =  h / 50;
-
-    int index = 0;
-    for (int j=0; j<rows; j++) {
-         QBoxLayout *matrix = new QHBoxLayout;
-         matrix->setSpacing(10);
-
-         for (int i=0; i<columns; i++) {
-              int r = qrand() % (255 + 1);
-              int g = qrand() % (255 + 1);
-              int b = qrand() % (255 + 1);
-
-              QColor color(r, g, b);
-              QBrush brush(color, k->brush.style());
-              TupColorWidget *button = new TupColorWidget(index, brush);
-              connect(button, SIGNAL(clicked(int)), this, SLOT(updateMatrix(int)));
-              index++;
-              k->colors << button;
-              matrix->addWidget(button);
-         }
-
          k->innerLayout->addLayout(matrix);
     }
 }
 
-void TupPaletteDialog::updateMatrix(int index)
+void TupPaletteDialog::updateSelection(int index)
 {
     if (index != k->currentColorIndex) {
         if (k->currentColorIndex >= 0) {
             TupColorWidget *button = (TupColorWidget *) k->colors.at(k->currentColorIndex);
-            button->unselect();
+            button->unselected();
         }
         TupColorWidget *selection = (TupColorWidget *) k->colors.at(index);
         k->color = selection->color();
@@ -188,4 +184,59 @@ void TupPaletteDialog::closeDialog()
 {
     emit updateColor(k->color);
     close();
+}
+
+void TupPaletteDialog::updateMatrix(int newColor)
+{
+    if (newColor != k->currentBaseColor) {
+        k->baseColors.at(k->currentBaseColor)->unselected(); 
+        k->currentBaseColor = newColor;
+        int deltaX = 255 / k->rows;
+        int deltaY = 255 / k->columns;
+
+        int r = 0;
+        int g = 0;
+        int b = 0;
+        int index = 0;
+        TupPaletteDialog::Color color = TupPaletteDialog::Color(newColor);
+
+        for (int i=0; i < k->rows; i++) {
+             for (int j=0; j < k->columns; j++) {
+                  switch (color) {
+                          case TupPaletteDialog::Red :
+                               r = 255;
+                               g = (i*deltaY);
+                               b = (j*deltaX);
+                          break;
+                          case TupPaletteDialog::Green :
+                               r = (i*deltaX);
+                               g = 255;
+                               b = (j*deltaX);
+                          break;
+                          case TupPaletteDialog::Blue :
+                               r = (i*deltaX);
+                               g = (j*deltaY);
+                               b = 255;
+                          break;
+                          case TupPaletteDialog::White :
+                               if (j == k->columns - 1 && i == k->rows - 1) {
+                                   r = 255;
+                                   g = 255;
+                                   b = 255;
+                               } else {
+                                   r = (i*deltaX);
+                                   g = (i*deltaX);
+                                   b = (i*deltaX);
+                               }
+                          break;
+                  }
+
+                  QColor cellColor(r, g, b);
+                  QBrush brush(cellColor, k->brush.style());
+                  TupColorWidget *cell = k->colors.at(index);
+                  cell->setBrush(brush);
+                  index++;
+             } 
+        }
+    }
 }
