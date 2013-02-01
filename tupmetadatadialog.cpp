@@ -42,7 +42,7 @@ TupMetadataDialog::TupMetadataDialog(const QString &title, const QString &topics
 
     QLabel *topicLabel = new QLabel(tr("Topics"));
     if (topics.length() == 0)
-        k->topicEdit = new QLineEdit(tr("#tupitube #2d #fun"));
+        k->topicEdit = new QLineEdit(tr("#tupitube #2d #mobile"));
     else
         k->topicEdit = new QLineEdit(topics);
 
