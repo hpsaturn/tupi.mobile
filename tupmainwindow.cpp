@@ -198,7 +198,12 @@ void TupMainWindow::setToolBar()
 #endif
 
     QToolBar *toolbar = new QToolBar(); 
-    toolbar->setIconSize(QSize(60, 60));
+#ifndef Q_OS_ANDROID
+    toolbar->setIconSize(QSize(32, 32));
+#else
+    toolbar->setIconSize(QSize(64, 64));
+#endif
+
     toolbar->addAction(clear);
     toolbar->addAction(undo);
     toolbar->addAction(redo);
