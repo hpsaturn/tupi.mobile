@@ -56,21 +56,15 @@ TupAbout::TupAbout(QWidget *parent) : QDialog(parent), k(new Private)
     setStyleSheet("* { background-color: rgb(232,232,232) }");
 
     QBoxLayout *layout = new QHBoxLayout(this);
-    layout->setContentsMargins(5, 5, 5, 5);
-    layout->setSpacing(5);
+    layout->setContentsMargins(10, 10, 10, 10);
 
-    QVBoxLayout *innerLayout = new QVBoxLayout;
-    innerLayout->setContentsMargins(5, 5, 5, 5);
-    innerLayout->setSpacing(10);
+    QBoxLayout *innerLayout = new QVBoxLayout;
+    innerLayout->setSpacing(5);
 
     QImage image(":images/about.png");
     QLabel *icon = new QLabel("");
     icon->setAlignment(Qt::AlignHCenter);
     icon->setPixmap(QPixmap::fromImage(image)); 
-
-    QLabel *title = new QLabel("tupi.mobile 1.0");
-    title->setFont(QFont("Arial", 12, QFont::Bold));
-    title->setAlignment(Qt::AlignHCenter);
 
     QFile file(":resources/about.txt");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -86,7 +80,7 @@ TupAbout::TupAbout(QWidget *parent) : QDialog(parent), k(new Private)
     description->setText(line);
     description->setReadOnly(true);
 
-    QPixmap pixmap(":images/close.png");
+    QPixmap pixmap(":images/ok.png");
     QIcon buttonIcon(pixmap);
     QPushButton *closeButton = new QPushButton(this);
     closeButton->setIcon(buttonIcon);
@@ -94,13 +88,16 @@ TupAbout::TupAbout(QWidget *parent) : QDialog(parent), k(new Private)
     closeButton->setDefault(true);
     connect(closeButton, SIGNAL(clicked()), this, SLOT(close()));
 
+    QBoxLayout *closeLayout = new QHBoxLayout;
+    closeLayout->setContentsMargins(80, 0, 80, 0);
+    closeLayout->addWidget(closeButton);
+
     innerLayout->addWidget(icon);  
-    innerLayout->addWidget(title);    
     innerLayout->addWidget(description);
-    innerLayout->addWidget(closeButton);
+    innerLayout->addLayout(closeLayout);
 
     layout->addLayout(innerLayout);
-    setFixedSize(QSize(400, 360));
+    setFixedSize(QSize(420, 325));
 }
 
 TupAbout::~TupAbout()

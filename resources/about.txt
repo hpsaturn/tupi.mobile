@@ -3,5 +3,5 @@ This application is the mobile compound of <b>Tupitube</b>, a global collaborati
 <b>Mae Floresta</b>.
 </p>
 <p align='center'>
-<b>http://www.tupitube.com</b><br/>Bogot&aacute; - Colombia<br/>2013
+Bogot&aacute; - Colombia<br/>2013
 </p>
