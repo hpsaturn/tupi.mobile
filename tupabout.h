@@ -35,25 +35,18 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
 
-#ifndef TUPMETADATADIALOG_H
-#define TUPMETADATADIALOG_H
+#ifndef TUPABOUT_H
+#define TUPABOUT_H
 
 #include <QDialog>
 
-class TupMetadataDialog : public QDialog
+class TupAbout : public QDialog
 {
     Q_OBJECT
 
     public:
-        TupMetadataDialog(const QString &title, const QString &topics, const QString &description, QWidget *parent=0);
-        ~TupMetadataDialog();
-        QString imageTitle() const;
-        QString imageTopics() const;
-        QString imageDescription() const;
-
-    private slots:
-        void resetTitleColor(const QString &);
-        void resetTopicColor(const QString &);
+        TupAbout(QWidget *parent=0);
+        ~TupAbout();
 
     private:
         struct Private;

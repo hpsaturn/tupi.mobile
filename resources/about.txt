@@ -1,0 +1,7 @@
+<p align='justify'>
+This application is the mobile compound of <b>Tupitube</b>, a global collaboration platform focused on 2D graphics.<br/>This project is developed by the company
+<b>Mae Floresta</b>.
+</p>
+<p align='center'>
+<b>http://www.tupitube.com</b><br/>Bogot&aacute; - Colombia<br/>2013
+</p>

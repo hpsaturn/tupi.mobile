@@ -18,5 +18,7 @@
      <file>images/plus_sign_big.png</file>
      <file>images/plus_sign_small.png</file>
      <file>images/ok.png</file>
+     <file>images/about.png</file>
+     <file>resources/about.txt</file>
  </qresource>
  </RCC>

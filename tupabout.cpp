@@ -35,29 +35,74 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
 
-#ifndef TUPMETADATADIALOG_H
-#define TUPMETADATADIALOG_H
+#include "tupabout.h"
 
 #include <QDialog>
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QTextEdit>
+#include <QIcon>
+#include <QPushButton>
+#include <QFile>
 
-class TupMetadataDialog : public QDialog
+struct TupAbout::Private
 {
-    Q_OBJECT
-
-    public:
-        TupMetadataDialog(const QString &title, const QString &topics, const QString &description, QWidget *parent=0);
-        ~TupMetadataDialog();
-        QString imageTitle() const;
-        QString imageTopics() const;
-        QString imageDescription() const;
-
-    private slots:
-        void resetTitleColor(const QString &);
-        void resetTopicColor(const QString &);
-
-    private:
-        struct Private;
-        Private *const k;
 };
 
-#endif
+TupAbout::TupAbout(QWidget *parent) : QDialog(parent), k(new Private)
+{
+    setWindowFlags(Qt::FramelessWindowHint);
+    setModal(true);
+    setStyleSheet("* { background-color: rgb(232,232,232) }");
+
+    QBoxLayout *layout = new QHBoxLayout(this);
+    layout->setContentsMargins(5, 5, 5, 5);
+    layout->setSpacing(5);
+
+    QVBoxLayout *innerLayout = new QVBoxLayout;
+    innerLayout->setContentsMargins(5, 5, 5, 5);
+    innerLayout->setSpacing(10);
+
+    QImage image(":images/about.png");
+    QLabel *icon = new QLabel("");
+    icon->setAlignment(Qt::AlignHCenter);
+    icon->setPixmap(QPixmap::fromImage(image)); 
+
+    QLabel *title = new QLabel("tupi.mobile 1.0");
+    title->setFont(QFont("Arial", 12, QFont::Bold));
+    title->setAlignment(Qt::AlignHCenter);
+
+    QFile file(":resources/about.txt");
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return;
+
+    QString line = ""; 
+    while (!file.atEnd()) {
+           line += file.readLine();
+    }
+
+    QTextEdit *description = new QTextEdit;
+    description->setStyleSheet("* { background-color: rgb(255,255,255) }");
+    description->setText(line);
+    description->setReadOnly(true);
+
+    QPixmap pixmap(":images/close.png");
+    QIcon buttonIcon(pixmap);
+    QPushButton *closeButton = new QPushButton(this);
+    closeButton->setIcon(buttonIcon);
+    closeButton->setIconSize(pixmap.rect().size());
+    closeButton->setDefault(true);
+    connect(closeButton, SIGNAL(clicked()), this, SLOT(close()));
+
+    innerLayout->addWidget(icon);  
+    innerLayout->addWidget(title);    
+    innerLayout->addWidget(description);
+    innerLayout->addWidget(closeButton);
+
+    layout->addLayout(innerLayout);
+    setFixedSize(QSize(400, 360));
+}
+
+TupAbout::~TupAbout()
+{
+}

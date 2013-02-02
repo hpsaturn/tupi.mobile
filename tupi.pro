@@ -1,5 +1,5 @@
 QT += xml network
-RESOURCES = images.qrc
+RESOURCES = resources.qrc
 
 # Enables debugging option  
 DEFINES += TUP_DEBUG  
@@ -19,6 +19,7 @@ HEADERS += tupmainwindow.h \
            tupbrushdialog.h \
            tupframe.h \
            tupmetadatadialog.h \
+           tupabout.h \
            tupdialog.h
 
 SOURCES += tupmainwindow.cpp \
@@ -37,6 +38,7 @@ SOURCES += tupmainwindow.cpp \
            tupframe.cpp \
            tupdialog.cpp \
            tupmetadatadialog.cpp \
+           tupabout.cpp \
            main.cpp
 
 android {

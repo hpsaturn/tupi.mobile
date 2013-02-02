@@ -44,6 +44,7 @@
 #include "tupnethandler.h"
 #include "tupdialog.h"
 #include "tupmetadatadialog.h"
+#include "tupabout.h"
 
 #ifdef Q_OS_ANDROID
 #include "tupandroidintents.h"
@@ -216,8 +217,17 @@ void TupMainWindow::setToolBar()
     connect(post, SIGNAL(triggered()), this, SLOT(postIt()));
 
 #ifndef Q_OS_ANDROID
-    QImage image9(":images/close.png");
-    QAction *exit = new QAction(QIcon(QPixmap::fromImage(image9)), tr("Exit"), this);
+    QString aboutLabel = "About Tupi";
+#else
+    QString aboutLabel = "";
+#endif
+    QImage image9(":images/tupi.png");
+    QAction *about = new QAction(QIcon(QPixmap::fromImage(image9)), aboutLabel, this);
+    connect(about, SIGNAL(triggered()), this, SLOT(showAbout()));
+
+#ifndef Q_OS_ANDROID
+    QImage image10(":images/close.png");
+    QAction *exit = new QAction(QIcon(QPixmap::fromImage(image10)), tr("Exit"), this);
     connect(exit, SIGNAL(triggered()), this, SLOT(close()));
 #endif
 
@@ -239,6 +249,7 @@ void TupMainWindow::setToolBar()
     toolbar->addAction(brush);
     toolbar->addAction(metadata);
     toolbar->addAction(post);
+    toolbar->addAction(about);
 
 #ifndef Q_OS_ANDROID
     toolbar->addAction(exit);
@@ -397,4 +408,10 @@ void TupMainWindow::newCanvas()
 {
     if (!k->canvas->isEmpty())
         k->canvas->clear();
+}
+
+void TupMainWindow::showAbout()
+{
+    TupAbout *dialog = new TupAbout(this);
+    dialog->showMaximized();
 }

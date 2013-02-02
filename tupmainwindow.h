@@ -76,6 +76,7 @@ class TupMainWindow : public QMainWindow
         void undo();
         void redo();
         void newCanvas();
+        void showAbout();
 };
 
 #endif

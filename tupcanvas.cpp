@@ -41,6 +41,7 @@
 #include <QMouseEvent>
 #include <QDebug>
 #include <QGraphicsEllipseItem>
+#include <QStaticText>
 
 struct TupCanvas::Private
 {
