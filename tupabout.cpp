@@ -51,8 +51,8 @@ struct TupAbout::Private
 
 TupAbout::TupAbout(QWidget *parent) : QDialog(parent), k(new Private)
 {
-    setWindowFlags(Qt::FramelessWindowHint);
     setModal(true);
+    setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::ToolTip);
     setStyleSheet("* { background-color: rgb(232,232,232) }");
 
     QBoxLayout *layout = new QHBoxLayout(this);

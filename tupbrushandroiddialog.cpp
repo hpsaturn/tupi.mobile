@@ -116,6 +116,7 @@ void TupBrushAndroidDialog::setLabelPanel()
     QLabel *label = new QLabel("Brushes");
     label->setFont(QFont("Arial", 24, QFont::Bold));
     label->setAlignment(Qt::AlignHCenter);
+    label->setFixedHeight(50);
     k->innerLayout->addWidget(label);
 }
 
