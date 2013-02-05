@@ -121,8 +121,13 @@ void TupBrushAndroidDialog::setBrushOptions()
     int cellW = (w - 100)/columns;
     int cellH = (h - 100)/rows;
 
-    if (cellH > cellW)
-        cellH = cellW;
+    if (w > h) { 
+        if (cellH > cellW)
+            cellH = cellW;
+    } else {
+        if (cellW > cellH)
+            cellW = cellH;
+    }
 
 #ifdef TUP_DEBUG
     qDebug() << "TupBrushAndroidDialog::setBrushOptions() - width: " << w;
