@@ -118,8 +118,8 @@ void TupBrushAndroidDialog::setBrushOptions()
         columns = 2;
     }
 
-    int cellW = (w - 100)/columns;
-    int cellH = (h - 100)/rows;
+    int cellW = (w - 200)/columns;
+    int cellH = (h - 200)/rows;
 
     if (w > h) { 
         if (cellH > cellW)

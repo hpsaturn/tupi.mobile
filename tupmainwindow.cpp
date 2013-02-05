@@ -56,6 +56,7 @@
 #include <QMessageBox>
 #include <QGraphicsScene>
 #include <QInputDialog>
+#include <QColorDialog>
 #include <QDesktopServices>
 #include <QDesktopWidget>
 #include <stdlib.h>
@@ -354,9 +355,18 @@ void TupMainWindow::penStrokeSizeDialog()
 
 void TupMainWindow::colorDialog()
 {
+/*
+#ifdef Q_OS_ANDROID
     TupPaletteDialog *dialog = new TupPaletteDialog(k->pen.brush(), k->screen, this);
     connect(dialog, SIGNAL(updateColor(const QColor)), this, SLOT(updatePenColor(const QColor)));
     dialog->showMaximized();
+#else
+*/
+    QColor color = QColorDialog::getColor(k->pen.brush().color(), this);
+    updatePenColor(color);
+/*
+#endif
+*/
 }
 
 void TupMainWindow::opacityDialog()
