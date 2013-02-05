@@ -35,7 +35,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
 
-#include "tuppenwidthdialog.h"
+#include "tupstrokesizedialog.h"
 #include "tuppenpreviewcanvas.h"
 
 #include <QVBoxLayout>
@@ -45,7 +45,7 @@
 #include <QPushButton>
 #include <QDebug>
 
-struct TupPenWidthDialog::Private
+struct TupStrokeSizeDialog::Private
 {
     QVBoxLayout *innerLayout;
     TupPenPreviewCanvas *thickPreview;
@@ -55,7 +55,7 @@ struct TupPenWidthDialog::Private
     int currentSize;
 };
 
-TupPenWidthDialog::TupPenWidthDialog(QPen pen, double opacity, QWidget *parent) : QDialog(parent), k(new Private)
+TupStrokeSizeDialog::TupStrokeSizeDialog(QPen pen, double opacity, QWidget *parent) : QDialog(parent), k(new Private)
 {
     setModal(true);
     setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::ToolTip);
@@ -75,8 +75,8 @@ TupPenWidthDialog::TupPenWidthDialog(QPen pen, double opacity, QWidget *parent) 
 
     k->innerLayout = new QVBoxLayout;
 
-    setBrushCanvas();
     setLabelPanel();
+    setBrushCanvas();
     setButtonsPanel();
 
     QPixmap pixmap(":images/close.png");
@@ -99,29 +99,29 @@ TupPenWidthDialog::TupPenWidthDialog(QPen pen, double opacity, QWidget *parent) 
     layout->addLayout(k->innerLayout);
 }
 
-TupPenWidthDialog::~TupPenWidthDialog()
+TupStrokeSizeDialog::~TupStrokeSizeDialog()
 {
 }
 
-void TupPenWidthDialog::setBrushCanvas()
+void TupStrokeSizeDialog::setBrushCanvas()
 {
     k->thickPreview = new TupPenPreviewCanvas(k->pen, k->opacity, this);
     k->innerLayout->addWidget(k->thickPreview);
 }
 
-void TupPenWidthDialog::setLabelPanel()
+void TupStrokeSizeDialog::setLabelPanel()
 {
-    k->sizeLabel = new QLabel("Width: " + QString::number(k->currentSize));
+    k->sizeLabel = new QLabel("Size: " + QString::number(k->currentSize));
 #ifdef Q_OS_ANDROID
     k->sizeLabel->setFont(QFont("Arial", 24, QFont::Bold));
 #else
-    k->sizeLabel->setFont(QFont("Arial", 16, QFont::Bold));
+    k->sizeLabel->setFont(QFont("Arial", 16, QFont::Normal));
 #endif
     k->sizeLabel->setAlignment(Qt::AlignHCenter);
     k->innerLayout->addWidget(k->sizeLabel);
 }
 
-void TupPenWidthDialog::setButtonsPanel()
+void TupStrokeSizeDialog::setButtonsPanel()
 {
     QPixmap pixmap(":images/minus_sign_big.png");
     QIcon buttonIcon(pixmap);
@@ -172,27 +172,27 @@ void TupPenWidthDialog::setButtonsPanel()
     k->innerLayout->addLayout(layout);
 }
 
-void TupPenWidthDialog::fivePointsLess()
+void TupStrokeSizeDialog::fivePointsLess()
 {
     modifySize(-5);
 }
 
-void TupPenWidthDialog::onePointLess()
+void TupStrokeSizeDialog::onePointLess()
 {
     modifySize(-1);
 }
 
-void TupPenWidthDialog::onePointMore()
+void TupStrokeSizeDialog::onePointMore()
 {
     modifySize(1);
 }
 
-void TupPenWidthDialog::fivePointsMore()
+void TupStrokeSizeDialog::fivePointsMore()
 {
     modifySize(5);
 }
 
-void TupPenWidthDialog::modifySize(int value)
+void TupStrokeSizeDialog::modifySize(int value)
 {
     k->currentSize += value;
     if (k->currentSize > 100)
@@ -202,11 +202,11 @@ void TupPenWidthDialog::modifySize(int value)
         k->currentSize = 1;
 
 #ifdef TUP_DEBUG
-    qDebug() << "TupPenWidthDialog::modifySize() - Size: " << k->currentSize;
+    qDebug() << "TupStrokeSizeDialog::modifySize() - Size: " << k->currentSize;
 #endif
 
     k->thickPreview->render(k->currentSize);
-    k->sizeLabel->setText("Width: " + QString::number(k->currentSize));
+    k->sizeLabel->setText("Size: " + QString::number(k->currentSize));
 
     emit updatePen(k->currentSize);
 }

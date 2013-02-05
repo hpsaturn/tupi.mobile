@@ -35,18 +35,18 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
 
-#ifndef TUPPENWIDTHDIALOG_H
-#define TUPPENWIDTHDIALOG_H
+#ifndef TUPSTROKESIZEDIALOG_H
+#define TUPSTROKESIZEDIALOG_H
 
 #include <QDialog>
 
-class TupPenWidthDialog : public QDialog
+class TupStrokeSizeDialog : public QDialog
 {
     Q_OBJECT
 
     public:
-        TupPenWidthDialog(QPen pen, double opacity, QWidget *parent);
-        ~TupPenWidthDialog();
+        TupStrokeSizeDialog(QPen pen, double opacity, QWidget *parent);
+        ~TupStrokeSizeDialog();
 
     signals:
         void updatePen(int width);

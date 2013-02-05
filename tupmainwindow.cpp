@@ -38,7 +38,7 @@
 #include "tupmainwindow.h"
 #include "tupcanvas.h"
 #include "tuppalettedialog.h"
-#include "tuppenwidthdialog.h"
+#include "tupstrokesizedialog.h"
 #include "tupopacitydialog.h"
 #include "tupbrushdialog.h"
 #include "tupnethandler.h"
@@ -260,6 +260,7 @@ void TupMainWindow::setToolBar()
 
 void TupMainWindow::setMetadata()
 {
+#ifndef Q_OS_ANDROID
     TupMetadataDialog *dialog = new TupMetadataDialog(k->title, k->topics, k->description, this);
     dialog->show();
     QDesktopWidget desktop;
@@ -271,6 +272,9 @@ void TupMainWindow::setMetadata()
         k->topics = dialog->imageTopics();
         k->description = dialog->imageDescription();
     }
+#else
+    // SQA: Dialog for Android goes here!
+#endif
 }
 
 void TupMainWindow::postIt()
@@ -341,7 +345,7 @@ void TupMainWindow::shareURL(const QString &url)
 
 void TupMainWindow::penWidthDialog()
 {
-    TupPenWidthDialog *dialog = new TupPenWidthDialog(k->pen, k->opacity, this);
+    TupStrokeSizeDialog *dialog = new TupStrokeSizeDialog(k->pen, k->opacity, this);
     connect(dialog, SIGNAL(updatePen(int)), this, SLOT(updatePenWidth(int)));
     dialog->showMaximized();
 }

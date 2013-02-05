@@ -74,8 +74,8 @@ TupOpacityDialog::TupOpacityDialog(QPen pen, double opacity, QWidget *parent) : 
 
     k->innerLayout = new QVBoxLayout;
 
-    setOpacityCanvas();
     setLabelPanel();
+    setOpacityCanvas();
     setButtonsPanel();
 
     QPixmap pixmap(":images/close.png");
@@ -121,7 +121,7 @@ void TupOpacityDialog::setLabelPanel()
 #ifdef Q_OS_ANDROID
     k->sizeLabel->setFont(QFont("Arial", 24, QFont::Bold));
 #else
-    k->sizeLabel->setFont(QFont("Arial", 16, QFont::Bold));
+    k->sizeLabel->setFont(QFont("Arial", 16, QFont::Normal));
 #endif
     k->sizeLabel->setAlignment(Qt::AlignHCenter);
     k->innerLayout->addWidget(k->sizeLabel);

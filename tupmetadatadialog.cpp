@@ -56,14 +56,8 @@ struct TupMetadataDialog::Private
 TupMetadataDialog::TupMetadataDialog(const QString &title, const QString &topics, const QString &description, QWidget *parent) : QDialog(parent), k(new Private)
 {
     setModal(true);
-#ifndef Q_OS_ANDROID
     setWindowTitle(tr("Image Properties"));
     setWindowIcon(QIcon(QPixmap(":images/metadata.png")));
-#else
-    setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::ToolTip);
-    setStyleSheet("* { background-color: rgb(232,232,232) }");
-#endif
-
     QLocale utf(QLocale::AnyLanguage, QLocale::AnyCountry);
 
     QLabel *titleLabel = new QLabel(tr("Title"));
@@ -73,9 +67,7 @@ TupMetadataDialog::TupMetadataDialog(const QString &title, const QString &topics
         k->titleEdit = new QLineEdit(title);
     k->titleEdit->setLocale(utf);
 
-#ifndef Q_OS_ANDROID
     connect(k->titleEdit, SIGNAL(textChanged(const QString &)), this, SLOT(resetTitleColor(const QString &)));
-#endif
     titleLabel->setBuddy(k->titleEdit);
 
     QLabel *topicLabel = new QLabel(tr("Topics"));
@@ -85,9 +77,7 @@ TupMetadataDialog::TupMetadataDialog(const QString &title, const QString &topics
         k->topicEdit = new QLineEdit(topics);
 
     k->topicEdit->setLocale(utf);
-#ifndef Q_OS_ANDROID
     connect(k->topicEdit, SIGNAL(textChanged(const QString &)), this, SLOT(resetTopicColor(const QString &)));
-#endif
     topicLabel->setBuddy(k->topicEdit);
 
     QLabel *descLabel = new QLabel(tr("Description"));
@@ -136,7 +126,6 @@ TupMetadataDialog::~TupMetadataDialog()
 {
 }
 
-#ifndef Q_OS_ANDROID
 void TupMetadataDialog::resetTitleColor(const QString &)
 {
     QPalette palette = k->titleEdit->palette();
@@ -158,20 +147,19 @@ void TupMetadataDialog::resetTopicColor(const QString &)
 
     k->topicEdit->setPalette(palette);
 }
-#endif
 
 QString TupMetadataDialog::imageTitle() const
 {
-     return QString::fromUtf8(k->titleEdit->text().toUtf8());
+    return QString::fromUtf8(k->titleEdit->text().toUtf8());
 }
 
 QString TupMetadataDialog::imageTopics() const
 {
-     return QString::fromUtf8(k->topicEdit->text().toUtf8());
+    return QString::fromUtf8(k->topicEdit->text().toUtf8());
 }
 
 QString TupMetadataDialog::imageDescription() const
 {
-     return QString::fromUtf8(k->descText->toPlainText().toUtf8());
+    return QString::fromUtf8(k->descText->toPlainText().toUtf8());
 }
 

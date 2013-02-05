@@ -39,6 +39,7 @@
 #include "tupcolorwidget.h"
 
 #include <QBoxLayout>
+#include <QLabel>
 #include <QPixmap>
 #include <QPushButton>
 #include <QDialogButtonBox>
@@ -72,26 +73,8 @@ TupBrushDialog::TupBrushDialog(const QPen pen, QWidget *parent) : QDialog(parent
 
     k->innerLayout = new QVBoxLayout;
 
+    setLabelPanel();
     setBrushOptions();
-
-    QPixmap pixmap(":images/close.png");
-    QIcon buttonIcon(pixmap);
-    QPushButton *closeButton = new QPushButton(this);
-    closeButton->setIcon(buttonIcon);
-#ifdef Q_OS_ANDROID
-    closeButton->setIconSize(pixmap.rect().size());
-#else
-    closeButton->setToolTip(tr("Close"));
-#endif
-    closeButton->setDefault(true);
-    connect(closeButton, SIGNAL(clicked()), this, SLOT(closeDialog()));
-
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
-    buttonBox->addButton(closeButton, QDialogButtonBox::ActionRole);
-
-    k->innerLayout->addSpacing(10);
-    k->innerLayout->addWidget(buttonBox);
-
     layout->addLayout(k->innerLayout);
 }
 
@@ -99,20 +82,51 @@ TupBrushDialog::~TupBrushDialog()
 {
 }
 
+void TupBrushDialog::setLabelPanel()
+{
+    QLabel *label = new QLabel("Brushes");
+#ifdef Q_OS_ANDROID
+    label->setFont(QFont("Arial", 24, QFont::Bold));
+#else
+    label->setFont(QFont("Arial", 16, QFont::Normal));
+#endif
+    label->setAlignment(Qt::AlignHCenter);
+    k->innerLayout->addWidget(label);
+}
+
 void TupBrushDialog::setBrushOptions()
 {
     int index = 1;
-    for (int j=0; j<2; j++) {
+    for (int j=0; j<4; j++) {
          QBoxLayout *matrix = new QHBoxLayout;
          matrix->setSpacing(10);
 
-         for (int i=0; i<7; i++) {
-              QBrush brush(k->pen.color(), Qt::BrushStyle(index));
-              TupColorWidget *button = new TupColorWidget(index, brush, QSize(50, 50));
-              connect(button, SIGNAL(clicked(int)), this, SLOT(updateSelection(int)));
-              index++;
-              k->brushes << button;
-              matrix->addWidget(button);
+         for (int i=0; i<4; i++) {
+              if (index < 15) {
+                  QBrush brush(k->pen.color(), Qt::BrushStyle(index));
+                  TupColorWidget *button = new TupColorWidget(index, brush, QSize(50, 50));
+                  connect(button, SIGNAL(clicked(int)), this, SLOT(updateSelection(int)));
+                  index++;
+                  k->brushes << button;
+                  matrix->addWidget(button);
+              } else {
+                  if (j == 3 && i == 3) {
+                      QPixmap pixmap(":images/close.png");
+                      QIcon buttonIcon(pixmap);
+                      QPushButton *closeButton = new QPushButton(this);
+                      closeButton->setIcon(buttonIcon);
+#ifdef Q_OS_ANDROID
+                      closeButton->setIconSize(pixmap.rect().size());
+#else
+                      closeButton->setToolTip(tr("Close"));
+#endif
+                      closeButton->setDefault(true);
+                      connect(closeButton, SIGNAL(clicked()), this, SLOT(closeDialog()));
+                      matrix->addWidget(closeButton);
+                  } else {
+                      matrix->addWidget(new QWidget());
+                  }
+              }
          }
 
          k->innerLayout->addLayout(matrix);

@@ -57,6 +57,7 @@ class TupBrushDialog : public QDialog
         void closeDialog();
 
     private:
+        void setLabelPanel();
         void setBrushOptions();
         struct Private;
         Private *const k;
