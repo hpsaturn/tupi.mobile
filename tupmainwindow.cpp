@@ -40,14 +40,16 @@
 #include "tuppalettedialog.h"
 #include "tupstrokesizedialog.h"
 #include "tupopacitydialog.h"
-#include "tupbrushdialog.h"
 #include "tupnethandler.h"
 #include "tupdialog.h"
 #include "tupmetadatadialog.h"
 #include "tupabout.h"
 
 #ifdef Q_OS_ANDROID
+#include "tupbrushandroiddialog.h"
 #include "tupandroidintents.h"
+#else
+#include "tupbrushdialog.h"
 #endif
 
 #include <QtGui>
@@ -177,7 +179,7 @@ void TupMainWindow::setToolBar()
 #endif
     QImage image4(":images/width.png"); 
     QAction *width = new QAction(QIcon(QPixmap::fromImage(image4)), widthLabel, this);
-    connect(width, SIGNAL(triggered()), this, SLOT(penWidthDialog()));
+    connect(width, SIGNAL(triggered()), this, SLOT(penStrokeSizeDialog()));
 
 #ifndef Q_OS_ANDROID
     QString opacityLabel = "Stroke Opacity";
@@ -343,10 +345,10 @@ void TupMainWindow::shareURL(const QString &url)
 #endif
 }
 
-void TupMainWindow::penWidthDialog()
+void TupMainWindow::penStrokeSizeDialog()
 {
     TupStrokeSizeDialog *dialog = new TupStrokeSizeDialog(k->pen, k->opacity, this);
-    connect(dialog, SIGNAL(updatePen(int)), this, SLOT(updatePenWidth(int)));
+    connect(dialog, SIGNAL(updatePen(int)), this, SLOT(updatePenStrokeSize(int)));
     dialog->showMaximized();
 }
 
@@ -366,15 +368,19 @@ void TupMainWindow::opacityDialog()
 
 void TupMainWindow::brushDialog()
 {
+#ifdef Q_OS_ANDROID
+    TupBrushAndroidDialog *dialog = new TupBrushAndroidDialog(k->pen, this);
+#else
     TupBrushDialog *dialog = new TupBrushDialog(k->pen, this);
+#endif
     connect(dialog, SIGNAL(updatePenBrush(Qt::BrushStyle)), this, SLOT(updatePenBrush(Qt::BrushStyle)));
     dialog->showMaximized();
 }
 
-void TupMainWindow::updatePenWidth(int width)
+void TupMainWindow::updatePenStrokeSize(int size)
 {
-    k->pen.setWidth(width);
-    k->canvas->updatePenSize(width);
+    k->pen.setWidth(size);
+    k->canvas->updatePenStrokeSize(size);
 }
 
 void TupMainWindow::updatePenColor(const QColor color)

@@ -16,7 +16,6 @@ HEADERS += tupmainwindow.h \
            tuppenpreviewcanvas.h \
            tupstrokesizedialog.h \
            tupopacitydialog.h \
-           tupbrushdialog.h \
            tupframe.h \
            tupabout.h \
            tupdialog.h
@@ -33,20 +32,23 @@ SOURCES += tupmainwindow.cpp \
            tuppenpreviewcanvas.cpp \
            tupstrokesizedialog.cpp \
            tupopacitydialog.cpp \
-           tupbrushdialog.cpp \
            tupframe.cpp \
            tupdialog.cpp \
            tupabout.cpp \
            main.cpp
 
 !android {
-HEADERS += tupmetadatadialog.h
-SOURCES += tupmetadatadialog.cpp
+HEADERS += tupmetadatadialog.h \
+           tupbrushdialog.h
+SOURCES += tupmetadatadialog.cpp \
+           tupbrushdialog.cpp
 }
 
 android {
-    SOURCES += tupandroidintents.cpp
-    HEADERS += tupandroidintents.h
+    SOURCES += tupbrushandroiddialog.cpp \
+               tupandroidintents.cpp
+    HEADERS += tupbrushandroiddialog.h \
+               tupandroidintents.h
 
 OTHER_FILES += \
     android/AndroidManifest.xml \

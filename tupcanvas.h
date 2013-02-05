@@ -52,7 +52,7 @@ class TupCanvas : public QGraphicsView
         TupCanvas(QGraphicsScene *scene, const QPen pen, double opacity, QWidget *parent);
         ~TupCanvas();
         TupFrame * frame();
-        void updatePenSize(int width);
+        void updatePenStrokeSize(int size);
         void updatePenColor(const QColor color);
         void updatePenOpacity(double opacity);
         void updatePenBrush(Qt::BrushStyle brushStyle);

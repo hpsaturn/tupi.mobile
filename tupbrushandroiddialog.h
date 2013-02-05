@@ -35,48 +35,32 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
 
-#ifndef TUPMAINWINDOW_H
-#define TUPMAINWINDOW_H
+#ifndef TUPBRUSHANDROIDDIALOG_H
+#define TUPBRUSHANDROIDDIALOG_H
 
-#include <QMainWindow>
+#include <QDialog>
+#include <QPen>
 
-class TupMainWindow : public QMainWindow
+class TupBrushAndroidDialog : public QDialog
 {
     Q_OBJECT
 
     public:
-        TupMainWindow();
-        ~TupMainWindow(); 
+        TupBrushAndroidDialog(const QPen pen, QWidget *parent);
+        ~TupBrushAndroidDialog();
 
-    protected:
-        void closeEvent(QCloseEvent *event);
-        void resizeEvent(QResizeEvent *event);
-
-    private:
-        void setToolBar();
-        void setCanvas();
-
-        struct Private;
-        Private *const k;
+    signals:
+        void updatePenBrush(Qt::BrushStyle brushStyle);
 
     private slots:
-        void postIt();
-        void setMetadata();
-        void shareURL(const QString &url);
-        void penStrokeSizeDialog();
-        void colorDialog();
-        void opacityDialog();
-        void brushDialog();
+        void updateSelection(int index);
+        void closeDialog();
 
-        void updatePenStrokeSize(int size);
-        void updatePenColor(const QColor color);
-        void updatePenOpacity(double opacity);
-        void updatePenBrush(Qt::BrushStyle style);
-
-        void undo();
-        void redo();
-        void newCanvas();
-        void showAbout();
+    private:
+        void setLabelPanel();
+        void setBrushOptions();
+        struct Private;
+        Private *const k;
 };
 
 #endif

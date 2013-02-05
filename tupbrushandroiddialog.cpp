@@ -35,7 +35,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
 
-#include "tupbrushdialog.h"
+#include "tupbrushandroiddialog.h"
 #include "tupcolorwidget.h"
 
 #include <QBoxLayout>
@@ -44,7 +44,7 @@
 #include <QPushButton>
 #include <QDialogButtonBox>
 
-struct TupBrushDialog::Private
+struct TupBrushAndroidDialog::Private
 {
     QVBoxLayout *innerLayout;
     QList<TupColorWidget *> brushes;
@@ -54,37 +54,54 @@ struct TupBrushDialog::Private
     QSize size;
 };
 
-TupBrushDialog::TupBrushDialog(const QPen pen, QWidget *parent) : QDialog(parent), k(new Private)
+TupBrushAndroidDialog::TupBrushAndroidDialog(const QPen pen, QWidget *parent) : QDialog(parent), k(new Private)
 {
     setModal(true);
     setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::ToolTip);
+    setStyleSheet("* { background-color: rgb(232,232,232) }");
+ 
     k->pen = pen;
     k->currentBrushIndex = -1;
 
     QBoxLayout *layout = new QHBoxLayout(this);
-    layout->setContentsMargins(5, 5, 5, 5);
+    layout->setContentsMargins(3, 3, 3, 3);
     layout->setSpacing(10);
 
     k->innerLayout = new QVBoxLayout;
 
     setLabelPanel();
     setBrushOptions();
+
+    QPixmap pixmap(":images/close.png");
+    QIcon buttonIcon(pixmap);
+    QPushButton *closeButton = new QPushButton(this);
+    closeButton->setIcon(buttonIcon);
+    closeButton->setIconSize(pixmap.rect().size());
+    closeButton->setDefault(true);
+    connect(closeButton, SIGNAL(clicked()), this, SLOT(closeDialog()));
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
+    buttonBox->addButton(closeButton, QDialogButtonBox::ActionRole);
+
+    k->innerLayout->addSpacing(10);
+    k->innerLayout->addWidget(buttonBox);
+
     layout->addLayout(k->innerLayout);
 }
 
-TupBrushDialog::~TupBrushDialog()
+TupBrushAndroidDialog::~TupBrushAndroidDialog()
 {
 }
 
-void TupBrushDialog::setLabelPanel()
+void TupBrushAndroidDialog::setLabelPanel()
 {
     QLabel *label = new QLabel("Brushes");
-    label->setFont(QFont("Arial", 16, QFont::Normal));
+    label->setFont(QFont("Arial", 24, QFont::Bold));
     label->setAlignment(Qt::AlignHCenter);
     k->innerLayout->addWidget(label);
 }
 
-void TupBrushDialog::setBrushOptions()
+void TupBrushAndroidDialog::setBrushOptions()
 {
     int index = 1;
     for (int j=0; j<4; j++) {
@@ -94,24 +111,13 @@ void TupBrushDialog::setBrushOptions()
          for (int i=0; i<4; i++) {
               if (index < 15) {
                   QBrush brush(k->pen.color(), Qt::BrushStyle(index));
-                  TupColorWidget *button = new TupColorWidget(index, brush, QSize(50, 50));
+                  TupColorWidget *button = new TupColorWidget(index, brush, QSize(200, 200));
                   connect(button, SIGNAL(clicked(int)), this, SLOT(updateSelection(int)));
                   index++;
                   k->brushes << button;
                   matrix->addWidget(button);
               } else {
-                  if (j == 3 && i == 3) {
-                      QPixmap pixmap(":images/close.png");
-                      QIcon buttonIcon(pixmap);
-                      QPushButton *closeButton = new QPushButton(this);
-                      closeButton->setIcon(buttonIcon);
-                      closeButton->setToolTip(tr("Close"));
-                      closeButton->setDefault(true);
-                      connect(closeButton, SIGNAL(clicked()), this, SLOT(closeDialog()));
-                      matrix->addWidget(closeButton);
-                  } else {
-                      matrix->addWidget(new QWidget());
-                  }
+                  matrix->addWidget(new QWidget());
               }
          }
 
@@ -119,7 +125,7 @@ void TupBrushDialog::setBrushOptions()
     }
 }
 
-void TupBrushDialog::updateSelection(int index)
+void TupBrushAndroidDialog::updateSelection(int index)
 {
     if (index != k->currentBrushIndex) {
         if (k->currentBrushIndex > 0) {
@@ -130,7 +136,7 @@ void TupBrushDialog::updateSelection(int index)
     }
 }
 
-void TupBrushDialog::closeDialog()
+void TupBrushAndroidDialog::closeDialog()
 {
     if (k->currentBrushIndex > 0) 
         emit updatePenBrush(Qt::BrushStyle(k->currentBrushIndex));

@@ -188,9 +188,9 @@ void TupCanvas::drawBackground(QPainter *painter, const QRectF &rect)
     painter->restore();
 }
 
-void TupCanvas::updatePenSize(int width)
+void TupCanvas::updatePenStrokeSize(int size)
 {
-    k->pen.setWidth(width);
+    k->pen.setWidth(size);
 }
 
 void TupCanvas::updatePenColor(const QColor color)
