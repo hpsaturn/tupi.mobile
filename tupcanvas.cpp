@@ -41,13 +41,15 @@
 #include <QMouseEvent>
 #include <QDebug>
 #include <QGraphicsEllipseItem>
-#include <QStaticText>
+#include <QGraphicsTextItem>
+#include <QTimer>
 
 struct TupCanvas::Private
 {
    QGraphicsScene *scene;
    TupFrame *frame;
    TupPathItem *item;
+   QGraphicsTextItem *message;
    QList<TupPathItem *> undoList;
 
    QPainterPath path;
@@ -242,6 +244,24 @@ bool TupCanvas::isEmpty()
         return false;
 
     return true;
+}
+
+void TupCanvas::notify(const QString &msg)
+{
+    k->message = new QGraphicsTextItem(msg);  
+    k->message->setFont(QFont("Helvetica", 16, QFont::Normal));
+    k->message->setDefaultTextColor(QColor(0, 100, 0));
+    QRectF rect = k->scene->sceneRect();
+    QPointF left = rect.bottomLeft();
+    k->message->setPos(QPointF(left.x(), left.y() - 30));
+    k->scene->addItem(k->message);
+
+    QTimer::singleShot(2000, this, SLOT(removeNotification()));
+}
+
+void TupCanvas::removeNotification()
+{
+    k->scene->removeItem(k->message);
 }
 
 #ifndef Q_OS_ANDROID

@@ -41,7 +41,7 @@
 #include "tupstrokesizedialog.h"
 #include "tupopacitydialog.h"
 #include "tupnethandler.h"
-#include "tupdialog.h"
+// #include "tupdialog.h"
 #include "tupmetadatadialog.h"
 #include "tupabout.h"
 
@@ -283,7 +283,7 @@ void TupMainWindow::setMetadata()
 void TupMainWindow::postIt()
 {
     if (k->canvas->isEmpty()) {
-        TupDialog::self()->display(tr("Wow!"), tr("Canvas is empty. Please, draw something! ;)"), TupDialog::Error);
+        k->canvas->notify("Wow! The canvas is empty. Please, draw something first! ;)");
 #ifdef TUP_DEBUG
         qDebug() << "TupMainWindow::postIt() -> Canvas is empty. Please, draw something! ;)";
 #endif

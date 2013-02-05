@@ -17,8 +17,7 @@ HEADERS += tupmainwindow.h \
            tupstrokesizedialog.h \
            tupopacitydialog.h \
            tupframe.h \
-           tupabout.h \
-           tupdialog.h
+           tupabout.h
 
 SOURCES += tupmainwindow.cpp \
            tupcanvas.cpp \
@@ -33,7 +32,6 @@ SOURCES += tupmainwindow.cpp \
            tupstrokesizedialog.cpp \
            tupopacitydialog.cpp \
            tupframe.cpp \
-           tupdialog.cpp \
            tupabout.cpp \
            main.cpp
 

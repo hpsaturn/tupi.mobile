@@ -100,9 +100,7 @@ TupAbout::TupAbout(QWidget *parent) : QDialog(parent), k(new Private)
 
     layout->addLayout(innerLayout);
 
-#ifdef Q_OS_ANDROID
-    setFixedSize(QSize(420, 400));
-#else
+#ifndef Q_OS_ANDROID
     setFixedSize(QSize(420, 295));
 #endif
 }

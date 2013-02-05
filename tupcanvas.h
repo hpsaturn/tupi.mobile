@@ -56,6 +56,7 @@ class TupCanvas : public QGraphicsView
         void updatePenColor(const QColor color);
         void updatePenOpacity(double opacity);
         void updatePenBrush(Qt::BrushStyle brushStyle);
+        void notify(const QString &msg);
 
         void undo();
         void redo();
@@ -72,6 +73,9 @@ class TupCanvas : public QGraphicsView
         virtual void enterEvent(QEvent *event);
         virtual void leaveEvent(QEvent *event);
 #endif
+
+    private slots:
+        void removeNotification();
 
     private:
         void smoothPath(QPainterPath &path, double smoothness, int from = 0, int to = -1);
