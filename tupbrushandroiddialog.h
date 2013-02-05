@@ -55,6 +55,8 @@ class TupBrushAndroidDialog : public QDialog
     private slots:
         void updateSelection(int index);
         void closeDialog();
+    protected:
+        void paintEvent ( QPaintEvent * event );
 
     private:
         void setLabelPanel();
