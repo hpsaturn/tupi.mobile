@@ -53,6 +53,7 @@ class TupMainWindow : public QMainWindow
         void resizeEvent(QResizeEvent *event);
 
     private:
+        void setBrushesGrid();
         void setToolBar();
         void setCanvas();
 

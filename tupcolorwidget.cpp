@@ -69,7 +69,11 @@ void TupColorWidget::paintEvent(QPaintEvent *event)
     painter.fillRect(rect(), k->brush);
     if (k->selected) {
         QRect border = rect();
+#ifdef Q_OS_ANDROID
+        painter.setPen(QPen(QColor(200, 200, 200), 20, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+#else
         painter.setPen(QPen(QColor(200, 200, 200), 10, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+#endif
         painter.drawRect(border);
         painter.setPen(QPen(QColor(190, 190, 190), 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
         painter.drawRect(border);

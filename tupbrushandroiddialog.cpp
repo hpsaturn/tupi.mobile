@@ -73,22 +73,8 @@ TupBrushAndroidDialog::TupBrushAndroidDialog(const QPen pen, const QSize size, Q
     k->innerLayout = new QVBoxLayout;
 
     setLabelPanel();
-    k->brushesLayout = new QGridLayout;
-    k->innerLayout->addLayout(k->brushesLayout);
-
-    {
-        for(int index=1;index<=7*2;index++)
-        {
-            QBrush brush(k->pen.color(), Qt::BrushStyle(index));
-            TupColorWidget* button = new TupColorWidget(index, brush, QSize(10, 10));
-
-
-            k->brushes.push_back(button);
-            connect(button, SIGNAL(clicked(int)), this, SLOT(updateSelection(int)));
-        }
-    }
-
-    setBrushOptions();
+    initBrushesPanel();
+    setBrushesPanel();
 
     QPixmap pixmap(":images/close.png");
     QIcon buttonIcon(pixmap);
@@ -116,25 +102,39 @@ void TupBrushAndroidDialog::setLabelPanel()
     QLabel *label = new QLabel("Brushes");
     label->setFont(QFont("Arial", 24, QFont::Bold));
     label->setAlignment(Qt::AlignHCenter);
-    label->setFixedHeight(50);
     k->innerLayout->addWidget(label);
 }
 
-void TupBrushAndroidDialog::setBrushOptions()
+void TupBrushAndroidDialog::initBrushesPanel()
 {
+    k->brushesLayout = new QGridLayout;
+    k->innerLayout->addLayout(k->brushesLayout);
 
+    for (int index=1; index<15; index++) {
+         QBrush brush(k->pen.color(), Qt::BrushStyle(index));
+         TupColorWidget* button = new TupColorWidget(index, brush, QSize(10, 10));
+         k->brushes.push_back(button);
+         connect(button, SIGNAL(clicked(int)), this, SLOT(updateSelection(int)));
+    }
+}
+
+void TupBrushAndroidDialog::setBrushesPanel()
+{
     QList<TupColorWidget*>::iterator i;
 
     for (i = k->brushes.begin(); i != k->brushes.end(); ++i)
         k->brushesLayout->removeWidget(*i);
 
-    int w,h;
+    int w = 0;
+    int h = 0;
 
-    if (this->size().width() > this->size().height())
-        w = k->size.width(), h = k->size.height();
-    else
-        w = k->size.height(), h = k->size.width();
-
+    if (this->size().width() > this->size().height()) {
+        w = k->size.width();
+        h = k->size.height();
+    } else {
+        w = k->size.height();
+        h = k->size.width();
+    }
 
     int rows = 0;
     int columns = 0;
@@ -170,20 +170,11 @@ void TupBrushAndroidDialog::setBrushOptions()
 
     int index = 0;
     for (int i=0; i<rows; i++) {
-
-
          for (int j=0; j<columns; j++) {
-              //QBrush brush(k->pen.color(), Qt::BrushStyle(index));
-              //TupColorWidget* button = new TupColorWidget(index, brush, QSize(cellW, cellH));
-              //k->buttons.push_back(button);
-              //connect(button, SIGNAL(clicked(int)), this, SLOT(updateSelection(int)));
-              //k->brushes << button;
-             k->brushes.at(index)->setFixedSize(QSize(cellW,cellH));
-             k->brushesLayout->addWidget(k->brushes.at(index),i,j);
-             index++;
-
+              k->brushes.at(index)->setFixedSize(QSize(cellW, cellH));
+              k->brushesLayout->addWidget(k->brushes.at(index),i,j);
+              index++;
          }
-
     }
 }
 
@@ -206,7 +197,7 @@ void TupBrushAndroidDialog::closeDialog()
     close();
 }
 
-void TupBrushAndroidDialog::paintEvent ( QPaintEvent * event )
+void TupBrushAndroidDialog::paintEvent(QPaintEvent * event)
 {
-    setBrushOptions();
+    setBrushesPanel();
 }
