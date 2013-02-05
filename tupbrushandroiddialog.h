@@ -46,7 +46,7 @@ class TupBrushAndroidDialog : public QDialog
     Q_OBJECT
 
     public:
-        TupBrushAndroidDialog(const QPen pen, QWidget *parent);
+        TupBrushAndroidDialog(const QPen pen, const QSize size, QWidget *parent);
         ~TupBrushAndroidDialog();
 
     signals:

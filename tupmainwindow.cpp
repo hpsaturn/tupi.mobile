@@ -369,7 +369,7 @@ void TupMainWindow::opacityDialog()
 void TupMainWindow::brushDialog()
 {
 #ifdef Q_OS_ANDROID
-    TupBrushAndroidDialog *dialog = new TupBrushAndroidDialog(k->pen, this);
+    TupBrushAndroidDialog *dialog = new TupBrushAndroidDialog(k->pen, k->screen, this);
 #else
     TupBrushDialog *dialog = new TupBrushDialog(k->pen, this);
 #endif

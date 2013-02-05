@@ -43,6 +43,7 @@
 #include <QPixmap>
 #include <QPushButton>
 #include <QDialogButtonBox>
+#include <QDebug>
 
 struct TupBrushAndroidDialog::Private
 {
@@ -54,13 +55,14 @@ struct TupBrushAndroidDialog::Private
     QSize size;
 };
 
-TupBrushAndroidDialog::TupBrushAndroidDialog(const QPen pen, QWidget *parent) : QDialog(parent), k(new Private)
+TupBrushAndroidDialog::TupBrushAndroidDialog(const QPen pen, const QSize size, QWidget *parent) : QDialog(parent), k(new Private)
 {
     setModal(true);
     setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::ToolTip);
     setStyleSheet("* { background-color: rgb(232,232,232) }");
  
     k->pen = pen;
+    k->size = size;
     k->currentBrushIndex = -1;
 
     QBoxLayout *layout = new QHBoxLayout(this);
@@ -103,22 +105,44 @@ void TupBrushAndroidDialog::setLabelPanel()
 
 void TupBrushAndroidDialog::setBrushOptions()
 {
+    int w = k->size.width();
+    int h = k->size.height();
+    int rows = 0;
+    int columns = 0;
+
+    if (w > h) { 
+        rows = 2;
+        columns = 7;
+    } else {
+        rows = 7;
+        columns = 2;
+    }
+
+    int cellW = (w - 100)/columns;
+    int cellH = (h - 100)/rows;
+
+    if (cellH > cellW)
+        cellH = cellW;
+
+#ifdef TUP_DEBUG
+    qDebug() << "TupBrushAndroidDialog::setBrushOptions() - width: " << w;
+    qDebug() << "TupBrushAndroidDialog::setBrushOptions() - height: " << h;
+    qDebug() << "TupBrushAndroidDialog::setBrushOptions() - cellW: " << cellW;
+    qDebug() << "TupBrushAndroidDialog::setBrushOptions() - cellH: " << cellH;
+#endif
+
     int index = 1;
-    for (int j=0; j<4; j++) {
+    for (int i=0; i<rows; i++) {
          QBoxLayout *matrix = new QHBoxLayout;
          matrix->setSpacing(10);
 
-         for (int i=0; i<4; i++) {
-              if (index < 15) {
-                  QBrush brush(k->pen.color(), Qt::BrushStyle(index));
-                  TupColorWidget *button = new TupColorWidget(index, brush, QSize(200, 200));
-                  connect(button, SIGNAL(clicked(int)), this, SLOT(updateSelection(int)));
-                  index++;
-                  k->brushes << button;
-                  matrix->addWidget(button);
-              } else {
-                  matrix->addWidget(new QWidget());
-              }
+         for (int j=0; j<columns; j++) {
+              QBrush brush(k->pen.color(), Qt::BrushStyle(index));
+              TupColorWidget *button = new TupColorWidget(index, brush, QSize(cellW, cellH));
+              connect(button, SIGNAL(clicked(int)), this, SLOT(updateSelection(int)));
+              index++;
+              k->brushes << button;
+              matrix->addWidget(button);
          }
 
          k->innerLayout->addLayout(matrix);
