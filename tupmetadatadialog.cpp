@@ -55,15 +55,15 @@ struct TupMetadataDialog::Private
 
 TupMetadataDialog::TupMetadataDialog(const QString &title, const QString &topics, const QString &description, QWidget *parent) : QDialog(parent), k(new Private)
 {
+    setModal(true);
 #ifndef Q_OS_ANDROID
     setWindowTitle(tr("Image Properties"));
     setWindowIcon(QIcon(QPixmap(":images/metadata.png")));
 #else
-    setWindowFlags(Qt::FramelessWindowHint);
+    setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::ToolTip);
     setStyleSheet("* { background-color: rgb(232,232,232) }");
 #endif
 
-    setModal(true);
     QLocale utf(QLocale::AnyLanguage, QLocale::AnyCountry);
 
     QLabel *titleLabel = new QLabel(tr("Title"));
