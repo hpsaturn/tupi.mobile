@@ -222,7 +222,7 @@ void TupCanvas::undo()
 void TupCanvas::redo()
 {
     int index = k->undoList.size();
-    if (k->undoList.size() > 0) {
+    if (index > 0) {
         TupPathItem *item = (TupPathItem *) k->undoList.takeAt(index - 1);
         k->scene->addItem(item);
         k->frame->addItem(item);

@@ -63,7 +63,11 @@ TupBrushDialog::TupBrushDialog(const QPen pen, QWidget *parent) : QDialog(parent
     k->currentBrushIndex = -1;
 
     QBoxLayout *layout = new QHBoxLayout(this);
+#ifdef Q_OS_ANDROID
     layout->setContentsMargins(3, 3, 3, 3);
+#else
+    layout->setContentsMargins(5, 5, 5, 5);
+#endif
     layout->setSpacing(10);
 
     k->innerLayout = new QVBoxLayout;
@@ -74,7 +78,11 @@ TupBrushDialog::TupBrushDialog(const QPen pen, QWidget *parent) : QDialog(parent
     QIcon buttonIcon(pixmap);
     QPushButton *closeButton = new QPushButton(this);
     closeButton->setIcon(buttonIcon);
+#ifdef Q_OS_ANDROID
     closeButton->setIconSize(pixmap.rect().size());
+#else
+    closeButton->setToolTip(tr("Close"));
+#endif
     closeButton->setDefault(true);
     connect(closeButton, SIGNAL(clicked()), this, SLOT(closeDialog()));
 
@@ -100,7 +108,7 @@ void TupBrushDialog::setBrushOptions()
 
          for (int i=0; i<7; i++) {
               QBrush brush(k->pen.color(), Qt::BrushStyle(index));
-              TupColorWidget *button = new TupColorWidget(index, brush);
+              TupColorWidget *button = new TupColorWidget(index, brush, QSize(50, 50));
               connect(button, SIGNAL(clicked(int)), this, SLOT(updateSelection(int)));
               index++;
               k->brushes << button;

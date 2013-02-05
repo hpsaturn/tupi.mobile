@@ -84,7 +84,9 @@ TupAbout::TupAbout(QWidget *parent) : QDialog(parent), k(new Private)
     QIcon buttonIcon(pixmap);
     QPushButton *closeButton = new QPushButton(this);
     closeButton->setIcon(buttonIcon);
+#ifdef Q_OS_ANDROID
     closeButton->setIconSize(pixmap.rect().size());
+#endif
     closeButton->setDefault(true);
     connect(closeButton, SIGNAL(clicked()), this, SLOT(close()));
 
@@ -97,7 +99,12 @@ TupAbout::TupAbout(QWidget *parent) : QDialog(parent), k(new Private)
     innerLayout->addLayout(closeLayout);
 
     layout->addLayout(innerLayout);
+
+#ifdef Q_OS_ANDROID
     setFixedSize(QSize(420, 325));
+#else
+    setFixedSize(QSize(420, 295));
+#endif
 }
 
 TupAbout::~TupAbout()

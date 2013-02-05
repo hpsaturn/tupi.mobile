@@ -116,6 +116,7 @@ TupMetadataDialog::TupMetadataDialog(const QString &title, const QString &topics
     QPixmap pixmap(":images/ok.png");
     QIcon buttonIcon(pixmap);
     QPushButton *okButton = new QPushButton(this);
+    okButton->setToolTip(tr("Ok"));
     okButton->setIcon(buttonIcon);
     connect(okButton, SIGNAL(clicked()), this, SLOT(accept()));
     okButton->setDefault(true);

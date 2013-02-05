@@ -43,6 +43,7 @@
 #include <QLabel>
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QDebug>
 #include <cmath>
 
 struct TupOpacityDialog::Private
@@ -64,7 +65,11 @@ TupOpacityDialog::TupOpacityDialog(QPen pen, double opacity, QWidget *parent) : 
     k->currentOpacity = opacity;
 
     QBoxLayout *layout = new QHBoxLayout(this);
+#ifdef Q_OS_ANDROID
     layout->setContentsMargins(3, 3, 3, 3);
+#else
+    layout->setContentsMargins(5, 5, 5, 5);
+#endif
     layout->setSpacing(2);
 
     k->innerLayout = new QVBoxLayout;
@@ -77,7 +82,10 @@ TupOpacityDialog::TupOpacityDialog(QPen pen, double opacity, QWidget *parent) : 
     QIcon buttonIcon(pixmap);
     QPushButton *closeButton = new QPushButton(this);
     closeButton->setIcon(buttonIcon);
+    closeButton->setToolTip(tr("Close"));
+#ifdef Q_OS_ANDROID
     closeButton->setIconSize(pixmap.rect().size());
+#endif
     closeButton->setDefault(true);
     connect(closeButton, SIGNAL(clicked()), this, SLOT(close()));
 
@@ -106,10 +114,16 @@ void TupOpacityDialog::setLabelPanel()
     if (number.length() == 3)
         number = number + "0";
 
-    k->sizeLabel = new QLabel("Opacity: " + number);
-    k->sizeLabel->setFont(QFont("Arial", 24, QFont::Bold));
-    k->sizeLabel->setAlignment(Qt::AlignHCenter);
+    if (number.compare("1") == 0)
+        number = "1.00";
 
+    k->sizeLabel = new QLabel("Opacity: " + number);
+#ifdef Q_OS_ANDROID
+    k->sizeLabel->setFont(QFont("Arial", 24, QFont::Bold));
+#else
+    k->sizeLabel->setFont(QFont("Arial", 16, QFont::Bold));
+#endif
+    k->sizeLabel->setAlignment(Qt::AlignHCenter);
     k->innerLayout->addWidget(k->sizeLabel);
 }
 
@@ -120,7 +134,9 @@ void TupOpacityDialog::setButtonsPanel()
     QPushButton *minus5 = new QPushButton(this);
     minus5->setToolTip(tr("-5"));
     minus5->setIcon(buttonIcon);
+#ifdef Q_OS_ANDROID
     minus5->setIconSize(pixmap.rect().size());
+#endif
     connect(minus5, SIGNAL(clicked()), this, SLOT(fivePointsLess()));
 
     QPixmap pixmap2(":images/minus_sign_small.png");
@@ -128,7 +144,9 @@ void TupOpacityDialog::setButtonsPanel()
     QPushButton *minus = new QPushButton(this);
     minus->setToolTip(tr("-1"));
     minus->setIcon(buttonIcon2);
+#ifdef Q_OS_ANDROID
     minus->setIconSize(pixmap2.rect().size());
+#endif
     connect(minus, SIGNAL(clicked()), this, SLOT(onePointLess()));
 
     QPixmap pixmap3(":images/plus_sign_small.png");
@@ -136,7 +154,9 @@ void TupOpacityDialog::setButtonsPanel()
     QPushButton *plus = new QPushButton(this);
     plus->setToolTip(tr("+1"));
     plus->setIcon(buttonIcon3);
+#ifdef Q_OS_ANDROID
     plus->setIconSize(pixmap3.rect().size());
+#endif
     connect(plus, SIGNAL(clicked()), this, SLOT(onePointMore()));
 
     QPixmap pixmap4(":images/plus_sign_big.png");
@@ -144,7 +164,9 @@ void TupOpacityDialog::setButtonsPanel()
     QPushButton *plus5 = new QPushButton(this);
     plus5->setToolTip(tr("+5"));
     plus5->setIcon(buttonIcon4);
+#ifdef Q_OS_ANDROID
     plus5->setIconSize(pixmap4.rect().size());
+#endif
     connect(plus5, SIGNAL(clicked()), this, SLOT(fivePointsMore()));
 
     QBoxLayout *layout = new QHBoxLayout;
@@ -178,6 +200,7 @@ void TupOpacityDialog::fivePointsMore()
 
 void TupOpacityDialog::modifySize(double value)
 {
+    double oldOpacity = k->currentOpacity;
     k->currentOpacity = (100 * k->currentOpacity)/100;
     k->currentOpacity += value;
 
@@ -186,6 +209,13 @@ void TupOpacityDialog::modifySize(double value)
 
     if (k->currentOpacity < 0)
         k->currentOpacity = 0;
+
+    if (oldOpacity == k->currentOpacity)
+        return;
+
+#ifdef TUP_DEBUG
+    qDebug() << "TupOpacityDialog::modifySize() - Opacity: " << k->currentOpacity;
+#endif
 
     if (k->currentOpacity == 0) {
         k->sizeLabel->setText("Opacity: 0.00");
@@ -199,6 +229,5 @@ void TupOpacityDialog::modifySize(double value)
     }
 
     k->opacityPreview->render(k->currentOpacity);
-
     emit updateOpacity(k->currentOpacity);
 }

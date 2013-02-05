@@ -45,11 +45,12 @@ struct TupColorWidget::Private
     bool selected;
 };
 
-TupColorWidget::TupColorWidget(int index, const QBrush &brush) : k(new Private)
+TupColorWidget::TupColorWidget(int index, const QBrush &brush, const QSize &size) : k(new Private)
 {
     k->index = index;
     k->selected = false;
     k->brush = brush;
+    setFixedSize(size);
 }
 
 TupColorWidget::~TupColorWidget()
@@ -73,6 +74,10 @@ void TupColorWidget::paintEvent(QPaintEvent *event)
         painter.setPen(QPen(QColor(190, 190, 190), 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
         painter.drawRect(border);
         painter.setPen(QPen(QColor(150, 150, 150), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+        painter.drawRect(border);
+    } else {
+        QRect border = rect();
+        painter.setPen(QPen(QColor(190, 190, 190), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
         painter.drawRect(border);
     }
 }

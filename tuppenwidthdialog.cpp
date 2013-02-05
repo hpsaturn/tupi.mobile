@@ -43,6 +43,7 @@
 #include <QLabel>
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QDebug>
 
 struct TupPenWidthDialog::Private
 {
@@ -65,7 +66,11 @@ TupPenWidthDialog::TupPenWidthDialog(QPen pen, double opacity, QWidget *parent) 
     k->currentSize = k->pen.width();
 
     QBoxLayout *layout = new QHBoxLayout(this);
+#ifdef Q_OS_ANDROID
     layout->setContentsMargins(3, 3, 3, 3);
+#else
+    layout->setContentsMargins(5, 5, 5, 5);
+#endif
     layout->setSpacing(2);
 
     k->innerLayout = new QVBoxLayout;
@@ -78,7 +83,10 @@ TupPenWidthDialog::TupPenWidthDialog(QPen pen, double opacity, QWidget *parent) 
     QIcon buttonIcon(pixmap);
     QPushButton *closeButton = new QPushButton(this);
     closeButton->setIcon(buttonIcon);
+    closeButton->setToolTip(tr("Close"));
+#ifdef Q_OS_ANDROID
     closeButton->setIconSize(pixmap.rect().size());
+#endif
     closeButton->setDefault(true);
     connect(closeButton, SIGNAL(clicked()), this, SLOT(close()));
 
@@ -104,9 +112,12 @@ void TupPenWidthDialog::setBrushCanvas()
 void TupPenWidthDialog::setLabelPanel()
 {
     k->sizeLabel = new QLabel("Width: " + QString::number(k->currentSize));
+#ifdef Q_OS_ANDROID
     k->sizeLabel->setFont(QFont("Arial", 24, QFont::Bold));
+#else
+    k->sizeLabel->setFont(QFont("Arial", 16, QFont::Bold));
+#endif
     k->sizeLabel->setAlignment(Qt::AlignHCenter);
-
     k->innerLayout->addWidget(k->sizeLabel);
 }
 
@@ -117,8 +128,9 @@ void TupPenWidthDialog::setButtonsPanel()
     QPushButton *minus5 = new QPushButton(this);
     minus5->setToolTip(tr("-5"));
     minus5->setIcon(buttonIcon);
+#ifdef Q_OS_ANDROID
     minus5->setIconSize(pixmap.rect().size());
-
+#endif
     connect(minus5, SIGNAL(clicked()), this, SLOT(fivePointsLess()));
 
     QPixmap pixmap2(":images/minus_sign_small.png");
@@ -126,7 +138,9 @@ void TupPenWidthDialog::setButtonsPanel()
     QPushButton *minus = new QPushButton(this);
     minus->setToolTip(tr("-1"));
     minus->setIcon(buttonIcon2);
+#ifdef Q_OS_ANDROID
     minus->setIconSize(pixmap2.rect().size());
+#endif
     connect(minus, SIGNAL(clicked()), this, SLOT(onePointLess()));
 
     QPixmap pixmap3(":images/plus_sign_small.png");
@@ -134,7 +148,9 @@ void TupPenWidthDialog::setButtonsPanel()
     QPushButton *plus = new QPushButton(this);
     plus->setToolTip(tr("+1"));
     plus->setIcon(buttonIcon3);
+#ifdef Q_OS_ANDROID
     plus->setIconSize(pixmap3.rect().size());
+#endif
     connect(plus, SIGNAL(clicked()), this, SLOT(onePointMore()));
 
     QPixmap pixmap4(":images/plus_sign_big.png");
@@ -142,8 +158,9 @@ void TupPenWidthDialog::setButtonsPanel()
     QPushButton *plus5 = new QPushButton(this);
     plus5->setToolTip(tr("+5"));
     plus5->setIcon(buttonIcon4);
+#ifdef Q_OS_ANDROID
     plus5->setIconSize(pixmap4.rect().size());
-
+#endif
     connect(plus5, SIGNAL(clicked()), this, SLOT(fivePointsMore()));
 
     QBoxLayout *layout = new QHBoxLayout;
@@ -183,6 +200,10 @@ void TupPenWidthDialog::modifySize(int value)
 
     if (k->currentSize < 1)
         k->currentSize = 1;
+
+#ifdef TUP_DEBUG
+    qDebug() << "TupPenWidthDialog::modifySize() - Size: " << k->currentSize;
+#endif
 
     k->thickPreview->render(k->currentSize);
     k->sizeLabel->setText("Width: " + QString::number(k->currentSize));
