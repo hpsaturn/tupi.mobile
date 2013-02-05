@@ -66,7 +66,7 @@ TupBrushAndroidDialog::TupBrushAndroidDialog(const QPen pen, const QSize size, Q
     k->size = size;
     k->currentBrushIndex = -1;
 
-    QBoxLayout *layout = new QHBoxLayout(this);
+    QBoxLayout *layout = new QVBoxLayout(this);
     layout->setContentsMargins(3, 3, 3, 3);
     layout->setSpacing(10);
 
@@ -75,20 +75,7 @@ TupBrushAndroidDialog::TupBrushAndroidDialog(const QPen pen, const QSize size, Q
     setLabelPanel();
     initBrushesPanel();
     setBrushesPanel();
-
-    QPixmap pixmap(":images/close.png");
-    QIcon buttonIcon(pixmap);
-    QPushButton *closeButton = new QPushButton(this);
-    closeButton->setIcon(buttonIcon);
-    closeButton->setIconSize(pixmap.rect().size());
-    closeButton->setDefault(true);
-    connect(closeButton, SIGNAL(clicked()), this, SLOT(closeDialog()));
-
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
-    buttonBox->addButton(closeButton, QDialogButtonBox::ActionRole);
-
-    k->innerLayout->addSpacing(10);
-    k->innerLayout->addWidget(buttonBox);
+    setCloseButton();
 
     layout->addLayout(k->innerLayout);
 }
@@ -102,6 +89,8 @@ void TupBrushAndroidDialog::setLabelPanel()
     QLabel *label = new QLabel("Brushes");
     label->setFont(QFont("Arial", 24, QFont::Bold));
     label->setAlignment(Qt::AlignHCenter);
+    label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+
     k->innerLayout->addWidget(label);
 }
 
@@ -176,6 +165,24 @@ void TupBrushAndroidDialog::setBrushesPanel()
               index++;
          }
     }
+}
+
+void TupBrushAndroidDialog::setCloseButton()
+{
+    QPixmap pixmap(":images/close.png");
+    QIcon buttonIcon(pixmap);
+    QPushButton *closeButton = new QPushButton(this);
+    closeButton->setIcon(buttonIcon);
+    closeButton->setIconSize(pixmap.rect().size());
+    closeButton->setDefault(true);
+    connect(closeButton, SIGNAL(clicked()), this, SLOT(closeDialog()));
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
+    buttonBox->addButton(closeButton, QDialogButtonBox::ActionRole);
+    buttonBox->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+
+    k->innerLayout->addSpacing(10);
+    k->innerLayout->addWidget(buttonBox);
 }
 
 void TupBrushAndroidDialog::updateSelection(int index)
