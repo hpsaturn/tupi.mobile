@@ -55,11 +55,19 @@ struct TupMetadataDialog::Private
 
 TupMetadataDialog::TupMetadataDialog(const QString &title, const QString &topics, const QString &description, QWidget *parent) : QDialog(parent), k(new Private)
 {
-    setModal(true);
+    /* 
     setWindowTitle(tr("Image Properties"));
     setWindowIcon(QIcon(QPixmap(":images/metadata.png")));
-    QLocale utf(QLocale::AnyLanguage, QLocale::AnyCountry);
+    */
 
+    setModal(true);
+    setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::ToolTip);
+
+    QLabel *label = new QLabel(tr("Image Properties"));
+    label->setFont(QFont("Arial", 16, QFont::Normal));
+    label->setAlignment(Qt::AlignHCenter);
+
+    QLocale utf(QLocale::AnyLanguage, QLocale::AnyCountry);
     QLabel *titleLabel = new QLabel(tr("Title"));
     if (title.length() == 0)
         k->titleEdit = new QLineEdit(tr("My Picture"));
@@ -113,6 +121,10 @@ TupMetadataDialog::TupMetadataDialog(const QString &title, const QString &topics
     buttonLayout->addWidget(okButton);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->setContentsMargins(5, 5, 5, 5);
+    layout->setSpacing(5);
+
+    layout->addWidget(label);
     layout->addLayout(topLayout);
     layout->addLayout(middleLayout);
     layout->addWidget(descLabel);
