@@ -63,6 +63,8 @@ class TupBrushAndroidDialog : public QDialog
         void initBrushesPanel();
         void setBrushesPanel();
         void setCloseButton();
+
+
         struct Private;
         Private *const k;
 };

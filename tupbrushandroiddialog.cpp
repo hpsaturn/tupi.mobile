@@ -47,6 +47,7 @@
 
 struct TupBrushAndroidDialog::Private
 {
+    bool is_vertical;
     QVBoxLayout *innerLayout;
     QGridLayout *brushesLayout;
     QList<TupColorWidget *> brushes;
@@ -65,6 +66,7 @@ TupBrushAndroidDialog::TupBrushAndroidDialog(const QPen pen, const QSize size, Q
     k->pen = pen;
     k->size = size;
     k->currentBrushIndex = -1;
+    k->is_vertical = k->size.width() > k->size.height();
 
     QBoxLayout *layout = new QVBoxLayout(this);
     layout->setContentsMargins(3, 3, 3, 3);
@@ -117,12 +119,28 @@ void TupBrushAndroidDialog::setBrushesPanel()
     int w = 0;
     int h = 0;
 
-    if (this->size().width() > this->size().height()) {
-        w = k->size.width();
-        h = k->size.height();
-    } else {
-        w = k->size.height();
-        h = k->size.width();
+
+    if (k->is_vertical)
+    {
+        if(this->size().height()>this->size().width())
+        {
+            w = k->size.width();
+            h = k->size.height();
+        } else {
+            w = k->size.height();
+            h = k->size.width();
+        }
+    }
+    else
+    {
+        if(this->size().height()<this->size().width())
+        {
+            w = k->size.width();
+            h = k->size.height();
+        } else {
+            w = k->size.height();
+            h = k->size.width();
+        }
     }
 
     int rows = 0;
