@@ -253,7 +253,7 @@ void TupCanvas::notify(const QString &msg)
     k->message->setDefaultTextColor(QColor(0, 100, 0));
     QRectF rect = k->scene->sceneRect();
     QPointF left = rect.bottomLeft();
-    k->message->setPos(QPointF(left.x(), left.y() - 30));
+    k->message->setPos(QPointF(left.x() + 1, left.y() - 30));
     k->scene->addItem(k->message);
 
     QTimer::singleShot(2000, this, SLOT(removeNotification()));

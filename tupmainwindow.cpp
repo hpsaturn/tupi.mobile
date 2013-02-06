@@ -359,6 +359,10 @@ void TupMainWindow::penStrokeSizeDialog()
 
 void TupMainWindow::colorDialog()
 {
+    TupPaletteDialog *dialog = new TupPaletteDialog(k->pen.brush(), k->screen, this);
+    connect(dialog, SIGNAL(updateColor(const QColor)), this, SLOT(updatePenColor(const QColor)));
+    dialog->showMaximized();
+/*
 #ifndef Q_OS_ANDROID
     TupPaletteDialog *dialog = new TupPaletteDialog(k->pen.brush(), k->screen, this);
     connect(dialog, SIGNAL(updateColor(const QColor)), this, SLOT(updatePenColor(const QColor)));
@@ -367,6 +371,7 @@ void TupMainWindow::colorDialog()
     QColor color = QColorDialog::getColor(k->pen.brush().color(), this);
     updatePenColor(color);
 #endif
+*/
 }
 
 void TupMainWindow::opacityDialog()

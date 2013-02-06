@@ -58,7 +58,8 @@ struct TupStrokeSizeDialog::Private
 TupStrokeSizeDialog::TupStrokeSizeDialog(QPen pen, double opacity, QWidget *parent) : QDialog(parent), k(new Private)
 {
     setModal(true);
-    setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::ToolTip);
+    setWindowFlags(Qt::Popup);
+    // setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::ToolTip);
     setStyleSheet("* { background-color: rgb(232,232,232) }");
 
     k->pen = pen;

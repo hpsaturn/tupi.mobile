@@ -64,7 +64,8 @@ struct TupPaletteDialog::Private
 TupPaletteDialog::TupPaletteDialog(const QBrush brush, const QSize size, QWidget *parent) : QDialog(parent), k(new Private)
 {
     setModal(true);
-    setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::ToolTip);
+    setWindowFlags(Qt::Popup);
+    // setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::ToolTip);
     setStyleSheet("* { background-color: rgb(232,232,232); }");
 
     k->brush = brush;

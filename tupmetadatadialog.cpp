@@ -56,7 +56,7 @@ struct TupMetadataDialog::Private
 TupMetadataDialog::TupMetadataDialog(const QString &title, const QString &topics, const QString &description, QWidget *parent) : QDialog(parent), k(new Private)
 {
     setModal(true);
-    // setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::ToolTip);
+    setWindowFlags(Qt::Popup);
 
     QLabel *label = new QLabel(tr("Image Properties"));
     label->setFont(QFont("Arial", 16, QFont::Normal));
