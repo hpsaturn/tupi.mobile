@@ -51,6 +51,10 @@
 #include "tupbrushdialog.h"
 #endif
 
+#ifdef Q_OS_ANDROID
+#include "tupmetadataandroiddialog.h"
+#endif
+
 #include <QtGui>
 #include <QMessageBox>
 #include <QGraphicsScene>
@@ -262,21 +266,22 @@ void TupMainWindow::setToolBar()
 
 void TupMainWindow::setMetadata()
 {
-#ifndef Q_OS_ANDROID
+#ifdef Q_OS_ANDROID
+    TupMetadataAndroidDialog *dialog = new TupMetadataAndroidDialog(k->title, k->topics, k->description, this);
+    dialog->showMaximized();
+#else
     TupMetadataDialog *dialog = new TupMetadataDialog(k->title, k->topics, k->description, this);
     dialog->show();
     QDesktopWidget desktop;
     dialog->move((int) (desktop.screenGeometry().width() - dialog->width())/2,
                  (int) (desktop.screenGeometry().height() - dialog->height())/2);
+#endif
 
     if (dialog->exec() == QDialog::Accepted) {
         k->title = dialog->imageTitle();
         k->topics = dialog->imageTopics();
         k->description = dialog->imageDescription();
     }
-#else
-    // SQA: Dialog for Android goes here!
-#endif
 }
 
 void TupMainWindow::postIt()
@@ -354,7 +359,7 @@ void TupMainWindow::penStrokeSizeDialog()
 
 void TupMainWindow::colorDialog()
 {
-#ifdef Q_OS_ANDROID
+#ifndef Q_OS_ANDROID
     TupPaletteDialog *dialog = new TupPaletteDialog(k->pen.brush(), k->screen, this);
     connect(dialog, SIGNAL(updateColor(const QColor)), this, SLOT(updatePenColor(const QColor)));
     dialog->showMaximized();

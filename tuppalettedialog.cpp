@@ -101,6 +101,7 @@ TupPaletteDialog::TupPaletteDialog(const QBrush brush, const QSize size, QWidget
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
     buttonBox->addButton(closeButton, QDialogButtonBox::ActionRole);
+    buttonBox->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 
     k->currentBaseColor = 0;
     QColor redColor(255, 0, 0);
@@ -140,15 +141,7 @@ TupPaletteDialog::TupPaletteDialog(const QBrush brush, const QSize size, QWidget
     k->innerLayout->addSpacing(10);
     k->innerLayout->addLayout(down);
 
-    QFrame *widget = new QFrame;
-    widget->setFrameStyle(QFrame::Box | QFrame::Sunken);
-    widget->setLayout(k->innerLayout);
-
-    QTabWidget *tab = new QTabWidget;
-    tab->addTab(widget, tr("Basic Color Palette")); 
-    tab->addTab(new QWidget(), tr("RGB Editor"));
-
-    layout->addWidget(tab);
+    layout->addLayout(k->innerLayout);
 }
 
 TupPaletteDialog::~TupPaletteDialog()

@@ -51,10 +51,6 @@ class TupMetadataDialog : public QDialog
         QString imageTopics() const;
         QString imageDescription() const;
 
-    private slots:
-        void resetTitleColor(const QString &);
-        void resetTopicColor(const QString &);
-
     private:
         struct Private;
         Private *const k;

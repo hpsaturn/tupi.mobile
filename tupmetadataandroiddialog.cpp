@@ -35,7 +35,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
 
-#include "tupmetadatadialog.h"
+#include "tupmetadataandroiddialog.h"
 
 #include <QDialog>
 #include <QVBoxLayout>
@@ -46,17 +46,19 @@
 #include <QPushButton>
 #include <QLocale>
 
-struct TupMetadataDialog::Private
+struct TupMetadataAndroidDialog::Private
 {
     QLineEdit *titleEdit;
     QLineEdit *topicEdit;
     QTextEdit *descText;
 };
 
-TupMetadataDialog::TupMetadataDialog(const QString &title, const QString &topics, const QString &description, QWidget *parent) : QDialog(parent), k(new Private)
+TupMetadataAndroidDialog::TupMetadataAndroidDialog(const QString &title, const QString &topics, const QString &description, QWidget *parent) : QDialog(parent), k(new Private)
 {
     setModal(true);
     // setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::ToolTip);
+    // setWindowFlags(Qt::FramelessWindowHint);
+    setStyleSheet("* { background-color: rgb(232,232,232) }");
 
     QLabel *label = new QLabel(tr("Image Properties"));
     label->setFont(QFont("Arial", 16, QFont::Normal));
@@ -68,6 +70,7 @@ TupMetadataDialog::TupMetadataDialog(const QString &title, const QString &topics
         k->titleEdit = new QLineEdit(tr("My Picture"));
     else
         k->titleEdit = new QLineEdit(title);
+    k->titleEdit->setStyleSheet("* { background-color: rgb(255,255,255) }");
     k->titleEdit->setLocale(utf);
     titleLabel->setBuddy(k->titleEdit);
 
@@ -78,11 +81,13 @@ TupMetadataDialog::TupMetadataDialog(const QString &title, const QString &topics
         k->topicEdit = new QLineEdit(topics);
 
     k->topicEdit->setLocale(utf);
+    k->topicEdit->setStyleSheet("* { background-color: rgb(255,255,255) }");
     topicLabel->setBuddy(k->topicEdit);
 
     QLabel *descLabel = new QLabel(tr("Description"));
 
     k->descText = new QTextEdit;
+    k->descText->setStyleSheet("* { background-color: rgb(255,255,255) }");
     k->descText->setLocale(utf);
     k->descText->setAcceptRichText(false);
     k->descText->setFixedHeight(80);
@@ -126,21 +131,21 @@ TupMetadataDialog::TupMetadataDialog(const QString &title, const QString &topics
     setLayout(layout);
 }
 
-TupMetadataDialog::~TupMetadataDialog()
+TupMetadataAndroidDialog::~TupMetadataAndroidDialog()
 {
 }
 
-QString TupMetadataDialog::imageTitle() const
+QString TupMetadataAndroidDialog::imageTitle() const
 {
     return QString::fromUtf8(k->titleEdit->text().toUtf8());
 }
 
-QString TupMetadataDialog::imageTopics() const
+QString TupMetadataAndroidDialog::imageTopics() const
 {
     return QString::fromUtf8(k->topicEdit->text().toUtf8());
 }
 
-QString TupMetadataDialog::imageDescription() const
+QString TupMetadataAndroidDialog::imageDescription() const
 {
     return QString::fromUtf8(k->descText->toPlainText().toUtf8());
 }

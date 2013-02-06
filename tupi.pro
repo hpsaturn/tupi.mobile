@@ -44,8 +44,10 @@ SOURCES += tupmetadatadialog.cpp \
 
 android {
     SOURCES += tupbrushandroiddialog.cpp \
+               tupmetadataandroiddialog.cpp \
                tupandroidintents.cpp
     HEADERS += tupbrushandroiddialog.h \
+               tupmetadataandroiddialog.h \
                tupandroidintents.h
 
 OTHER_FILES += \
