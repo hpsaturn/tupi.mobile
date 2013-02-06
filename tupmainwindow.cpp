@@ -41,7 +41,6 @@
 #include "tupstrokesizedialog.h"
 #include "tupopacitydialog.h"
 #include "tupnethandler.h"
-// #include "tupdialog.h"
 #include "tupmetadatadialog.h"
 #include "tupabout.h"
 
