@@ -249,11 +249,16 @@ bool TupCanvas::isEmpty()
 void TupCanvas::notify(const QString &msg)
 {
     k->message = new QGraphicsTextItem(msg);  
-    k->message->setFont(QFont("Helvetica", 16, QFont::Normal));
     k->message->setDefaultTextColor(QColor(0, 100, 0));
     QRectF rect = k->scene->sceneRect();
     QPointF left = rect.bottomLeft();
+#ifndef Q_OS_ANDROID
+    k->message->setFont(QFont("Helvetica", 16, QFont::Normal));
     k->message->setPos(QPointF(left.x() + 1, left.y() - 30));
+#else
+    k->message->setFont(QFont("Helvetica", 10, QFont::Normal));
+    k->message->setPos(QPointF(left.x() + 1, left.y() - 50));
+#endif
     k->scene->addItem(k->message);
 
     QTimer::singleShot(2000, this, SLOT(removeNotification()));

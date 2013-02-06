@@ -147,8 +147,8 @@ void TupBrushAndroidDialog::setBrushesPanel()
         columns = 2;
     }
 
-    int cellW = (w - 100)/columns;
-    int cellH = (h - 100)/rows;
+    int cellW = w/columns;
+    int cellH = h/rows;
 
     if (w < h) {
         if (cellH > cellW)
