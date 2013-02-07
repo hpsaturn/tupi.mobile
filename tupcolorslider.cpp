@@ -39,101 +39,128 @@
 
 #include <QDebug>
 
-TupColorSlider::TupColorSlider(const QColor& start, const QColor& end, QWidget *parent) :
-    QGraphicsView(parent),
-    start_color(start),
-    end_color(end),
-    value(0)
+struct TupColorSlider::Private
 {
-    img = new QImage(QString(":/images/tip.png"));
+    int min;
+    int max;
+    QColor startColor;
+    QColor endColor;
+    QImage *image;
+    int value;
+    Qt::Orientation orientation;
+};
 
+TupColorSlider::TupColorSlider(Qt::Orientation orientation, const QColor &start, const QColor &end, QWidget *parent) : QGraphicsView(parent), k(new Private)
+{
+    k->orientation = orientation; 
+    k->startColor = start;
+    k->endColor = end;
+    k->value = 0;
+    k->image = new QImage(QString(":/images/tip.png"));
     setUpdatesEnabled(true);
 }
 
 TupColorSlider::~TupColorSlider()
 {
-    delete img;
 }
 
-void
-TupColorSlider::setRange(int n, int x)
+void TupColorSlider::setRange(int n, int x)
 {
-    min=n;
-    max=x;
+    k->min = n;
+    k->max = x;
 }
 
-void
-TupColorSlider::setColors(const QColor& start, const QColor& end)
+void TupColorSlider::setColors(const QColor &start, const QColor &end)
 {
-    start_color=start;
-    end_color=end;
+    k->startColor = start;
+    k->endColor = end;
     this->update();
 }
 
-void
-TupColorSlider::mousePressEvent ( QMouseEvent * event )
+void TupColorSlider::mouseMoveEvent(QMouseEvent *event)
 {
-}
+    int length = -1;
+    if (k->orientation == Qt::Vertical) {
+        k->value = event->y();
+        length = viewport()->height();         
+    } else {
+        k->value = event->x();
+        length = viewport()->width();  
+    }
 
-void
-TupColorSlider::mouseMoveEvent ( QMouseEvent * event )
-{
-    value = event->y();
+    if (k->value > (length - k->image->size().height()))
+        return;
 
-    if(value > viewport()->height())
-        value = viewport()->height();
+    /*
+    if (k->value > length)
+        k->value = length;
+    */
 
-    if(value<0)
-        value=0;
+    if (k->value < 0)
+        k->value=0;
 
-    int r = min + (max-min)*(1.0 - float(event->y())/float(viewport()->height()));
+    int r = k->min + (k->max - k->min) * (1.0 - float(event->y())/float(length));
 
-    qDebug() << "mouseMoveEvent =  " << r << " " <<  float(event->y())/float(viewport()->height());
+#ifdef TUP_DEBUG
+       qDebug() << "mouseMoveEvent =  " << r << " - " <<  float(event->y())/(float(length));
+#endif
 
     this->update();
-
     emit valueChanged(r);
 }
 
-void
-TupColorSlider::paintScales()
+void TupColorSlider::paintScales()
 {
-    QPainter qp(viewport());
+    QPainter painter(viewport());
+    int segments = 32;
+    int length = -1;
 
-    int N=32;
-    int H=viewport()->height()/(N-1);
+    if (k->orientation == Qt::Vertical)
+        length = viewport()->height();
+    else
+        length = viewport()->width();
 
-    int sr=0;
-    int sg=0;
-    int sb=0;
-    for(int x=0; x<=N; x++)
-    {
-        QColor color;
-        int r,g,b;
-        r = x*(end_color.red() - start_color.red())/N + start_color.red();
-        g = x*(end_color.green() - start_color.green())/N + start_color.green();
-        b = x*(end_color.blue() - start_color.blue())/N + start_color.blue();
+    int delta = length/(segments-1);
 
-        sr += r;
-        sg += g;
-        sb += b;
+    for (int section=0; section<=segments; section++) {
+         QColor color;
+         int r;
+         int g;
+         int b;
+         r = section*(k->endColor.red() - k->startColor.red()) / segments + k->startColor.red();
+         g = section*(k->endColor.green() - k->startColor.green()) / segments + k->startColor.green();
+         b = section*(k->endColor.blue() - k->startColor.blue()) / segments + k->startColor.blue();
 
-        color.setRed( r );
-        color.setGreen( g );
-        color.setBlue( b );
+         if ((r > -1 && r < 256) && (g > -1 && g < 256) && (b > -1 && b < 256)) {
+             color.setRed(r);
+             color.setGreen(g);
+             color.setBlue(b);
 
-        qp.setPen(color);
-        qp.setBrush(color);
-        qp.drawRect(0,x*H,viewport()->width(), H);
+             painter.setPen(color);
+             painter.setBrush(color);
+             if (k->orientation == Qt::Vertical) {
+                 int imageW = k->image->size().width();
+                 int width = imageW - 20;
+                 painter.drawRect((imageW - width)/2, section*delta, width, delta);
+                 // painter.drawRect(0, section*delta, viewport()->width(), delta);
+             } else {
+                 painter.drawRect(section*delta, 0, delta, viewport()->height());
+             }
+         }
     }
 
-    qp.drawImage(viewport()->width()/2-img->size().width()/2,value,*img);
+    if (k->orientation == Qt::Vertical) {
+        int width = viewport()->width();
+        int imageW = k->image->size().width();
+        painter.drawImage((width - imageW)/2, k->value, *k->image);
+        // painter.drawImage(viewport()->width() / (2 - k->image->size().width()/2), k->value, *k->image);
+    } else {
+        painter.drawImage(k->value, viewport()->height() / (2 - k->image->size().height()/2), *k->image);
+    }
 }
 
-void
-TupColorSlider::paintEvent(QPaintEvent *event)
+void TupColorSlider::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
-
     paintScales();
 }

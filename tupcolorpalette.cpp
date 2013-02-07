@@ -112,10 +112,9 @@ void TupColorPalette::setSliderPanel()
     k->top->setEditable(false);
     sliderLayout->addWidget(k->top);
 
-    k->slider = new TupColorSlider(QColor(255,0,0),QColor(0,0,0));
+    k->slider = new TupColorSlider(Qt::Vertical, QColor(255, 0, 0), QColor(0, 0, 0));
     k->slider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     k->slider->setRange(0, 255);
-   // k->slider->setValue(255);
 
     sliderLayout->addWidget(k->slider);
     connect(k->slider, SIGNAL(valueChanged(int)), this, SLOT(updateMatrixFromSlider(int)));

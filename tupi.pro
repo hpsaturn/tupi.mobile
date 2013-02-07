@@ -20,8 +20,7 @@ HEADERS += tupmainwindow.h \
            tupcolorpalette.h \
            tupseparator.h \
            tupabout.h \
-    tupcolorslide.h \
-    tupcolorslider.h
+           tupcolorslider.h
 
 SOURCES += tupmainwindow.cpp \
            tupcanvas.cpp \
@@ -39,8 +38,8 @@ SOURCES += tupmainwindow.cpp \
            tupabout.cpp \
            tupcolorpalette.cpp \
            tupseparator.cpp \
-           main.cpp \
-    tupcolorslider.cpp
+           tupcolorslider.cpp \
+           main.cpp
 
 !android {
 HEADERS += tupmetadatadialog.h \

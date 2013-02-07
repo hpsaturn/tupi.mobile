@@ -45,34 +45,26 @@
 class TupColorSlider : public QGraphicsView
 {
     Q_OBJECT
-public:
-    explicit TupColorSlider(const QColor& start, const QColor& end,  QWidget *parent = 0);
-    ~TupColorSlider();
 
-    void setRange(int, int);
-    void setColors(const QColor& start, const QColor& end);
+    public:
+        explicit TupColorSlider(Qt::Orientation orientation, const QColor& start, const QColor& end, QWidget *parent = 0);
+        ~TupColorSlider();
 
-protected:
-    void mousePressEvent ( QMouseEvent * event );
-    void mouseMoveEvent ( QMouseEvent * event );
-    void paintEvent(QPaintEvent *event);
+        void setRange(int, int);
+        void setColors(const QColor& start, const QColor& end);
 
-    void paintScales();
+    protected:
+        void mouseMoveEvent(QMouseEvent *event);
+        void paintEvent(QPaintEvent *event);
 
-signals:
-    void valueChanged(int v);
+        void paintScales();
 
-public slots:
+    signals:
+        void valueChanged(int v);
 
-private:
-    int min;
-    int max;
-    QColor start_color;
-    QColor end_color;
-    QImage *img;
-
-    int value;
-
+    private:
+       struct Private;
+       Private *const k;
 };
 
-#endif // TUPCOLORSLIDER_H
+#endif
