@@ -46,7 +46,6 @@
 #ifdef Q_OS_ANDROID
 #include "tupmetadataandroiddialog.h"
 #include "tupbrushandroiddialog.h"
-#include "tupcolorpaletteandroid.h"
 #include "tupandroidintents.h"
 #else
 #include "tupmetadatadialog.h"
@@ -357,11 +356,7 @@ void TupMainWindow::penStrokeSizeDialog()
 
 void TupMainWindow::colorDialog()
 {
-#ifdef Q_OS_ANDROID
-    TupColorPaletteAndroid *dialog = new TupColorPaletteAndroid(k->pen.brush(), k->screen, this);
-#else
     TupColorDialog *dialog = new TupColorDialog(k->pen.brush(), k->screen, this);
-#endif
     connect(dialog, SIGNAL(updateColor(const QColor)), this, SLOT(updatePenColor(const QColor)));
     dialog->showMaximized();
 }
