@@ -38,13 +38,13 @@
 #include "tupcolorpalette.h"
 #include "tupcolorwidget.h"
 #include "tupseparator.h"
+#include "tupcolorslider.h"
 
 #include <cmath>
 #include <QTabWidget>
 #include <QFrame>
 #include <QBoxLayout>
 #include <QPixmap>
-#include <QSlider>
 #include <QPushButton>
 #include <QDialogButtonBox>
 #include <QDebug>
@@ -63,7 +63,7 @@ struct TupColorPalette::Private
     QColor color;
     int rows;
     int columns;
-    QSlider *slider;
+    TupColorSlider *slider;
     TupColorWidget *top;
     TupColorWidget *bottom;
 };
@@ -112,10 +112,11 @@ void TupColorPalette::setSliderPanel()
     k->top->setEditable(false);
     sliderLayout->addWidget(k->top);
 
-    k->slider = new QSlider(Qt::Vertical);
+    k->slider = new TupColorSlider(QColor(255,0,0),QColor(0,0,0));
     k->slider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     k->slider->setRange(0, 255);
-    k->slider->setValue(255);
+   // k->slider->setValue(255);
+
     sliderLayout->addWidget(k->slider);
     connect(k->slider, SIGNAL(valueChanged(int)), this, SLOT(updateMatrixFromSlider(int)));
 
@@ -230,6 +231,8 @@ void TupColorPalette::updateMatrix(int newColor, bool fromSlider)
     }
 
     TupColorWidget *current = (TupColorWidget *) k->baseColors.at(newColor);
+
+    k->slider->setColors(current->color(),QColor(0,0,0));
 
     if (!fromSlider) {
         k->color = current->color();

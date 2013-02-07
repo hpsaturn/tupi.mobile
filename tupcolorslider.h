@@ -35,91 +35,44 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
 
-#include "tupcolordialog.h"
-#include "tupcolorpalette.h"
+#ifndef TUPCOLORSLIDER_H
+#define TUPCOLORSLIDER_H
 
-#ifndef Q_OS_ANDROID
-#include "tuprgbeditor.h"
-#else
-#include "tupcolorpalette.h"
-#endif
+#include <QGraphicsView>
+#include <QMouseEvent>
+#include <QImage>
 
-#include <QTabWidget>
-#include <QBoxLayout>
-#include <QPixmap>
-#include <QPushButton>
-#include <QDialogButtonBox>
-#include <QDebug>
-
-struct TupColorDialog::Private
+class TupColorSlider : public QGraphicsView
 {
-    QBoxLayout *layout;
-    QColor color;
+    Q_OBJECT
+public:
+    explicit TupColorSlider(const QColor& start, const QColor& end,  QWidget *parent = 0);
+    ~TupColorSlider();
+
+    void setRange(int, int);
+    void setColors(const QColor& start, const QColor& end);
+
+protected:
+    void mousePressEvent ( QMouseEvent * event );
+    void mouseMoveEvent ( QMouseEvent * event );
+    void paintEvent(QPaintEvent *event);
+
+    void paintScales();
+
+signals:
+    void valueChanged(int v);
+
+public slots:
+
+private:
+    int min;
+    int max;
+    QColor start_color;
+    QColor end_color;
+    QImage *img;
+
+    int value;
+
 };
 
-TupColorDialog::TupColorDialog(const QBrush brush, const QSize size, QWidget *parent) : QDialog(parent), k(new Private)
-{
-    setModal(true);
-    setWindowFlags(Qt::Popup);
-    setStyleSheet("* { background-color: rgb(232,232,232); }");
-
-    k->color = brush.color();
-
-    k->layout = new QVBoxLayout(this);
-    k->layout->setContentsMargins(3, 3, 3, 3);
-    k->layout->setSpacing(10);
-
-#ifdef Q_OS_ANDROID
-    TupColorPalette *palette = new TupColorPalette(brush, size, this);
-#else
-    TupColorPalette *palette = new TupColorPalette(brush, size, this);
-#endif
-    connect(palette, SIGNAL(updateColor(const QColor)), this, SLOT(setCurrentColor(const QColor)));
-
-    QTabWidget *tabs = new QTabWidget;
-    tabs->setFont(QFont("Arial", 14, QFont::Normal));
-    tabs->addTab(palette, tr("Basic Palette"));
-
-#ifndef Q_OS_ANDROID
-    TupRGBEditor *editor = new TupRGBEditor(brush, this);
-    connect(editor, SIGNAL(updateColor(const QColor)), this, SLOT(setCurrentColor(const QColor)));
-    connect(palette, SIGNAL(updateColor(const QColor)), editor, SLOT(setCurrentColor(const QColor)));
-    tabs->addTab(editor, tr("RGB Editor"));
-#endif
-
-    k->layout->addWidget(tabs);
-
-    setClosePanel();
-}
-
-TupColorDialog::~TupColorDialog()
-{
-}
-
-void TupColorDialog::setClosePanel()
-{
-    QPixmap pixmap(":images/close.png");
-    QIcon buttonIcon(pixmap);
-    QPushButton *closeButton = new QPushButton;
-    closeButton->setIcon(buttonIcon);
-    closeButton->setToolTip(tr("Close"));
-    closeButton->setDefault(true);
-    connect(closeButton, SIGNAL(clicked()), this, SLOT(closeDialog()));
-
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
-    buttonBox->addButton(closeButton, QDialogButtonBox::ActionRole);
-    buttonBox->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-
-    k->layout->addWidget(buttonBox);
-}
-
-void TupColorDialog::closeDialog()
-{
-    emit updateColor(k->color);
-    close();
-}
-
-void TupColorDialog::setCurrentColor(const QColor color)
-{
-    k->color = color;
-}
+#endif // TUPCOLORSLIDER_H

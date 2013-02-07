@@ -1,24 +1,25 @@
-<!DOCTYPE RCC><RCC version="1.0">
- <qresource>
-     <file>images/tupi.png</file>
-     <file>images/cursors/pencil.png</file>
-     <file>images/undo.png</file>
-     <file>images/redo.png</file>
-     <file>images/palette.png</file>
-     <file>images/width.png</file>
-     <file>images/opacity.png</file>
-     <file>images/brush.png</file>
-     <file>images/metadata.png</file>
-     <file>images/post.png</file>
-     <file>images/share.png</file>
-     <file>images/new.png</file>
-     <file>images/close.png</file>  
-     <file>images/minus_sign_big.png</file>
-     <file>images/minus_sign_small.png</file>
-     <file>images/plus_sign_big.png</file>
-     <file>images/plus_sign_small.png</file>
-     <file>images/ok.png</file>
-     <file>images/about.png</file>
-     <file>resources/about.txt</file>
- </qresource>
- </RCC>
+<RCC>
+    <qresource prefix="/">
+        <file>images/tupi.png</file>
+        <file>images/cursors/pencil.png</file>
+        <file>images/undo.png</file>
+        <file>images/redo.png</file>
+        <file>images/palette.png</file>
+        <file>images/width.png</file>
+        <file>images/opacity.png</file>
+        <file>images/brush.png</file>
+        <file>images/metadata.png</file>
+        <file>images/post.png</file>
+        <file>images/share.png</file>
+        <file>images/new.png</file>
+        <file>images/close.png</file>
+        <file>images/minus_sign_big.png</file>
+        <file>images/minus_sign_small.png</file>
+        <file>images/plus_sign_big.png</file>
+        <file>images/plus_sign_small.png</file>
+        <file>images/ok.png</file>
+        <file>images/about.png</file>
+        <file>resources/about.txt</file>
+        <file>images/tip.png</file>
+    </qresource>
+</RCC>

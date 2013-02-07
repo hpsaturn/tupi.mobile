@@ -17,7 +17,11 @@ HEADERS += tupmainwindow.h \
            tupopacitydialog.h \
            tupframe.h \
            tupcolordialog.h \
-           tupabout.h
+           tupcolorpalette.h \
+           tupseparator.h \
+           tupabout.h \
+    tupcolorslide.h \
+    tupcolorslider.h
 
 SOURCES += tupmainwindow.cpp \
            tupcanvas.cpp \
@@ -33,19 +37,18 @@ SOURCES += tupmainwindow.cpp \
            tupframe.cpp \
            tupcolordialog.cpp \
            tupabout.cpp \
-           main.cpp
+           tupcolorpalette.cpp \
+           tupseparator.cpp \
+           main.cpp \
+    tupcolorslider.cpp
 
 !android {
 HEADERS += tupmetadatadialog.h \
-           tupcolorpalette.h \
            tuprgbeditor.h \
-           tupbrushdialog.h \
-           tupseparator.h
+           tupbrushdialog.h
 SOURCES += tupmetadatadialog.cpp \
-           tupcolorpalette.cpp \
            tuprgbeditor.cpp \
-           tupbrushdialog.cpp \
-           tupseparator.cpp
+           tupbrushdialog.cpp
 }
 
 android {

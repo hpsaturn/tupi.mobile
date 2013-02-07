@@ -35,91 +35,105 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
 
-#include "tupcolordialog.h"
-#include "tupcolorpalette.h"
+#include "tupcolorslider.h"
 
-#ifndef Q_OS_ANDROID
-#include "tuprgbeditor.h"
-#else
-#include "tupcolorpalette.h"
-#endif
-
-#include <QTabWidget>
-#include <QBoxLayout>
-#include <QPixmap>
-#include <QPushButton>
-#include <QDialogButtonBox>
 #include <QDebug>
 
-struct TupColorDialog::Private
+TupColorSlider::TupColorSlider(const QColor& start, const QColor& end, QWidget *parent) :
+    QGraphicsView(parent),
+    start_color(start),
+    end_color(end),
+    value(0)
 {
-    QBoxLayout *layout;
-    QColor color;
-};
+    img = new QImage(QString(":/images/tip.png"));
 
-TupColorDialog::TupColorDialog(const QBrush brush, const QSize size, QWidget *parent) : QDialog(parent), k(new Private)
-{
-    setModal(true);
-    setWindowFlags(Qt::Popup);
-    setStyleSheet("* { background-color: rgb(232,232,232); }");
-
-    k->color = brush.color();
-
-    k->layout = new QVBoxLayout(this);
-    k->layout->setContentsMargins(3, 3, 3, 3);
-    k->layout->setSpacing(10);
-
-#ifdef Q_OS_ANDROID
-    TupColorPalette *palette = new TupColorPalette(brush, size, this);
-#else
-    TupColorPalette *palette = new TupColorPalette(brush, size, this);
-#endif
-    connect(palette, SIGNAL(updateColor(const QColor)), this, SLOT(setCurrentColor(const QColor)));
-
-    QTabWidget *tabs = new QTabWidget;
-    tabs->setFont(QFont("Arial", 14, QFont::Normal));
-    tabs->addTab(palette, tr("Basic Palette"));
-
-#ifndef Q_OS_ANDROID
-    TupRGBEditor *editor = new TupRGBEditor(brush, this);
-    connect(editor, SIGNAL(updateColor(const QColor)), this, SLOT(setCurrentColor(const QColor)));
-    connect(palette, SIGNAL(updateColor(const QColor)), editor, SLOT(setCurrentColor(const QColor)));
-    tabs->addTab(editor, tr("RGB Editor"));
-#endif
-
-    k->layout->addWidget(tabs);
-
-    setClosePanel();
+    setUpdatesEnabled(true);
 }
 
-TupColorDialog::~TupColorDialog()
+TupColorSlider::~TupColorSlider()
+{
+    delete img;
+}
+
+void
+TupColorSlider::setRange(int n, int x)
+{
+    min=n;
+    max=x;
+}
+
+void
+TupColorSlider::setColors(const QColor& start, const QColor& end)
+{
+    start_color=start;
+    end_color=end;
+    this->update();
+}
+
+void
+TupColorSlider::mousePressEvent ( QMouseEvent * event )
 {
 }
 
-void TupColorDialog::setClosePanel()
+void
+TupColorSlider::mouseMoveEvent ( QMouseEvent * event )
 {
-    QPixmap pixmap(":images/close.png");
-    QIcon buttonIcon(pixmap);
-    QPushButton *closeButton = new QPushButton;
-    closeButton->setIcon(buttonIcon);
-    closeButton->setToolTip(tr("Close"));
-    closeButton->setDefault(true);
-    connect(closeButton, SIGNAL(clicked()), this, SLOT(closeDialog()));
+    value = event->y();
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
-    buttonBox->addButton(closeButton, QDialogButtonBox::ActionRole);
-    buttonBox->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+    if(value > viewport()->height())
+        value = viewport()->height();
 
-    k->layout->addWidget(buttonBox);
+    if(value<0)
+        value=0;
+
+    int r = min + (max-min)*(1.0 - float(event->y())/float(viewport()->height()));
+
+    qDebug() << "mouseMoveEvent =  " << r << " " <<  float(event->y())/float(viewport()->height());
+
+    this->update();
+
+    emit valueChanged(r);
 }
 
-void TupColorDialog::closeDialog()
+void
+TupColorSlider::paintScales()
 {
-    emit updateColor(k->color);
-    close();
+    QPainter qp(viewport());
+
+    int N=32;
+    int H=viewport()->height()/(N-1);
+
+    int sr=0;
+    int sg=0;
+    int sb=0;
+    for(int x=0; x<=N; x++)
+    {
+        QColor color;
+        int r,g,b;
+        r = x*(end_color.red() - start_color.red())/N + start_color.red();
+        g = x*(end_color.green() - start_color.green())/N + start_color.green();
+        b = x*(end_color.blue() - start_color.blue())/N + start_color.blue();
+
+        sr += r;
+        sg += g;
+        sb += b;
+
+        color.setRed( r );
+        color.setGreen( g );
+        color.setBlue( b );
+
+        qp.setPen(color);
+        qp.setBrush(color);
+        qp.drawRect(0,x*H,viewport()->width(), H);
+    }
+
+    qp.drawImage(viewport()->width()/2-img->size().width()/2,value,*img);
 }
 
-void TupColorDialog::setCurrentColor(const QColor color)
+void
+TupColorSlider::paintEvent(QPaintEvent *event)
 {
-    k->color = color;
+    Q_UNUSED(event);
+
+    paintScales();
 }
