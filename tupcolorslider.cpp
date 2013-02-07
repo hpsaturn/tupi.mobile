@@ -142,10 +142,9 @@ void TupColorSlider::paintScales()
              painter.setPen(color);
              painter.setBrush(color);
              if (k->orientation == Qt::Vertical) {
-                 int imageW = k->image->size().width();
-                 int width = imageW - 20;
-                 painter.drawRect((imageW - width)/2, section*delta, width, delta);
-                 // painter.drawRect(0, section*delta, viewport()->width(), delta);
+                 int width = viewport()->width();
+                 int imageW = k->image->size().width()-16;
+                 painter.drawRect((width - imageW)/2, section*delta, imageW, delta);
              } else {
                  painter.drawRect(section*delta, 0, delta, viewport()->height());
              }
@@ -155,8 +154,7 @@ void TupColorSlider::paintScales()
     if (k->orientation == Qt::Vertical) {
         int width = viewport()->width();
         int imageW = k->image->size().width();
-        painter.drawImage((width - imageW)/2, k->value, *k->image);
-        // painter.drawImage(viewport()->width() / (2 - k->image->size().width()/2), k->value, *k->image);
+        painter.drawImage((width/2)-(imageW/2), k->value, *k->image);
     } else {
         painter.drawImage(k->value, viewport()->height() / (2 - k->image->size().height()/2), *k->image);
     }
