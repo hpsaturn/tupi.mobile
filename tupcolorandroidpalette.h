@@ -35,20 +35,20 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
 
-#ifndef TUPPALETTEDIALOG_H
-#define TUPPALETTEDIALOG_H
+#ifndef TUPCOLORANDROIDPALETTE_H
+#define TUPCOLORANDROIDPALETTE_H
 
 #include <QWidget>
 
-class TupPaletteDialog : public QWidget
+class TupColorAndroidPalette : public QWidget
 {
     Q_OBJECT
 
     public:
         enum Color { Red = 0, Green, Blue, White };
 
-        TupPaletteDialog(const QBrush brush, const QSize size, QWidget *parent);
-        ~TupPaletteDialog();
+        TupColorAndroidPalette(const QBrush brush, const QSize size, QWidget *parent);
+        ~TupColorAndroidPalette();
 
     signals:
         void updateColor(const QColor color);

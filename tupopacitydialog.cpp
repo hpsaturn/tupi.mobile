@@ -41,6 +41,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QSlider>
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QDebug>
@@ -52,6 +53,7 @@ struct TupOpacityDialog::Private
     TupPenPreviewCanvas *opacityPreview;
     QLabel *sizeLabel;
     QPen pen;
+    QSlider *slider;
     double currentOpacity;
 };
 
@@ -59,11 +61,14 @@ TupOpacityDialog::TupOpacityDialog(QPen pen, double opacity, QWidget *parent) : 
 {
     setModal(true);
     setWindowFlags(Qt::Popup);
-    // setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::ToolTip);
     setStyleSheet("* { background-color: rgb(232,232,232) }");
 
     k->pen = pen;
     k->currentOpacity = opacity;
+
+#ifdef TUP_DEBUG
+    qDebug() << "TupOpacityDialog() - Current opacity: " << opacity;
+#endif
 
     QBoxLayout *layout = new QHBoxLayout(this);
 #ifdef Q_OS_ANDROID
@@ -77,7 +82,7 @@ TupOpacityDialog::TupOpacityDialog(QPen pen, double opacity, QWidget *parent) : 
 
     setLabelPanel();
     setOpacityCanvas();
-    setButtonsPanel();
+    setSlider();
 
     QPixmap pixmap(":images/close.png");
     QIcon buttonIcon(pixmap);
@@ -128,91 +133,18 @@ void TupOpacityDialog::setLabelPanel()
     k->innerLayout->addWidget(k->sizeLabel);
 }
 
-void TupOpacityDialog::setButtonsPanel()
+void TupOpacityDialog::setSlider()
 {
-    QPixmap pixmap(":images/minus_sign_big.png");
-    QIcon buttonIcon(pixmap);
-    QPushButton *minus5 = new QPushButton(this);
-    minus5->setToolTip(tr("-5"));
-    minus5->setIcon(buttonIcon);
-#ifdef Q_OS_ANDROID
-    minus5->setIconSize(pixmap.rect().size());
-#endif
-    connect(minus5, SIGNAL(clicked()), this, SLOT(fivePointsLess()));
-
-    QPixmap pixmap2(":images/minus_sign_small.png");
-    QIcon buttonIcon2(pixmap2);
-    QPushButton *minus = new QPushButton(this);
-    minus->setToolTip(tr("-1"));
-    minus->setIcon(buttonIcon2);
-#ifdef Q_OS_ANDROID
-    minus->setIconSize(pixmap2.rect().size());
-#endif
-    connect(minus, SIGNAL(clicked()), this, SLOT(onePointLess()));
-
-    QPixmap pixmap3(":images/plus_sign_small.png");
-    QIcon buttonIcon3(pixmap3);
-    QPushButton *plus = new QPushButton(this);
-    plus->setToolTip(tr("+1"));
-    plus->setIcon(buttonIcon3);
-#ifdef Q_OS_ANDROID
-    plus->setIconSize(pixmap3.rect().size());
-#endif
-    connect(plus, SIGNAL(clicked()), this, SLOT(onePointMore()));
-
-    QPixmap pixmap4(":images/plus_sign_big.png");
-    QIcon buttonIcon4(pixmap4);
-    QPushButton *plus5 = new QPushButton(this);
-    plus5->setToolTip(tr("+5"));
-    plus5->setIcon(buttonIcon4);
-#ifdef Q_OS_ANDROID
-    plus5->setIconSize(pixmap4.rect().size());
-#endif
-    connect(plus5, SIGNAL(clicked()), this, SLOT(fivePointsMore()));
-
-    QBoxLayout *layout = new QHBoxLayout;
-    layout->addWidget(minus5);
-    layout->addWidget(minus);
-    layout->addWidget(plus);
-    layout->addWidget(plus5);
-
-    k->innerLayout->addLayout(layout);
+    k->slider = new QSlider(Qt::Horizontal);
+    k->slider->setRange(0, 100);
+    k->slider->setValue(k->currentOpacity*100);
+    connect(k->slider, SIGNAL(valueChanged(int)), this, SLOT(modifySize(int)));
+    k->innerLayout->addWidget(k->slider);
 }
 
-void TupOpacityDialog::fivePointsLess()
+void TupOpacityDialog::modifySize(int value)
 {
-    modifySize(-0.05);
-}
-
-void TupOpacityDialog::onePointLess()
-{
-    modifySize(-0.01);
-}
-
-void TupOpacityDialog::onePointMore()
-{
-    modifySize(0.01);
-}
-
-void TupOpacityDialog::fivePointsMore()
-{
-    modifySize(0.05);
-}
-
-void TupOpacityDialog::modifySize(double value)
-{
-    double oldOpacity = k->currentOpacity;
-    k->currentOpacity = (100 * k->currentOpacity)/100;
-    k->currentOpacity += value;
-
-    if (k->currentOpacity > 1)
-        k->currentOpacity = 1;
-
-    if (k->currentOpacity < 0)
-        k->currentOpacity = 0;
-
-    if (oldOpacity == k->currentOpacity)
-        return;
+    k->currentOpacity = value/100.0;
 
 #ifdef TUP_DEBUG
     qDebug() << "TupOpacityDialog::modifySize() - Opacity: " << k->currentOpacity;

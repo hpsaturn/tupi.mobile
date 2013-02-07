@@ -52,16 +52,12 @@ class TupStrokeSizeDialog : public QDialog
         void updatePen(int width);
 
     private slots:
-        void fivePointsLess();
-        void onePointLess();
-        void onePointMore();
-        void fivePointsMore();
+        void modifySize(int value);
 
     private:
         void setBrushCanvas();
         void setLabelPanel();
-        void setButtonsPanel();
-        void modifySize(int value);
+        void setSlider();
 
         struct Private;
         Private *const k;

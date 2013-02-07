@@ -37,12 +37,12 @@ SOURCES += tupmainwindow.cpp \
 
 !android {
 HEADERS += tupmetadatadialog.h \
-           tuppalettedialog.h \
+           tupcolorpalette.h \
            tuprgbeditor.h \
            tupbrushdialog.h \
            tupseparator.h
 SOURCES += tupmetadatadialog.cpp \
-           tuppalettedialog.cpp \
+           tupcolorpalette.cpp \
            tuprgbeditor.cpp \
            tupbrushdialog.cpp \
            tupseparator.cpp
@@ -50,11 +50,11 @@ SOURCES += tupmetadatadialog.cpp \
 
 android {
     SOURCES += tupbrushandroiddialog.cpp \
-               tuppaletteandroiddialog.h \
+               tupcolorandroidpalette.h \
                tupmetadataandroiddialog.cpp \
                tupandroidintents.cpp
     HEADERS += tupbrushandroiddialog.h \
-               tuppaletteandroiddialog.cpp \
+               tupcolorandroidpalette.cpp \
                tupmetadataandroiddialog.h \
                tupandroidintents.h
 

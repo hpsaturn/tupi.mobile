@@ -46,12 +46,11 @@
 #ifdef Q_OS_ANDROID
 #include "tupmetadataandroiddialog.h"
 #include "tupbrushandroiddialog.h"
-#include "tuppaletteandroiddialog.h"
+#include "tupcolorpaletteandroid.h"
 #include "tupandroidintents.h"
 #else
 #include "tupmetadatadialog.h"
 #include "tupbrushdialog.h"
-#include "tuppalettedialog.h"
 #endif
 
 #include <QtGui>
@@ -61,8 +60,8 @@
 #include <QColorDialog>
 #include <QDesktopServices>
 #include <QDesktopWidget>
-#include <stdlib.h>
 #include <QDebug>
+#include <stdlib.h>
 
 struct TupMainWindow::Private
 {
@@ -359,7 +358,7 @@ void TupMainWindow::penStrokeSizeDialog()
 void TupMainWindow::colorDialog()
 {
 #ifdef Q_OS_ANDROID
-    TupPaletteAndroidDialog *dialog = new TupPaletteAndroidDialog(k->pen.brush(), k->screen, this);
+    TupColorPaletteAndroid *dialog = new TupColorPaletteAndroid(k->pen.brush(), k->screen, this);
 #else
     TupColorDialog *dialog = new TupColorDialog(k->pen.brush(), k->screen, this);
 #endif

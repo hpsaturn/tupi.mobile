@@ -35,7 +35,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
 
-#include "tuppalettedialog.h"
+#include "tupcolorpalette.h"
 #include "tupcolorwidget.h"
 #include "tupseparator.h"
 
@@ -49,7 +49,7 @@
 #include <QDialogButtonBox>
 #include <QDebug>
 
-struct TupPaletteDialog::Private
+struct TupColorPalette::Private
 {
     QBoxLayout *paletteGlobalLayout;
     QBoxLayout *colorMatrixLayout;
@@ -68,7 +68,7 @@ struct TupPaletteDialog::Private
     TupColorWidget *bottom;
 };
 
-TupPaletteDialog::TupPaletteDialog(const QBrush brush, const QSize size, QWidget *parent) : QWidget(parent), k(new Private)
+TupColorPalette::TupColorPalette(const QBrush brush, const QSize size, QWidget *parent) : QWidget(parent), k(new Private)
 {
     k->brush = brush;
     k->currentLeadColor = 255;
@@ -97,11 +97,11 @@ TupPaletteDialog::TupPaletteDialog(const QBrush brush, const QSize size, QWidget
     layout->addLayout(k->paletteGlobalLayout);
 }
 
-TupPaletteDialog::~TupPaletteDialog()
+TupColorPalette::~TupColorPalette()
 {
 }
 
-void TupPaletteDialog::setSliderPanel()
+void TupColorPalette::setSliderPanel()
 {
     QBoxLayout *sliderLayout = new QVBoxLayout;
     sliderLayout->setAlignment(Qt::AlignVCenter);
@@ -128,7 +128,7 @@ void TupPaletteDialog::setSliderPanel()
     k->centralLayout->addLayout(sliderLayout);
 }
 
-void TupPaletteDialog::setBaseColorsPanel()
+void TupColorPalette::setBaseColorsPanel()
 {
     k->currentBaseColor = 0;
     QColor redColor(255, 0, 0);
@@ -169,7 +169,7 @@ void TupPaletteDialog::setBaseColorsPanel()
     k->paletteGlobalLayout->addLayout(bottomLayout);
 }
 
-void TupPaletteDialog::initColorsArray()
+void TupColorPalette::initColorsArray()
 {
     int deltaX = 255/k->rows;
     int deltaY = 255/k->columns;
@@ -202,7 +202,7 @@ void TupPaletteDialog::initColorsArray()
     }
 }
 
-void TupPaletteDialog::updateSelection(int index)
+void TupColorPalette::updateSelection(int index)
 {
     if (index != k->currentColorIndex) {
         if (k->currentColorIndex >= 0) {
@@ -216,13 +216,13 @@ void TupPaletteDialog::updateSelection(int index)
     }
 }
 
-void TupPaletteDialog::updateMatrixFromSlider(int value)
+void TupColorPalette::updateMatrixFromSlider(int value)
 {
     k->currentLeadColor = value;
     updateMatrix(k->currentBaseColor, true);
 }
 
-void TupPaletteDialog::updateMatrix(int newColor, bool fromSlider)
+void TupColorPalette::updateMatrix(int newColor, bool fromSlider)
 {
     if (k->currentColorIndex >= 0 && !fromSlider) {
         TupColorWidget *button = (TupColorWidget *) k->colors.at(k->currentColorIndex);
@@ -239,8 +239,10 @@ void TupPaletteDialog::updateMatrix(int newColor, bool fromSlider)
             k->slider->setEnabled(false);
         } else {
             k->top->setBrush(QBrush(k->color));
-            if (!k->slider->isEnabled())
+            if (!k->slider->isEnabled()) {
                 k->slider->setEnabled(true);
+                k->bottom->setBrush(QBrush(Qt::black));
+            }
         }
     }
 
@@ -256,27 +258,27 @@ void TupPaletteDialog::updateMatrix(int newColor, bool fromSlider)
     int g = 0;
     int b = 0;
     int index = 0;
-    TupPaletteDialog::Color color = TupPaletteDialog::Color(newColor);
+    TupColorPalette::Color color = TupColorPalette::Color(newColor);
 
     for (int i=0; i < k->rows; i++) {
          for (int j=0; j < k->columns; j++) {
               switch (color) {
-                      case TupPaletteDialog::Red :
+                      case TupColorPalette::Red :
                            r = k->currentLeadColor;
                            g = (i*deltaY);
                            b = (j*deltaX);
                       break;
-                      case TupPaletteDialog::Green :
+                      case TupColorPalette::Green :
                            r = (i*deltaX);
                            g = k->currentLeadColor;
                            b = (j*deltaX);
                       break;
-                      case TupPaletteDialog::Blue :
+                      case TupColorPalette::Blue :
                            r = (i*deltaX);
                            g = (j*deltaY);
                            b = k->currentLeadColor;
                       break;
-                      case TupPaletteDialog::White :
+                      case TupColorPalette::White :
                            if (j == k->columns - 1 && i == k->rows - 1) {
                                r = 255;
                                g = 255;
@@ -290,7 +292,7 @@ void TupPaletteDialog::updateMatrix(int newColor, bool fromSlider)
               }
 
 #ifdef TUP_DEBUG
-              // qDebug() << "TupPaletteDialog::updateMatrix() - [r,g,b]: " << r << ", " << g << ", " << b;
+              // qDebug() << "TupColorPalette::updateMatrix() - [r,g,b]: " << r << ", " << g << ", " << b;
 #endif
               if (r > 255)
                   r = 255;

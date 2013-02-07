@@ -36,10 +36,12 @@
  ***************************************************************************/
 
 #include "tupcolordialog.h"
-#include "tuppalettedialog.h"
 
 #ifndef Q_OS_ANDROID
+#include "tupcolorpalette.h"
 #include "tuprgbeditor.h"
+#else
+#include "tupcolorandroidpalette.h"
 #endif
 
 #include <QTabWidget>
@@ -61,14 +63,21 @@ TupColorDialog::TupColorDialog(const QBrush brush, const QSize size, QWidget *pa
     setWindowFlags(Qt::Popup);
     setStyleSheet("* { background-color: rgb(232,232,232); }");
 
+    k->color = brush.color();
+
     k->layout = new QVBoxLayout(this);
     k->layout->setContentsMargins(3, 3, 3, 3);
     k->layout->setSpacing(10);
 
-    TupPaletteDialog *palette = new TupPaletteDialog(brush, size, this);
+#ifdef Q_OS_ANDROID
+    TupColorPaletteAndroid *palette = new TupColorPaletteAndroid(brush, size, this);
+#else
+    TupColorPalette *palette = new TupColorPalette(brush, size, this);
+#endif
     connect(palette, SIGNAL(updateColor(const QColor)), this, SLOT(setCurrentColor(const QColor)));
 
     QTabWidget *tabs = new QTabWidget;
+    tabs->setFont(QFont("Arial", 14, QFont::Normal));
     tabs->addTab(palette, tr("Basic Palette"));
 
 #ifndef Q_OS_ANDROID

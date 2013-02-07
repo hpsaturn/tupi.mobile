@@ -47,6 +47,7 @@ struct TupRGBEditor::Private
 {
     QBoxLayout *layout;
     QColor color;
+    Qt::BrushStyle style;
     TupColorWidget *panel;
     QLabel *redLabel;
     QLabel *greenLabel;
@@ -64,6 +65,7 @@ TupRGBEditor::TupRGBEditor(const QBrush brush, QWidget *parent) : QWidget(parent
     k->r = brush.color().red();
     k->g = brush.color().green();
     k->b = brush.color().blue();
+    k->style = brush.style();
 
     k->panel = new TupColorWidget(1, brush, QSize(150, 150));
     k->panel->setEditable(false);
@@ -85,7 +87,7 @@ TupRGBEditor::TupRGBEditor(const QBrush brush, QWidget *parent) : QWidget(parent
     connect(k->red, SIGNAL(valueChanged(int)), this, SLOT(updateRedCompound(int)));
 
     QHBoxLayout *redPanel = new QHBoxLayout;
-    redPanel->setContentsMargins(20, 0, 20, 0);
+    redPanel->setContentsMargins(40, 0, 40, 0);
     redPanel->setAlignment(Qt::AlignHCenter);
     redPanel->addWidget(redSquare);
     redPanel->addWidget(k->red);
@@ -103,7 +105,7 @@ TupRGBEditor::TupRGBEditor(const QBrush brush, QWidget *parent) : QWidget(parent
     connect(k->green, SIGNAL(valueChanged(int)), this, SLOT(updateGreenCompound(int)));
 
     QHBoxLayout *greenPanel = new QHBoxLayout;
-    greenPanel->setContentsMargins(20, 0, 20, 0);
+    greenPanel->setContentsMargins(40, 0, 40, 0);
     greenPanel->setAlignment(Qt::AlignHCenter);
     greenPanel->addWidget(greenSquare);
     greenPanel->addWidget(k->green);
@@ -121,7 +123,7 @@ TupRGBEditor::TupRGBEditor(const QBrush brush, QWidget *parent) : QWidget(parent
     connect(k->blue, SIGNAL(valueChanged(int)), this, SLOT(updateBlueCompound(int)));
 
     QHBoxLayout *bluePanel = new QHBoxLayout;
-    bluePanel->setContentsMargins(20, 0, 20, 0);
+    bluePanel->setContentsMargins(40, 0, 40, 0);
     bluePanel->setAlignment(Qt::AlignHCenter);
     bluePanel->addWidget(blueSquare);
     bluePanel->addWidget(k->blue);
@@ -148,7 +150,7 @@ void TupRGBEditor::updateRedCompound(int red)
 {
     k->r = red;
     QColor color(k->r, k->g, k->b); 
-    k->panel->setBrush(color);
+    k->panel->setBrush(QBrush(color, k->style));
     k->redLabel->setText("Red: " + QString::number(k->r));
     emit updateColor(color);
 }
@@ -157,7 +159,7 @@ void TupRGBEditor::updateGreenCompound(int green)
 {
     k->g = green;
     QColor color(k->r, k->g, k->b);
-    k->panel->setBrush(color);
+    k->panel->setBrush(QBrush(color, k->style));
     k->greenLabel->setText("Green: " + QString::number(k->g));
     emit updateColor(color);
 }
@@ -166,7 +168,7 @@ void TupRGBEditor::updateBlueCompound(int blue)
 {
     k->b = blue;
     QColor color(k->r, k->g, k->b);
-    k->panel->setBrush(color);
+    k->panel->setBrush(QBrush(color, k->style));
     k->blueLabel->setText("Blue: " + QString::number(k->b));
     emit updateColor(color);
 }
@@ -177,7 +179,7 @@ void TupRGBEditor::setCurrentColor(const QColor color)
     k->g = color.green();
     k->b = color.blue();
 
-    k->panel->setBrush(color);
+    k->panel->setBrush(QBrush(color, k->style));
     k->redLabel->setText("Red: " + QString::number(k->r));
     k->greenLabel->setText("Green: " + QString::number(k->g));
     k->blueLabel->setText("Blue: " + QString::number(k->b));

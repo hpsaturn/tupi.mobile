@@ -41,6 +41,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QSlider>
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QDebug>
@@ -50,6 +51,7 @@ struct TupStrokeSizeDialog::Private
     QVBoxLayout *innerLayout;
     TupPenPreviewCanvas *thickPreview;
     QPen pen;
+    QSlider *slider;
     double opacity;
     QLabel *sizeLabel;
     int currentSize;
@@ -59,7 +61,6 @@ TupStrokeSizeDialog::TupStrokeSizeDialog(QPen pen, double opacity, QWidget *pare
 {
     setModal(true);
     setWindowFlags(Qt::Popup);
-    // setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::ToolTip);
     setStyleSheet("* { background-color: rgb(232,232,232) }");
 
     k->pen = pen;
@@ -78,7 +79,7 @@ TupStrokeSizeDialog::TupStrokeSizeDialog(QPen pen, double opacity, QWidget *pare
 
     setLabelPanel();
     setBrushCanvas();
-    setButtonsPanel();
+    setSlider();
 
     QPixmap pixmap(":images/close.png");
     QIcon buttonIcon(pixmap);
@@ -122,85 +123,18 @@ void TupStrokeSizeDialog::setLabelPanel()
     k->innerLayout->addWidget(k->sizeLabel);
 }
 
-void TupStrokeSizeDialog::setButtonsPanel()
+void TupStrokeSizeDialog::setSlider()
 {
-    QPixmap pixmap(":images/minus_sign_big.png");
-    QIcon buttonIcon(pixmap);
-    QPushButton *minus5 = new QPushButton(this);
-    minus5->setToolTip(tr("-5"));
-    minus5->setIcon(buttonIcon);
-#ifdef Q_OS_ANDROID
-    minus5->setIconSize(pixmap.rect().size());
-#endif
-    connect(minus5, SIGNAL(clicked()), this, SLOT(fivePointsLess()));
-
-    QPixmap pixmap2(":images/minus_sign_small.png");
-    QIcon buttonIcon2(pixmap2);
-    QPushButton *minus = new QPushButton(this);
-    minus->setToolTip(tr("-1"));
-    minus->setIcon(buttonIcon2);
-#ifdef Q_OS_ANDROID
-    minus->setIconSize(pixmap2.rect().size());
-#endif
-    connect(minus, SIGNAL(clicked()), this, SLOT(onePointLess()));
-
-    QPixmap pixmap3(":images/plus_sign_small.png");
-    QIcon buttonIcon3(pixmap3);
-    QPushButton *plus = new QPushButton(this);
-    plus->setToolTip(tr("+1"));
-    plus->setIcon(buttonIcon3);
-#ifdef Q_OS_ANDROID
-    plus->setIconSize(pixmap3.rect().size());
-#endif
-    connect(plus, SIGNAL(clicked()), this, SLOT(onePointMore()));
-
-    QPixmap pixmap4(":images/plus_sign_big.png");
-    QIcon buttonIcon4(pixmap4);
-    QPushButton *plus5 = new QPushButton(this);
-    plus5->setToolTip(tr("+5"));
-    plus5->setIcon(buttonIcon4);
-#ifdef Q_OS_ANDROID
-    plus5->setIconSize(pixmap4.rect().size());
-#endif
-    connect(plus5, SIGNAL(clicked()), this, SLOT(fivePointsMore()));
-
-    QBoxLayout *layout = new QHBoxLayout;
-    layout->addWidget(minus5);
-    layout->addWidget(minus);
-    layout->addWidget(plus);
-    layout->addWidget(plus5);
-
-    k->innerLayout->addLayout(layout);
-}
-
-void TupStrokeSizeDialog::fivePointsLess()
-{
-    modifySize(-5);
-}
-
-void TupStrokeSizeDialog::onePointLess()
-{
-    modifySize(-1);
-}
-
-void TupStrokeSizeDialog::onePointMore()
-{
-    modifySize(1);
-}
-
-void TupStrokeSizeDialog::fivePointsMore()
-{
-    modifySize(5);
+    k->slider = new QSlider(Qt::Horizontal);
+    k->slider->setRange(1, 100);
+    k->slider->setValue(k->currentSize);
+    connect(k->slider, SIGNAL(valueChanged(int)), this, SLOT(modifySize(int)));
+    k->innerLayout->addWidget(k->slider);
 }
 
 void TupStrokeSizeDialog::modifySize(int value)
 {
-    k->currentSize += value;
-    if (k->currentSize > 100)
-        k->currentSize = 100;
-
-    if (k->currentSize < 1)
-        k->currentSize = 1;
+    k->currentSize = value;
 
 #ifdef TUP_DEBUG
     qDebug() << "TupStrokeSizeDialog::modifySize() - Size: " << k->currentSize;
@@ -211,4 +145,3 @@ void TupStrokeSizeDialog::modifySize(int value)
 
     emit updatePen(k->currentSize);
 }
-

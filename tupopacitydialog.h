@@ -53,16 +53,12 @@ class TupOpacityDialog : public QDialog
         void updateOpacity(double);
 
     private slots:
-        void fivePointsLess();
-        void onePointLess();
-        void onePointMore();
-        void fivePointsMore();
+        void modifySize(int value);
 
     private:
         void setOpacityCanvas();
         void setLabelPanel();
-        void setButtonsPanel();
-        void modifySize(double value);
+        void setSlider();
 
         struct Private;
         Private *const k;
