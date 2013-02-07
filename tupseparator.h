@@ -35,89 +35,59 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
 
-#include "tupcolorwidget.h"
-#include <QPainter>
+#ifndef TUPSEPARATOR_H
+#define TUPSEPARATOR_H
 
-struct TupColorWidget::Private
+#include <QFrame>
+
+/**
+ * Standard horizontal or vertical separator.
+ *
+ * @author Michael Roth \<mroth@wirlweb.de\>
+ */
+
+class TupSeparator : public QFrame
 {
-    QBrush brush;
-    int index;
-    bool editable;
-    bool selected;
+    Q_OBJECT
+
+    Q_PROPERTY(Qt::Orientation orientation READ orientation WRITE setOrientation);
+
+    public:
+
+    /**
+     * Constructor.
+     * @param parent parent object.
+     * @param f extra QWidget flags.
+     **/
+    TupSeparator(QWidget* parent=0);
+
+    /**
+     * Constructor.
+     * @param orientation Set the orientation of the separator.
+     * Possible values are Horizontal or Vertical.
+     * @param parent parent object.
+     * @param f extra QWidget flags.
+     **/
+    TupSeparator(Qt::Orientation orientation, QWidget* parent=0);
+
+    /**
+     * Returns the orientation of the separator.
+     * @return int Possible values Horizontal or Vertical.
+     **/
+     Qt::Orientation orientation() const;
+
+    /**
+     * Set the orientation of the separator to @p orientation
+     *
+     * @param orientation Possible values are Vertical and Horizontal.
+     */
+     void setOrientation(Qt::Orientation orientation);
+
+    protected:
+        virtual void virtual_hook(int id, void* data);
+
+    private:
+        class TupSeparatorPrivate* k;
 };
 
-TupColorWidget::TupColorWidget(int index, const QBrush &brush, const QSize &size) : k(new Private)
-{
-    k->index = index;
-    k->editable = true;
-    k->selected = false;
-    k->brush = brush;
-    setFixedSize(size);
-}
-
-TupColorWidget::~TupColorWidget()
-{
-}
-
-QSize TupColorWidget::sizeHint() const 
-{
-    return QSize(50, 50);
-}
-
-void TupColorWidget::paintEvent(QPaintEvent *event)
-{
-    Q_UNUSED(event);
-    QPainter painter(this);
-    painter.fillRect(rect(), k->brush);
-    if (k->selected && k->editable) {
-        QRect border = rect();
-#ifdef Q_OS_ANDROID
-        painter.setPen(QPen(QColor(200, 200, 200), 20, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-#else
-        painter.setPen(QPen(QColor(200, 200, 200), 10, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-#endif
-        painter.drawRect(border);
-        painter.setPen(QPen(QColor(190, 190, 190), 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-        painter.drawRect(border);
-        painter.setPen(QPen(QColor(150, 150, 150), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-        painter.drawRect(border);
-    } else {
-        QRect border = rect();
-        painter.setPen(QPen(QColor(190, 190, 190), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-        painter.drawRect(border);
-    }
-}
-
-void TupColorWidget::mousePressEvent(QMouseEvent *event)
-{
-    Q_UNUSED(event);
-    emit clicked(k->index);
-    selected();
-}
-
-QColor TupColorWidget::color()
-{
-    return k->brush.color();
-}
-
-void TupColorWidget::unselected()
-{
-    k->selected = false;
-    update();
-}
-
-void TupColorWidget::selected()
-{
-    k->selected = true;
-    update();
-}
-
-void TupColorWidget::setBrush(const QBrush &brush) {
-    k->brush = brush;
-    update();
-}
-
-void TupColorWidget::setEditable(bool flag) {
-    k->editable = flag;
-}
-
+#endif // TSEPARATOR_H

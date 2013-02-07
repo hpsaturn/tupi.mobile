@@ -35,89 +35,43 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
 
-#include "tupcolorwidget.h"
+#include "tupseparator.h"
+#include <QStyleOption>
 #include <QPainter>
 
-struct TupColorWidget::Private
+TupSeparator::TupSeparator(QWidget* parent) : QFrame(parent)
 {
-    QBrush brush;
-    int index;
-    bool editable;
-    bool selected;
-};
+   setLineWidth(1);
+   setMidLineWidth(0);
+   setOrientation(Qt::Horizontal);
+}
 
-TupColorWidget::TupColorWidget(int index, const QBrush &brush, const QSize &size) : k(new Private)
+TupSeparator::TupSeparator(Qt::Orientation orientation, QWidget* parent) : QFrame(parent)
 {
-    k->index = index;
-    k->editable = true;
-    k->selected = false;
-    k->brush = brush;
-    setFixedSize(size);
+   setLineWidth(1);
+   setMidLineWidth(0);
+   setOrientation(orientation);
 }
 
-TupColorWidget::~TupColorWidget()
+void TupSeparator::setOrientation(Qt::Orientation orientation)
 {
+   if (orientation == Qt::Vertical) {
+      setFrameShape(QFrame::VLine);
+      setFrameShadow(QFrame::Sunken);
+      setMinimumSize(2, 0);
+   } else {
+      setFrameShape(QFrame::HLine);
+      setFrameShadow(QFrame::Sunken);
+      setMinimumSize(0, 2);
+   }
 }
 
-QSize TupColorWidget::sizeHint() const 
+Qt::Orientation TupSeparator::orientation() const
 {
-    return QSize(50, 50);
+   return (frameStyle() & VLine) ? Qt::Vertical : Qt::Horizontal;
 }
 
-void TupColorWidget::paintEvent(QPaintEvent *event)
-{
-    Q_UNUSED(event);
-    QPainter painter(this);
-    painter.fillRect(rect(), k->brush);
-    if (k->selected && k->editable) {
-        QRect border = rect();
-#ifdef Q_OS_ANDROID
-        painter.setPen(QPen(QColor(200, 200, 200), 20, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-#else
-        painter.setPen(QPen(QColor(200, 200, 200), 10, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-#endif
-        painter.drawRect(border);
-        painter.setPen(QPen(QColor(190, 190, 190), 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-        painter.drawRect(border);
-        painter.setPen(QPen(QColor(150, 150, 150), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-        painter.drawRect(border);
-    } else {
-        QRect border = rect();
-        painter.setPen(QPen(QColor(190, 190, 190), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-        painter.drawRect(border);
-    }
+void TupSeparator::virtual_hook(int, void*)
+{ 
+    /*BASE::virtual_hook( id, data );*/ 
 }
-
-void TupColorWidget::mousePressEvent(QMouseEvent *event)
-{
-    Q_UNUSED(event);
-    emit clicked(k->index);
-    selected();
-}
-
-QColor TupColorWidget::color()
-{
-    return k->brush.color();
-}
-
-void TupColorWidget::unselected()
-{
-    k->selected = false;
-    update();
-}
-
-void TupColorWidget::selected()
-{
-    k->selected = true;
-    update();
-}
-
-void TupColorWidget::setBrush(const QBrush &brush) {
-    k->brush = brush;
-    update();
-}
-
-void TupColorWidget::setEditable(bool flag) {
-    k->editable = flag;
-}
-

@@ -35,89 +35,82 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
 
-#include "tupcolorwidget.h"
-#include <QPainter>
+#include "tupcolordialog.h"
+#include "tuppalettedialog.h"
 
-struct TupColorWidget::Private
+#ifndef Q_OS_ANDROID
+#include "tuprgbeditor.h"
+#endif
+
+#include <QTabWidget>
+#include <QBoxLayout>
+#include <QPixmap>
+#include <QPushButton>
+#include <QDialogButtonBox>
+#include <QDebug>
+
+struct TupColorDialog::Private
 {
-    QBrush brush;
-    int index;
-    bool editable;
-    bool selected;
+    QBoxLayout *layout;
+    QColor color;
 };
 
-TupColorWidget::TupColorWidget(int index, const QBrush &brush, const QSize &size) : k(new Private)
+TupColorDialog::TupColorDialog(const QBrush brush, const QSize size, QWidget *parent) : QDialog(parent), k(new Private)
 {
-    k->index = index;
-    k->editable = true;
-    k->selected = false;
-    k->brush = brush;
-    setFixedSize(size);
-}
+    setModal(true);
+    setWindowFlags(Qt::Popup);
+    setStyleSheet("* { background-color: rgb(232,232,232); }");
 
-TupColorWidget::~TupColorWidget()
-{
-}
+    k->layout = new QVBoxLayout(this);
+    k->layout->setContentsMargins(3, 3, 3, 3);
+    k->layout->setSpacing(10);
 
-QSize TupColorWidget::sizeHint() const 
-{
-    return QSize(50, 50);
-}
+    TupPaletteDialog *palette = new TupPaletteDialog(brush, size, this);
+    connect(palette, SIGNAL(updateColor(const QColor)), this, SLOT(setCurrentColor(const QColor)));
 
-void TupColorWidget::paintEvent(QPaintEvent *event)
-{
-    Q_UNUSED(event);
-    QPainter painter(this);
-    painter.fillRect(rect(), k->brush);
-    if (k->selected && k->editable) {
-        QRect border = rect();
-#ifdef Q_OS_ANDROID
-        painter.setPen(QPen(QColor(200, 200, 200), 20, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-#else
-        painter.setPen(QPen(QColor(200, 200, 200), 10, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    QTabWidget *tabs = new QTabWidget;
+    tabs->addTab(palette, tr("Basic Palette"));
+
+#ifndef Q_OS_ANDROID
+    TupRGBEditor *editor = new TupRGBEditor(brush, this);
+    connect(editor, SIGNAL(updateColor(const QColor)), this, SLOT(setCurrentColor(const QColor)));
+    connect(palette, SIGNAL(updateColor(const QColor)), editor, SLOT(setCurrentColor(const QColor)));
+    tabs->addTab(editor, tr("RGB Editor"));
 #endif
-        painter.drawRect(border);
-        painter.setPen(QPen(QColor(190, 190, 190), 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-        painter.drawRect(border);
-        painter.setPen(QPen(QColor(150, 150, 150), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-        painter.drawRect(border);
-    } else {
-        QRect border = rect();
-        painter.setPen(QPen(QColor(190, 190, 190), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-        painter.drawRect(border);
-    }
+
+    k->layout->addWidget(tabs);
+
+    setClosePanel();
 }
 
-void TupColorWidget::mousePressEvent(QMouseEvent *event)
+TupColorDialog::~TupColorDialog()
 {
-    Q_UNUSED(event);
-    emit clicked(k->index);
-    selected();
 }
 
-QColor TupColorWidget::color()
+void TupColorDialog::setClosePanel()
 {
-    return k->brush.color();
+    QPixmap pixmap(":images/close.png");
+    QIcon buttonIcon(pixmap);
+    QPushButton *closeButton = new QPushButton;
+    closeButton->setIcon(buttonIcon);
+    closeButton->setToolTip(tr("Close"));
+    closeButton->setDefault(true);
+    connect(closeButton, SIGNAL(clicked()), this, SLOT(closeDialog()));
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
+    buttonBox->addButton(closeButton, QDialogButtonBox::ActionRole);
+    buttonBox->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+
+    k->layout->addWidget(buttonBox);
 }
 
-void TupColorWidget::unselected()
+void TupColorDialog::closeDialog()
 {
-    k->selected = false;
-    update();
+    emit updateColor(k->color);
+    close();
 }
 
-void TupColorWidget::selected()
+void TupColorDialog::setCurrentColor(const QColor color)
 {
-    k->selected = true;
-    update();
+    k->color = color;
 }
-
-void TupColorWidget::setBrush(const QBrush &brush) {
-    k->brush = brush;
-    update();
-}
-
-void TupColorWidget::setEditable(bool flag) {
-    k->editable = flag;
-}
-

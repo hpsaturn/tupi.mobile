@@ -55,6 +55,7 @@ class TupColorWidget : public QWidget
         void unselected();
         void selected();
         void setBrush(const QBrush &brush);
+        void setEditable(bool flag);
 
     protected:
         void paintEvent(QPaintEvent *painter);

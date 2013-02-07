@@ -61,7 +61,7 @@ TupBrushAndroidDialog::TupBrushAndroidDialog(const QPen pen, const QSize size, Q
 {
     setModal(true);
     setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::ToolTip);
-    setStyleSheet("* { background-color: rgb(232,232,232) }");
+    setStyleSheet("* { background-color: rgb(232,232,232); }");
  
     k->pen = pen;
     k->size = size;
@@ -99,7 +99,10 @@ void TupBrushAndroidDialog::setLabelPanel()
 void TupBrushAndroidDialog::initBrushesPanel()
 {
     k->brushesLayout = new QGridLayout;
-    k->innerLayout->addLayout(k->brushesLayout);
+    QWidget *widget = new QWidget;
+    widget->setStyleSheet("* { background-color: rgb(255,255,255); border: 1 solid #ccc; }");
+    widget->setLayout(k->brushesLayout);
+    k->innerLayout->addWidget(widget);
 
     for (int index=1; index<15; index++) {
          QBrush brush(k->pen.color(), Qt::BrushStyle(index));
@@ -215,7 +218,8 @@ void TupBrushAndroidDialog::closeDialog()
     close();
 }
 
-void TupBrushAndroidDialog::paintEvent(QPaintEvent * event)
+void TupBrushAndroidDialog::paintEvent(QPaintEvent *event)
 {
+    Q_UNUSED(event);
     setBrushesPanel();
 }

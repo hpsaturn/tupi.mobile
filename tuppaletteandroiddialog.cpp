@@ -37,99 +37,73 @@
 
 #include "tuppalettedialog.h"
 #include "tupcolorwidget.h"
-#include "tupseparator.h"
 
 #include <cmath>
 #include <QTabWidget>
 #include <QFrame>
 #include <QBoxLayout>
 #include <QPixmap>
-#include <QSlider>
 #include <QPushButton>
 #include <QDialogButtonBox>
 #include <QDebug>
 
-struct TupPaletteDialog::Private
+struct TupPaletteAndroidDialog::Private
 {
-    QBoxLayout *paletteGlobalLayout;
-    QBoxLayout *colorMatrixLayout;
-    QBoxLayout *centralLayout;
+    QVBoxLayout *innerLayout;
     QList<TupColorWidget *> colors;
     QList<TupColorWidget *> baseColors;
     int currentColorIndex;
     int currentBaseColor;
-    int currentLeadColor;
     QBrush brush;
     QColor color;
+    QSize size;
     int rows;
     int columns;
-    QSlider *slider;
-    TupColorWidget *top;
-    TupColorWidget *bottom;
 };
 
-TupPaletteDialog::TupPaletteDialog(const QBrush brush, const QSize size, QWidget *parent) : QWidget(parent), k(new Private)
+TupPaletteAndroidDialog::TupPaletteAndroidDialog(const QBrush brush, const QSize size, QWidget *parent) : QDialog(parent), k(new Private)
 {
+    setModal(true);
+    setWindowFlags(Qt::Popup);
+    // setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::ToolTip);
+    setStyleSheet("* { background-color: rgb(232,232,232); }");
+
     k->brush = brush;
-    k->currentLeadColor = 255;
+    k->size = size;
     k->currentColorIndex = -1;
-    int w = size.width();
-    int h = size.height();
-    k->columns = w/70;
-    k->rows = h/50;
+    int w = k->size.width();
+    int h = k->size.height();
+    k->rows = w/100;
+    k->columns = h/50;
 
-    QBoxLayout *layout = new QVBoxLayout(this);
+    QBoxLayout *layout = new QHBoxLayout(this);
+#ifdef Q_OS_ANDROID
     layout->setContentsMargins(3, 3, 3, 3);
+#else
+    layout->setContentsMargins(5, 5, 5, 5);
+#endif
     layout->setSpacing(10);
-    k->colorMatrixLayout = new QVBoxLayout;
 
-    k->paletteGlobalLayout = new QVBoxLayout;
-    k->centralLayout = new QHBoxLayout;
+    k->innerLayout = new QVBoxLayout;
 
     initColorsArray();
-    setSliderPanel();
 
-    k->centralLayout->addWidget(new TupSeparator(Qt::Vertical));
-    k->centralLayout->addLayout(k->colorMatrixLayout);
-    k->paletteGlobalLayout->addLayout(k->centralLayout);
+    QPixmap pixmap(":images/close.png");
+    QIcon buttonIcon(pixmap);
+    QPushButton *closeButton = new QPushButton(this);
+    closeButton->setIcon(buttonIcon);
+#ifdef Q_OS_ANDROID
+    closeButton->setIconSize(pixmap.rect().size());
+#else
+    closeButton->setToolTip(tr("Close"));
+#endif
+    closeButton->setDefault(true);
+    connect(closeButton, SIGNAL(clicked()), this, SLOT(closeDialog()));
 
-    setBaseColorsPanel();
-    layout->addLayout(k->paletteGlobalLayout);
-}
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
+    buttonBox->addButton(closeButton, QDialogButtonBox::ActionRole);
+    buttonBox->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 
-TupPaletteDialog::~TupPaletteDialog()
-{
-}
-
-void TupPaletteDialog::setSliderPanel()
-{
-    QBoxLayout *sliderLayout = new QVBoxLayout;
-    sliderLayout->setAlignment(Qt::AlignVCenter);
-
-    QColor topColor(255, 0, 0);
-    QBrush topBrush(topColor, k->brush.style());
-    k->top = new TupColorWidget(1, topBrush, QSize(30, 20));
-    k->top->setEditable(false);
-    sliderLayout->addWidget(k->top);
-
-    k->slider = new QSlider(Qt::Vertical);
-    k->slider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    k->slider->setRange(0, 255);
-    k->slider->setValue(255);
-    sliderLayout->addWidget(k->slider);
-    connect(k->slider, SIGNAL(valueChanged(int)), this, SLOT(updateMatrixFromSlider(int)));
-
-    QColor bottomColor(0, 0, 0);
-    QBrush bottomBrush(bottomColor, k->brush.style());
-    k->bottom = new TupColorWidget(1, bottomBrush, QSize(30, 20));
-    k->bottom->setEditable(false);
-    sliderLayout->addWidget(k->bottom);
-
-    k->centralLayout->addLayout(sliderLayout);
-}
-
-void TupPaletteDialog::setBaseColorsPanel()
-{
     k->currentBaseColor = 0;
     QColor redColor(255, 0, 0);
     QBrush redBrush(redColor, k->brush.style());
@@ -156,20 +130,26 @@ void TupPaletteDialog::setBaseColorsPanel()
     connect(white, SIGNAL(clicked(int)), this, SLOT(updateMatrix(int)));
     k->baseColors << white;
 
-    QBoxLayout *bottomLayout = new QHBoxLayout;
-    bottomLayout->setAlignment(Qt::AlignHCenter);
-    bottomLayout->setContentsMargins(3, 3, 3, 3);
-    bottomLayout->setSpacing(10);
-    bottomLayout->addWidget(red);
-    bottomLayout->addWidget(green);
-    bottomLayout->addWidget(blue);
-    bottomLayout->addWidget(white);
+    QBoxLayout *down = new QHBoxLayout;
+    down->setContentsMargins(3, 3, 3, 3);
+    down->setSpacing(10);
+    down->addWidget(red);
+    down->addWidget(green);
+    down->addWidget(blue);
+    down->addWidget(white);
+    down->addWidget(buttonBox);
 
-    k->paletteGlobalLayout->addWidget(new TupSeparator(Qt::Horizontal));
-    k->paletteGlobalLayout->addLayout(bottomLayout);
+    k->innerLayout->addSpacing(10);
+    k->innerLayout->addLayout(down);
+
+    layout->addLayout(k->innerLayout);
 }
 
-void TupPaletteDialog::initColorsArray()
+TupPaletteAndroidDialog::~TupPaletteAndroidDialog()
+{
+}
+
+void TupPaletteAndroidDialog::initColorsArray()
 {
     int deltaX = 255/k->rows;
     int deltaY = 255/k->columns;
@@ -198,11 +178,11 @@ void TupPaletteDialog::initColorsArray()
               k->colors << button;
               matrix->addWidget(button);
          }
-         k->colorMatrixLayout->addLayout(matrix);
+         k->innerLayout->addLayout(matrix);
     }
 }
 
-void TupPaletteDialog::updateSelection(int index)
+void TupPaletteAndroidDialog::updateSelection(int index)
 {
     if (index != k->currentColorIndex) {
         if (k->currentColorIndex >= 0) {
@@ -212,105 +192,82 @@ void TupPaletteDialog::updateSelection(int index)
         TupColorWidget *selection = (TupColorWidget *) k->colors.at(index);
         k->color = selection->color();
         k->currentColorIndex = index;
-        emit updateColor(k->color);
     }
 }
 
-void TupPaletteDialog::updateMatrixFromSlider(int value)
+void TupPaletteAndroidDialog::closeDialog()
 {
-    k->currentLeadColor = value;
-    updateMatrix(k->currentBaseColor, true);
+    emit updateColor(k->color);
+    close();
 }
 
-void TupPaletteDialog::updateMatrix(int newColor, bool fromSlider)
+void TupPaletteAndroidDialog::updateMatrix(int newColor)
 {
-    if (k->currentColorIndex >= 0 && !fromSlider) {
-        TupColorWidget *button = (TupColorWidget *) k->colors.at(k->currentColorIndex);
-        button->unselected();
-    }
-
-    TupColorWidget *current = (TupColorWidget *) k->baseColors.at(newColor);
-
-    if (!fromSlider) {
-        k->color = current->color();
-        if (k->color == Qt::white) {
-            k->top->setBrush(QBrush(Qt::black));
-            k->bottom->setBrush(QBrush(Qt::white));
-            k->slider->setEnabled(false);
-        } else {
-            k->top->setBrush(QBrush(k->color));
-            if (!k->slider->isEnabled())
-                k->slider->setEnabled(true);
+    if (newColor != k->currentBaseColor) {
+        if (k->currentColorIndex >= 0) {
+            TupColorWidget *button = (TupColorWidget *) k->colors.at(k->currentColorIndex);
+            button->unselected();
         }
-    }
 
-    if ((newColor != k->currentBaseColor) && !fromSlider)
         k->baseColors.at(k->currentBaseColor)->unselected(); 
+        k->currentBaseColor = newColor;
+        int deltaX = 255 / k->rows;
+        int deltaY = 255 / k->columns;
+        int delta = ceil(255.0 / (k->rows * k->columns));
 
-    k->currentBaseColor = newColor;
-    int deltaX = 255 / k->rows;
-    int deltaY = 255 / k->columns;
-    int delta = ceil(255.0 / (k->rows * k->columns));
+        int r = 0;
+        int g = 0;
+        int b = 0;
+        int index = 0;
+        TupPaletteAndroidDialog::Color color = TupPaletteAndroidDialog::Color(newColor);
 
-    int r = 0;
-    int g = 0;
-    int b = 0;
-    int index = 0;
-    TupPaletteDialog::Color color = TupPaletteDialog::Color(newColor);
-
-    for (int i=0; i < k->rows; i++) {
-         for (int j=0; j < k->columns; j++) {
-              switch (color) {
-                      case TupPaletteDialog::Red :
-                           r = k->currentLeadColor;
-                           g = (i*deltaY);
-                           b = (j*deltaX);
-                      break;
-                      case TupPaletteDialog::Green :
-                           r = (i*deltaX);
-                           g = k->currentLeadColor;
-                           b = (j*deltaX);
-                      break;
-                      case TupPaletteDialog::Blue :
-                           r = (i*deltaX);
-                           g = (j*deltaY);
-                           b = k->currentLeadColor;
-                      break;
-                      case TupPaletteDialog::White :
-                           if (j == k->columns - 1 && i == k->rows - 1) {
+        for (int i=0; i < k->rows; i++) {
+             for (int j=0; j < k->columns; j++) {
+                  switch (color) {
+                          case TupPaletteAndroidDialog::Red :
                                r = 255;
+                               g = (i*deltaY);
+                               b = (j*deltaX);
+                          break;
+                          case TupPaletteAndroidDialog::Green :
+                               r = (i*deltaX);
                                g = 255;
+                               b = (j*deltaX);
+                          break;
+                          case TupPaletteAndroidDialog::Blue :
+                               r = (i*deltaX);
+                               g = (j*deltaY);
                                b = 255;
-                           } else {
-                               r += delta;
-                               g += delta;
-                               b += delta;
-                           }
-                      break;
-              }
+                          break;
+                          case TupPaletteAndroidDialog::White :
+                               if (j == k->columns - 1 && i == k->rows - 1) {
+                                   r = 255;
+                                   g = 255;
+                                   b = 255;
+                               } else {
+                                   r += delta;
+                                   g += delta;
+                                   b += delta;
+                               }
+                          break;
+                  }
 
 #ifdef TUP_DEBUG
-              // qDebug() << "TupPaletteDialog::updateMatrix() - [r,g,b]: " << r << ", " << g << ", " << b;
+                  // qDebug() << "TupPaletteAndroidDialog::updateMatrix() - [r,g,b]: " << r << ", " << g << ", " << b;
 #endif
-              if (r > 255)
-                  r = 255;
-              if (g > 255)
-                  g = 255;
-              if (b > 255)
-                  b = 255;
+                  if (r > 255)
+                      r = 255;
+                  if (g > 255)
+                      g = 255;
+                  if (b > 255)
+                      b = 255;
 
-              QColor cellColor(r, g, b);
-              QBrush brush(cellColor, k->brush.style());
-              TupColorWidget *cell = k->colors.at(index);
-              cell->setBrush(brush);
-              index++;
-        } 
-
-        if (k->currentColorIndex >= 0 && fromSlider) {
-            TupColorWidget *last = (TupColorWidget *) k->colors.at(k->currentColorIndex);
-            k->color = last->color();
+                  QColor cellColor(r, g, b);
+                  QBrush brush(cellColor, k->brush.style());
+                  TupColorWidget *cell = k->colors.at(index);
+                  cell->setBrush(brush);
+                  index++;
+             } 
         }
-
-        emit updateColor(k->color);
     }
 }

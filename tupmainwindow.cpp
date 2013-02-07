@@ -37,22 +37,21 @@
 
 #include "tupmainwindow.h"
 #include "tupcanvas.h"
-#include "tuppalettedialog.h"
 #include "tupstrokesizedialog.h"
 #include "tupopacitydialog.h"
 #include "tupnethandler.h"
-#include "tupmetadatadialog.h"
 #include "tupabout.h"
-
-#ifdef Q_OS_ANDROID
-#include "tupbrushandroiddialog.h"
-#include "tupandroidintents.h"
-#else
-#include "tupbrushdialog.h"
-#endif
+#include "tupcolordialog.h"
 
 #ifdef Q_OS_ANDROID
 #include "tupmetadataandroiddialog.h"
+#include "tupbrushandroiddialog.h"
+#include "tuppaletteandroiddialog.h"
+#include "tupandroidintents.h"
+#else
+#include "tupmetadatadialog.h"
+#include "tupbrushdialog.h"
+#include "tuppalettedialog.h"
 #endif
 
 #include <QtGui>
@@ -359,19 +358,13 @@ void TupMainWindow::penStrokeSizeDialog()
 
 void TupMainWindow::colorDialog()
 {
-    TupPaletteDialog *dialog = new TupPaletteDialog(k->pen.brush(), k->screen, this);
-    connect(dialog, SIGNAL(updateColor(const QColor)), this, SLOT(updatePenColor(const QColor)));
-    dialog->showMaximized();
-/*
-#ifndef Q_OS_ANDROID
-    TupPaletteDialog *dialog = new TupPaletteDialog(k->pen.brush(), k->screen, this);
-    connect(dialog, SIGNAL(updateColor(const QColor)), this, SLOT(updatePenColor(const QColor)));
-    dialog->showMaximized();
+#ifdef Q_OS_ANDROID
+    TupPaletteAndroidDialog *dialog = new TupPaletteAndroidDialog(k->pen.brush(), k->screen, this);
 #else
-    QColor color = QColorDialog::getColor(k->pen.brush().color(), this);
-    updatePenColor(color);
+    TupColorDialog *dialog = new TupColorDialog(k->pen.brush(), k->screen, this);
 #endif
-*/
+    connect(dialog, SIGNAL(updateColor(const QColor)), this, SLOT(updatePenColor(const QColor)));
+    dialog->showMaximized();
 }
 
 void TupMainWindow::opacityDialog()

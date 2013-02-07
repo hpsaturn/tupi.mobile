@@ -252,6 +252,7 @@ void TupCanvas::notify(const QString &msg)
     k->message->setDefaultTextColor(QColor(0, 100, 0));
     QRectF rect = k->scene->sceneRect();
     QPointF left = rect.bottomLeft();
+
 #ifndef Q_OS_ANDROID
     k->message->setFont(QFont("Helvetica", 16, QFont::Normal));
     k->message->setPos(QPointF(left.x() + 1, left.y() - 30));

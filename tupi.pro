@@ -12,11 +12,11 @@ HEADERS += tupmainwindow.h \
            tupsvg2qt.h \
            tupgraphicalgorithm.h \
            tupcolorwidget.h \
-           tuppalettedialog.h \
            tuppenpreviewcanvas.h \
            tupstrokesizedialog.h \
            tupopacitydialog.h \
            tupframe.h \
+           tupcolordialog.h \
            tupabout.h
 
 SOURCES += tupmainwindow.cpp \
@@ -27,26 +27,34 @@ SOURCES += tupmainwindow.cpp \
            tupsvg2qt.cpp \
            tupgraphicalgorithm.cpp \
            tupcolorwidget.cpp \
-           tuppalettedialog.cpp \
            tuppenpreviewcanvas.cpp \
            tupstrokesizedialog.cpp \
            tupopacitydialog.cpp \
            tupframe.cpp \
+           tupcolordialog.cpp \
            tupabout.cpp \
            main.cpp
 
 !android {
 HEADERS += tupmetadatadialog.h \
-           tupbrushdialog.h
+           tuppalettedialog.h \
+           tuprgbeditor.h \
+           tupbrushdialog.h \
+           tupseparator.h
 SOURCES += tupmetadatadialog.cpp \
-           tupbrushdialog.cpp
+           tuppalettedialog.cpp \
+           tuprgbeditor.cpp \
+           tupbrushdialog.cpp \
+           tupseparator.cpp
 }
 
 android {
     SOURCES += tupbrushandroiddialog.cpp \
+               tuppaletteandroiddialog.h \
                tupmetadataandroiddialog.cpp \
                tupandroidintents.cpp
     HEADERS += tupbrushandroiddialog.h \
+               tuppaletteandroiddialog.cpp \
                tupmetadataandroiddialog.h \
                tupandroidintents.h
 

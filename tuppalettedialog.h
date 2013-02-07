@@ -38,9 +38,9 @@
 #ifndef TUPPALETTEDIALOG_H
 #define TUPPALETTEDIALOG_H
 
-#include <QDialog>
+#include <QWidget>
 
-class TupPaletteDialog : public QDialog
+class TupPaletteDialog : public QWidget
 {
     Q_OBJECT
 
@@ -55,11 +55,14 @@ class TupPaletteDialog : public QDialog
 
     private slots:
         void updateSelection(int index);
-        void updateMatrix(int newColor);
-        void closeDialog();
+        void updateMatrixFromSlider(int value);
+        void updateMatrix(int newColor, bool fromSlider = false);
 
     private:
+        void setSliderPanel();
         void initColorsArray();
+        void setBaseColorsPanel();
+
         struct Private;
         Private *const k;
 };
