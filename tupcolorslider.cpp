@@ -81,15 +81,18 @@ void TupColorSlider::mouseMoveEvent(QMouseEvent *event)
 {
     int length = -1;
     if (k->orientation == Qt::Vertical) {
+        length = viewport()->height();
+
+        if (event->y() > (length - k->image->size().height()))
+            return;
+
         k->value = event->y();
-        length = viewport()->height();         
+
     } else {
         k->value = event->x();
         length = viewport()->width();  
     }
 
-    if (k->value > (length - k->image->size().height()))
-        return;
 
     /*
     if (k->value > length)
