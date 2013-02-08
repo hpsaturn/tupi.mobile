@@ -105,12 +105,19 @@ void TupColorPalette::setSliderPanel()
 {
     QBoxLayout *sliderLayout = new QVBoxLayout;
     sliderLayout->setAlignment(Qt::AlignVCenter);
+    sliderLayout->setContentsMargins(3, 3, 3, 3);
+    sliderLayout->setSpacing(5);
 
     QColor topColor(255, 0, 0);
     QBrush topBrush(topColor, k->brush.style());
     k->top = new TupColorWidget(1, topBrush, QSize(30, 20));
     k->top->setEditable(false);
-    sliderLayout->addWidget(k->top);
+
+    QBoxLayout *topLayout = new QHBoxLayout;
+    topLayout->setAlignment(sliderLayout, Qt::AlignHCenter);
+    topLayout->addWidget(k->top);
+
+    sliderLayout->addLayout(topLayout);
 
     k->slider = new TupColorSlider(Qt::Vertical, QColor(255, 0, 0), QColor(0, 0, 0));
     k->slider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -123,8 +130,12 @@ void TupColorPalette::setSliderPanel()
     QBrush bottomBrush(bottomColor, k->brush.style());
     k->bottom = new TupColorWidget(1, bottomBrush, QSize(30, 20));
     k->bottom->setEditable(false);
-    sliderLayout->addWidget(k->bottom);
 
+    QBoxLayout *bottomLayout = new QHBoxLayout;
+    bottomLayout->setAlignment(sliderLayout, Qt::AlignHCenter);
+    bottomLayout->addWidget(k->bottom);
+
+    sliderLayout->addLayout(bottomLayout);
     k->centralLayout->addLayout(sliderLayout);
 }
 

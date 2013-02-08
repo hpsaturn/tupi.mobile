@@ -56,7 +56,12 @@ TupColorSlider::TupColorSlider(Qt::Orientation orientation, const QColor &start,
     k->startColor = start;
     k->endColor = end;
     k->value = 0;
-    k->image = new QImage(QString(":/images/tip.png"));
+
+    if (k->orientation == Qt::Vertical)
+        k->image = new QImage(QString(":/images/tip_v.png"));
+    else 
+        k->image = new QImage(QString(":/images/tip_h.png"));
+
     setUpdatesEnabled(true);
 }
 
@@ -64,10 +69,25 @@ TupColorSlider::~TupColorSlider()
 {
 }
 
-void TupColorSlider::setRange(int n, int x)
+void TupColorSlider::setRange(int min, int max)
 {
-    k->min = n;
-    k->max = x;
+    k->min = min;
+    k->max = max;
+}
+
+void TupColorSlider::setValue(int value)
+{
+    if (k->orientation == Qt::Vertical) {
+        k->value = viewport()->height()*value/255; 
+        if (value == 255)
+            k->value = k->value - k->image->size().height();
+    } else {
+        k->value = viewport()->width()*value/255; 
+        if (value == 255)
+            k->value = k->value - k->image->size().width();
+    }
+
+    this->update();
 }
 
 void TupColorSlider::setColors(const QColor &start, const QColor &end)
@@ -77,39 +97,70 @@ void TupColorSlider::setColors(const QColor &start, const QColor &end)
     this->update();
 }
 
+void TupColorSlider::mousePressEvent(QMouseEvent *event)
+{
+    int pos = -1;
+    if (k->orientation == Qt::Vertical)
+        pos = event->y();
+    else
+        pos = event->x();
+
+    calculateColorIndex(pos);
+}
+
 void TupColorSlider::mouseMoveEvent(QMouseEvent *event)
 {
+    int pos = -1;
+    if (k->orientation == Qt::Vertical) 
+        pos = event->y();
+    else
+        pos = event->x();
+
+    calculateColorIndex(pos);
+}
+
+void TupColorSlider::calculateColorIndex(int pos)
+{
     int length = -1;
+
     if (k->orientation == Qt::Vertical) {
         length = viewport()->height();
-
-        if (event->y() > (length - k->image->size().height()))
+        k->value = pos;
+        if (pos > (length - k->image->size().height())) {
+            k->value = length - k->image->size().height();
+            this->update();
+            emit valueChanged(255);
             return;
-
-        k->value = event->y();
-
+        }
     } else {
-        k->value = event->x();
-        length = viewport()->width();  
+        length = viewport()->width();
+        if (pos > (length - k->image->size().width())) {
+            k->value = length - k->image->size().width();
+            this->update();
+            emit valueChanged(255);
+            return;
+        }
+        k->value = pos;
     }
 
-
-    /*
-    if (k->value > length)
-        k->value = length;
-    */
-
-    if (k->value < 0)
-        k->value=0;
-
-    int r = k->min + (k->max - k->min) * (1.0 - float(event->y())/float(length));
+    int value = -1;
+    if (k->orientation == Qt::Vertical) 
+        value = k->min + (k->max - k->min) * (1.0 - float(pos)/float(length));
+    else 
+        value = k->min + (k->max - k->min) * (float(pos)/float(length));
 
 #ifdef TUP_DEBUG
-       qDebug() << "mouseMoveEvent =  " << r << " - " <<  float(event->y())/(float(length));
+       qDebug() << "mouseMoveEvent =  " << value << " - " <<  float(pos)/float(length);
 #endif
 
+    if (k->value < 0)
+        k->value = 0;
+
+    if (value < 0)
+        value = 0;
+
     this->update();
-    emit valueChanged(r);
+    emit valueChanged(value);
 }
 
 void TupColorSlider::paintScales()
@@ -124,7 +175,6 @@ void TupColorSlider::paintScales()
         length = viewport()->width();
 
     int delta = length/(segments-1);
-
     for (int section=0; section<=segments; section++) {
          QColor color;
          int r;
@@ -146,7 +196,9 @@ void TupColorSlider::paintScales()
                  int imageW = k->image->size().width()-16;
                  painter.drawRect((width - imageW)/2, section*delta, imageW, delta);
              } else {
-                 painter.drawRect(section*delta, 0, delta, viewport()->height());
+                 int height = viewport()->height();
+                 int imageH = k->image->size().height()-16;
+                 painter.drawRect(section*delta, (height - imageH)/2, delta, imageH);
              }
          }
     }
@@ -156,7 +208,9 @@ void TupColorSlider::paintScales()
         int imageW = k->image->size().width();
         painter.drawImage((width/2)-(imageW/2), k->value, *k->image);
     } else {
-        painter.drawImage(k->value, viewport()->height() / (2 - k->image->size().height()/2), *k->image);
+        int height = viewport()->height();
+        int imageH = k->image->size().height();
+        painter.drawImage(k->value, (height/2)-(imageH/2), *k->image);
     }
 }
 

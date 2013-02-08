@@ -37,10 +37,10 @@
 
 #include "tuprgbeditor.h"
 #include "tupcolorwidget.h"
+#include "tupcolorslider.h"
 
 #include <QBoxLayout>
 #include <QLabel>
-#include <QSlider>
 #include <QDebug>
 
 struct TupRGBEditor::Private
@@ -52,9 +52,9 @@ struct TupRGBEditor::Private
     QLabel *redLabel;
     QLabel *greenLabel;
     QLabel *blueLabel;
-    QSlider *red; 
-    QSlider *green;
-    QSlider *blue;
+    TupColorSlider *red;
+    TupColorSlider *green;
+    TupColorSlider *blue;
     int r;
     int g;
     int b;
@@ -78,10 +78,7 @@ TupRGBEditor::TupRGBEditor(const QBrush brush, QWidget *parent) : QWidget(parent
     k->redLabel->setFont(QFont("Arial", 16, QFont::Normal));
     k->redLabel->setAlignment(Qt::AlignHCenter);
 
-    TupColorWidget *redSquare = new TupColorWidget(1, QBrush(Qt::red), QSize(30, 30));
-    redSquare->setEditable(false);
-
-    k->red = new QSlider(Qt::Horizontal);
+    k->red = new TupColorSlider(Qt::Horizontal, QColor(0, 0, 0), QColor(255, 0, 0));
     k->red->setRange(0, 255);
     k->red->setValue(k->r);
     connect(k->red, SIGNAL(valueChanged(int)), this, SLOT(updateRedCompound(int)));
@@ -89,17 +86,13 @@ TupRGBEditor::TupRGBEditor(const QBrush brush, QWidget *parent) : QWidget(parent
     QHBoxLayout *redPanel = new QHBoxLayout;
     redPanel->setContentsMargins(40, 0, 40, 0);
     redPanel->setAlignment(Qt::AlignHCenter);
-    redPanel->addWidget(redSquare);
     redPanel->addWidget(k->red);
 
     k->greenLabel = new QLabel("Green: " + QString::number(k->r));
     k->greenLabel->setFont(QFont("Arial", 16, QFont::Normal));
     k->greenLabel->setAlignment(Qt::AlignHCenter);
 
-    TupColorWidget *greenSquare = new TupColorWidget(1, QBrush(Qt::green), QSize(30, 30));
-    greenSquare->setEditable(false);
-
-    k->green = new QSlider(Qt::Horizontal);
+    k->green = new TupColorSlider(Qt::Horizontal, QColor(0, 0, 0), QColor(0, 255, 0));
     k->green->setRange(0, 255);
     k->green->setValue(k->g);
     connect(k->green, SIGNAL(valueChanged(int)), this, SLOT(updateGreenCompound(int)));
@@ -107,17 +100,13 @@ TupRGBEditor::TupRGBEditor(const QBrush brush, QWidget *parent) : QWidget(parent
     QHBoxLayout *greenPanel = new QHBoxLayout;
     greenPanel->setContentsMargins(40, 0, 40, 0);
     greenPanel->setAlignment(Qt::AlignHCenter);
-    greenPanel->addWidget(greenSquare);
     greenPanel->addWidget(k->green);
 
     k->blueLabel = new QLabel("Blue: " + QString::number(k->r));
     k->blueLabel->setFont(QFont("Arial", 16, QFont::Normal));
     k->blueLabel->setAlignment(Qt::AlignHCenter);
 
-    TupColorWidget *blueSquare = new TupColorWidget(1, QBrush(Qt::blue), QSize(30, 30));
-    blueSquare->setEditable(false);
-
-    k->blue = new QSlider(Qt::Horizontal);
+    k->blue = new TupColorSlider(Qt::Horizontal, QColor(0, 0, 0), QColor(0, 0, 255));
     k->blue->setRange(0, 255);
     k->blue->setValue(k->b);
     connect(k->blue, SIGNAL(valueChanged(int)), this, SLOT(updateBlueCompound(int)));
@@ -125,7 +114,6 @@ TupRGBEditor::TupRGBEditor(const QBrush brush, QWidget *parent) : QWidget(parent
     QHBoxLayout *bluePanel = new QHBoxLayout;
     bluePanel->setContentsMargins(40, 0, 40, 0);
     bluePanel->setAlignment(Qt::AlignHCenter);
-    bluePanel->addWidget(blueSquare);
     bluePanel->addWidget(k->blue);
 
     k->layout = new QVBoxLayout(this);
@@ -133,7 +121,7 @@ TupRGBEditor::TupRGBEditor(const QBrush brush, QWidget *parent) : QWidget(parent
     k->layout->setSpacing(5);
     k->layout->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
     k->layout->addLayout(colorPanel);
-    k->layout->addSpacing(20);
+    k->layout->addSpacing(5);
     k->layout->addWidget(k->redLabel);
     k->layout->addLayout(redPanel);
     k->layout->addWidget(k->greenLabel);

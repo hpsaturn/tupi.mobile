@@ -50,10 +50,12 @@ class TupColorSlider : public QGraphicsView
         explicit TupColorSlider(Qt::Orientation orientation, const QColor& start, const QColor& end, QWidget *parent = 0);
         ~TupColorSlider();
 
-        void setRange(int, int);
+        void setRange(int min, int max);
         void setColors(const QColor& start, const QColor& end);
+        void setValue(int value);
 
     protected:
+        void mousePressEvent(QMouseEvent *event);
         void mouseMoveEvent(QMouseEvent *event);
         void paintEvent(QPaintEvent *event);
 
@@ -63,6 +65,7 @@ class TupColorSlider : public QGraphicsView
         void valueChanged(int v);
 
     private:
+       void calculateColorIndex(int pos);
        struct Private;
        Private *const k;
 };

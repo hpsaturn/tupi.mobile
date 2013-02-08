@@ -20,6 +20,7 @@
         <file>images/ok.png</file>
         <file>images/about.png</file>
         <file>resources/about.txt</file>
-        <file>images/tip.png</file>
+        <file>images/tip_v.png</file>
+        <file>images/tip_h.png</file>
     </qresource>
 </RCC>
