@@ -140,7 +140,13 @@ void TupOpacityDialog::setSlider()
     k->slider->setBrushSettings(k->pen.brush().style(), k->currentOpacity);
     k->slider->setValue(k->currentOpacity*100);
     connect(k->slider, SIGNAL(valueChanged(int)), this, SLOT(modifySize(int)));
-    k->innerLayout->addWidget(k->slider);
+
+    QWidget *widget = new QWidget;
+    widget->setFixedHeight(100);
+    QBoxLayout *layout = new QHBoxLayout(widget);
+    layout->addWidget(k->slider);
+
+    k->innerLayout->addWidget(widget);
 }
 
 void TupOpacityDialog::modifySize(int value)
@@ -164,4 +170,10 @@ void TupOpacityDialog::modifySize(int value)
 
     k->opacityPreview->render(k->currentOpacity);
     emit updateOpacity(k->currentOpacity);
+}
+
+void TupOpacityDialog::setOpacityValue(int value)
+{
+    k->slider->setValue(value);
+    modifySize(value);
 }

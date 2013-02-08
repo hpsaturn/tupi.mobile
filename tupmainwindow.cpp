@@ -363,6 +363,7 @@ void TupMainWindow::penStrokeSizeDialog()
     TupStrokeSizeDialog *dialog = new TupStrokeSizeDialog(k->pen, k->opacity, this);
     connect(dialog, SIGNAL(updatePen(int)), this, SLOT(updatePenStrokeSize(int)));
     dialog->showMaximized();
+    dialog->setStrokSize(k->pen.width());
 }
 
 void TupMainWindow::colorDialog()
@@ -377,6 +378,7 @@ void TupMainWindow::opacityDialog()
     TupOpacityDialog *dialog = new TupOpacityDialog(k->pen, k->opacity, this);
     connect(dialog, SIGNAL(updateOpacity(double)), this, SLOT(updatePenOpacity(double)));
     dialog->showMaximized();
+    dialog->setOpacityValue(k->opacity);
 }
 
 void TupMainWindow::brushDialog()

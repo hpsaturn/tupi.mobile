@@ -208,16 +208,17 @@ void TupColorSlider::paintScales()
         return;
     }
 
+    int width = viewport()->width();
+    int height = viewport()->height();
+    int imageW = k->image->size().width()-16;
+    int imageH = k->image->size().height()-16;
+    int length = viewport()->width();
+    if (k->orientation == Qt::Vertical)
+        length = viewport()->height();
+    int segments = 32;
+    int delta = length/(segments-1);
+
     if (k->mode == Color) {
-        int segments = 32;
-        int length = -1;
-
-        if (k->orientation == Qt::Vertical)
-            length = viewport()->height();
-        else
-            length = viewport()->width();
-
-        int delta = length/(segments-1);
         for (int section=0; section<=segments; section++) {
              QColor color;
              int r;
@@ -235,21 +236,13 @@ void TupColorSlider::paintScales()
                  painter.setPen(color);
                  painter.setBrush(color);
 
-                 if (k->orientation == Qt::Vertical) {
-                     int width = viewport()->width();
-                     int imageW = k->image->size().width()-16;
+                 if (k->orientation == Qt::Vertical)
                      painter.drawRect((width - imageW)/2, section*delta, imageW, delta);
-                 } else {
-                     int height = viewport()->height();
-                     int imageH = k->image->size().height()-16;
+                 else 
                      painter.drawRect(section*delta, (height - imageH)/2, delta, imageH);
-                 }
             }
         }
     } else if (k->mode == Size) {
-               int width = viewport()->width();
-               int height = viewport()->height();
-
                painter.setPen(QColor(232, 232, 232));
                painter.setBrush(QBrush(k->endColor, k->style));
                painter.setOpacity(k->opacity);
@@ -271,54 +264,30 @@ void TupColorSlider::paintScales()
 
                painter.drawPath(path);
                painter.setOpacity(1.0);
-    } else if (k->mode == Opacity) {
-               int segments = 32;
-               int length = -1;
-
-               if (k->orientation == Qt::Vertical)
-                   length = viewport()->height();
-               else
-                   length = viewport()->width();
-
-               int delta = length/(segments-1);
+    } else {
+               double opacityDelta = 1.0/32; 
+               double opacity = 0;
                for (int section=0; section<=segments; section++) {
-                    QColor color;
-                    int r;
-                    int g;
-                    int b;
-                    r = section*(k->endColor.red() - k->startColor.red()) / segments + k->startColor.red();
-                    g = section*(k->endColor.green() - k->startColor.green()) / segments + k->startColor.green();
-                    b = section*(k->endColor.blue() - k->startColor.blue()) / segments + k->startColor.blue();
+                    painter.setPen(QColor(232, 232, 232));
+                    painter.setBrush(k->endColor);
+                    painter.setOpacity(opacity);
+                    opacity += opacityDelta;
 
-                    if ((r > -1 && r < 256) && (g > -1 && g < 256) && (b > -1 && b < 256)) {
-                        color.setRed(r);
-                        color.setGreen(g);
-                        color.setBlue(b);
-
-                        painter.setPen(color);
-                        painter.setBrush(color);
-
-                        if (k->orientation == Qt::Vertical) {
-                            int width = viewport()->width();
-                            int imageW = k->image->size().width()-16;
-                            painter.drawRect((width - imageW)/2, section*delta, imageW, delta);
-                        } else {
-                            int height = viewport()->height();
-                            int imageH = k->image->size().height()-16;
-                            painter.drawRect(section*delta, (height - imageH)/2, delta, imageH);
-                        }
-                    }
+                    if (k->orientation == Qt::Vertical) {
+                        painter.drawRect((width - imageW)/2, section*delta, imageW, delta);
+                     } else {
+                        painter.drawRect(section*delta, (height - imageH)/2, delta, imageH);
+                     }
                }
+               painter.setOpacity(1.0);
     }
 
     if (k->orientation == Qt::Vertical) {
-        int width = viewport()->width();
-        int imageW = k->image->size().width();
-        painter.drawImage((width/2)-(imageW/2), k->value, *k->image);
+        int imgW = k->image->size().width();
+        painter.drawImage((width/2)-(imgW/2), k->value, *k->image);
     } else {
-        int height = viewport()->height();
-        int imageH = k->image->size().height();
-        painter.drawImage(k->value, (height/2)-(imageH/2), *k->image);
+        int imgH = k->image->size().height();
+        painter.drawImage(k->value, (height/2)-(imgH/2), *k->image);
     }
 }
 
