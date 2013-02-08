@@ -257,7 +257,7 @@ void TupCanvas::notify(const QString &msg)
     k->message->setFont(QFont("Helvetica", 16, QFont::Normal));
     k->message->setPos(QPointF(left.x() + 1, left.y() - 30));
 #else
-    k->message->setFont(QFont("Helvetica", 10, QFont::Normal));
+    k->message->setFont(QFont("Helvetica", 9, QFont::Normal));
     k->message->setPos(QPointF(left.x() + 1, left.y() - 50));
 #endif
     k->scene->addItem(k->message);
