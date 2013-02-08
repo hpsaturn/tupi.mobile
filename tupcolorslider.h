@@ -47,9 +47,12 @@ class TupColorSlider : public QGraphicsView
     Q_OBJECT
 
     public:
-        explicit TupColorSlider(Qt::Orientation orientation, const QColor& start, const QColor& end, QWidget *parent = 0);
+        enum Mode { Color = 0, Size, Opacity };
+
+        explicit TupColorSlider(Qt::Orientation orientation, Mode mode, const QColor& start, const QColor& end, QWidget *parent = 0);
         ~TupColorSlider();
 
+        void setBrushSettings(Qt::BrushStyle style, double opacity);
         void setRange(int min, int max);
         void setColors(const QColor& start, const QColor& end);
         void setValue(int value);

@@ -37,11 +37,11 @@
 
 #include "tupopacitydialog.h"
 #include "tuppenpreviewcanvas.h"
+#include "tupcolorslider.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QSlider>
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QDebug>
@@ -53,7 +53,7 @@ struct TupOpacityDialog::Private
     TupPenPreviewCanvas *opacityPreview;
     QLabel *sizeLabel;
     QPen pen;
-    QSlider *slider;
+    TupColorSlider *slider;
     double currentOpacity;
 };
 
@@ -98,7 +98,7 @@ TupOpacityDialog::TupOpacityDialog(QPen pen, double opacity, QWidget *parent) : 
     QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
     buttonBox->addButton(closeButton, QDialogButtonBox::ActionRole);
 
-    k->innerLayout->addSpacing(10);
+    k->innerLayout->addSpacing(5);
     k->innerLayout->addWidget(buttonBox);
 
     layout->addLayout(k->innerLayout);
@@ -135,8 +135,9 @@ void TupOpacityDialog::setLabelPanel()
 
 void TupOpacityDialog::setSlider()
 {
-    k->slider = new QSlider(Qt::Horizontal);
+    k->slider = new TupColorSlider(Qt::Horizontal, TupColorSlider::Opacity, k->pen.color(), k->pen.color());
     k->slider->setRange(0, 100);
+    k->slider->setBrushSettings(k->pen.brush().style(), k->currentOpacity);
     k->slider->setValue(k->currentOpacity*100);
     connect(k->slider, SIGNAL(valueChanged(int)), this, SLOT(modifySize(int)));
     k->innerLayout->addWidget(k->slider);

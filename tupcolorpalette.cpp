@@ -120,7 +120,7 @@ void TupColorPalette::setSliderPanel()
 
     sliderLayout->addLayout(topLayout);
 
-    k->slider = new TupColorSlider(Qt::Vertical, QColor(255, 0, 0), QColor(0, 0, 0));
+    k->slider = new TupColorSlider(Qt::Vertical, TupColorSlider::Color, QColor(255, 0, 0), QColor(0, 0, 0));
     k->slider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     k->slider->setRange(0, 255);
 

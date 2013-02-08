@@ -49,11 +49,15 @@ struct TupColorSlider::Private
     int value;
     bool enabled;
     Qt::Orientation orientation;
+    TupColorSlider::Mode mode;
+    Qt::BrushStyle style;
+    double opacity;
 };
 
-TupColorSlider::TupColorSlider(Qt::Orientation orientation, const QColor &start, const QColor &end, QWidget *parent) : QGraphicsView(parent), k(new Private)
+TupColorSlider::TupColorSlider(Qt::Orientation orientation, TupColorSlider::Mode mode, const QColor &start, const QColor &end, QWidget *parent) : QGraphicsView(parent), k(new Private)
 {
     k->orientation = orientation; 
+    k->mode = mode;
     k->startColor = start;
     k->endColor = end;
     k->value = 0;
@@ -71,6 +75,12 @@ TupColorSlider::~TupColorSlider()
 {
 }
 
+void TupColorSlider::setBrushSettings(Qt::BrushStyle style, double opacity)
+{
+    k->style = style;
+    k->opacity = opacity;
+}
+
 void TupColorSlider::setRange(int min, int max)
 {
     k->min = min;
@@ -80,13 +90,21 @@ void TupColorSlider::setRange(int min, int max)
 void TupColorSlider::setValue(int value)
 {
     if (k->orientation == Qt::Vertical) {
-        k->value = viewport()->height()*value/255; 
-        if (value == 255)
+        if (value == k->max) {
             k->value = k->value - k->image->size().height();
+        } else if (value == k->min) {
+            k->value = 0;
+        } else {
+            k->value = viewport()->height()*value/k->max;
+        }
     } else {
-        k->value = viewport()->width()*value/255; 
-        if (value == 255)
+        if (value == k->max) {
             k->value = k->value - k->image->size().width();
+        } else if (value == k->min) {
+            k->value = 0;
+        } else {
+            k->value = viewport()->width()*value/k->max;
+        }
     }
 
     this->update();
@@ -148,7 +166,7 @@ void TupColorSlider::calculateColorIndex(int pos)
         if (pos > (length - k->image->size().height())) {
             k->value = length - k->image->size().height();
             this->update();
-            emit valueChanged(255);
+            emit valueChanged(k->max);
             return;
         }
     } else {
@@ -156,7 +174,7 @@ void TupColorSlider::calculateColorIndex(int pos)
         if (pos > (length - k->image->size().width())) {
             k->value = length - k->image->size().width();
             this->update();
-            emit valueChanged(255);
+            emit valueChanged(k->max);
             return;
         }
         k->value = pos;
@@ -171,8 +189,8 @@ void TupColorSlider::calculateColorIndex(int pos)
     if (k->value < 0)
         k->value = 0;
 
-    if (value < 0)
-        value = 0;
+    if (value < k->min)
+        value = k->min;
 
     this->update();
     emit valueChanged(value);
@@ -190,41 +208,107 @@ void TupColorSlider::paintScales()
         return;
     }
 
-    int segments = 32;
-    int length = -1;
+    if (k->mode == Color) {
+        int segments = 32;
+        int length = -1;
 
-    if (k->orientation == Qt::Vertical)
-        length = viewport()->height();
-    else
-        length = viewport()->width();
+        if (k->orientation == Qt::Vertical)
+            length = viewport()->height();
+        else
+            length = viewport()->width();
 
-    int delta = length/(segments-1);
-    for (int section=0; section<=segments; section++) {
-         QColor color;
-         int r;
-         int g;
-         int b;
-         r = section*(k->endColor.red() - k->startColor.red()) / segments + k->startColor.red();
-         g = section*(k->endColor.green() - k->startColor.green()) / segments + k->startColor.green();
-         b = section*(k->endColor.blue() - k->startColor.blue()) / segments + k->startColor.blue();
+        int delta = length/(segments-1);
+        for (int section=0; section<=segments; section++) {
+             QColor color;
+             int r;
+             int g;
+             int b;
+             r = section*(k->endColor.red() - k->startColor.red()) / segments + k->startColor.red();
+             g = section*(k->endColor.green() - k->startColor.green()) / segments + k->startColor.green();
+             b = section*(k->endColor.blue() - k->startColor.blue()) / segments + k->startColor.blue();
 
-         if ((r > -1 && r < 256) && (g > -1 && g < 256) && (b > -1 && b < 256)) {
-             color.setRed(r);
-             color.setGreen(g);
-             color.setBlue(b);
+             if ((r > -1 && r < 256) && (g > -1 && g < 256) && (b > -1 && b < 256)) {
+                 color.setRed(r);
+                 color.setGreen(g);
+                 color.setBlue(b);
 
-             painter.setPen(color);
-             painter.setBrush(color);
-             if (k->orientation == Qt::Vertical) {
-                 int width = viewport()->width();
-                 int imageW = k->image->size().width()-16;
-                 painter.drawRect((width - imageW)/2, section*delta, imageW, delta);
-             } else {
-                 int height = viewport()->height();
-                 int imageH = k->image->size().height()-16;
-                 painter.drawRect(section*delta, (height - imageH)/2, delta, imageH);
-             }
-         }
+                 painter.setPen(color);
+                 painter.setBrush(color);
+
+                 if (k->orientation == Qt::Vertical) {
+                     int width = viewport()->width();
+                     int imageW = k->image->size().width()-16;
+                     painter.drawRect((width - imageW)/2, section*delta, imageW, delta);
+                 } else {
+                     int height = viewport()->height();
+                     int imageH = k->image->size().height()-16;
+                     painter.drawRect(section*delta, (height - imageH)/2, delta, imageH);
+                 }
+            }
+        }
+    } else if (k->mode == Size) {
+               int width = viewport()->width();
+               int height = viewport()->height();
+
+               painter.setPen(QColor(232, 232, 232));
+               painter.setBrush(QBrush(k->endColor, k->style));
+               painter.setOpacity(k->opacity);
+               painter.setRenderHint(QPainter::Antialiasing);
+
+               QPainterPath path;
+
+               if (k->orientation == Qt::Vertical) {
+                   path = QPainterPath(QPointF(0, 0));
+                   path.lineTo(QPointF(0, height));
+                   path.lineTo(QPointF(width, height));
+                   path.lineTo(QPointF(0, 0));
+               } else {
+                   path = QPainterPath(QPointF(0, height));
+                   path.lineTo(QPointF(width, 0)); 
+                   path.lineTo(QPointF(width, height));
+                   path.lineTo(QPointF(0, height));
+               }
+
+               painter.drawPath(path);
+               painter.setOpacity(1.0);
+    } else if (k->mode == Opacity) {
+               int segments = 32;
+               int length = -1;
+
+               if (k->orientation == Qt::Vertical)
+                   length = viewport()->height();
+               else
+                   length = viewport()->width();
+
+               int delta = length/(segments-1);
+               for (int section=0; section<=segments; section++) {
+                    QColor color;
+                    int r;
+                    int g;
+                    int b;
+                    r = section*(k->endColor.red() - k->startColor.red()) / segments + k->startColor.red();
+                    g = section*(k->endColor.green() - k->startColor.green()) / segments + k->startColor.green();
+                    b = section*(k->endColor.blue() - k->startColor.blue()) / segments + k->startColor.blue();
+
+                    if ((r > -1 && r < 256) && (g > -1 && g < 256) && (b > -1 && b < 256)) {
+                        color.setRed(r);
+                        color.setGreen(g);
+                        color.setBlue(b);
+
+                        painter.setPen(color);
+                        painter.setBrush(color);
+
+                        if (k->orientation == Qt::Vertical) {
+                            int width = viewport()->width();
+                            int imageW = k->image->size().width()-16;
+                            painter.drawRect((width - imageW)/2, section*delta, imageW, delta);
+                        } else {
+                            int height = viewport()->height();
+                            int imageH = k->image->size().height()-16;
+                            painter.drawRect(section*delta, (height - imageH)/2, delta, imageH);
+                        }
+                    }
+               }
     }
 
     if (k->orientation == Qt::Vertical) {

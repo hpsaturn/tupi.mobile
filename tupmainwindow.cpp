@@ -295,6 +295,7 @@ void TupMainWindow::postIt()
 
         QDomDocument doc;
         QDomElement root = doc.createElement("mobile");
+        root.setAttribute("version", 0);
         doc.appendChild(root);
 
         if (k->title.length() > 0) {

@@ -78,7 +78,7 @@ TupRGBEditor::TupRGBEditor(const QBrush brush, QWidget *parent) : QWidget(parent
     k->redLabel->setFont(QFont("Arial", 16, QFont::Normal));
     k->redLabel->setAlignment(Qt::AlignHCenter);
 
-    k->red = new TupColorSlider(Qt::Horizontal, QColor(0, 0, 0), QColor(255, 0, 0));
+    k->red = new TupColorSlider(Qt::Horizontal, TupColorSlider::Color, QColor(0, 0, 0), QColor(255, 0, 0));
     k->red->setRange(0, 255);
     k->red->setValue(k->r);
     connect(k->red, SIGNAL(valueChanged(int)), this, SLOT(updateRedCompound(int)));
@@ -92,7 +92,7 @@ TupRGBEditor::TupRGBEditor(const QBrush brush, QWidget *parent) : QWidget(parent
     k->greenLabel->setFont(QFont("Arial", 16, QFont::Normal));
     k->greenLabel->setAlignment(Qt::AlignHCenter);
 
-    k->green = new TupColorSlider(Qt::Horizontal, QColor(0, 0, 0), QColor(0, 255, 0));
+    k->green = new TupColorSlider(Qt::Horizontal, TupColorSlider::Color, QColor(0, 0, 0), QColor(0, 255, 0));
     k->green->setRange(0, 255);
     k->green->setValue(k->g);
     connect(k->green, SIGNAL(valueChanged(int)), this, SLOT(updateGreenCompound(int)));
@@ -106,7 +106,7 @@ TupRGBEditor::TupRGBEditor(const QBrush brush, QWidget *parent) : QWidget(parent
     k->blueLabel->setFont(QFont("Arial", 16, QFont::Normal));
     k->blueLabel->setAlignment(Qt::AlignHCenter);
 
-    k->blue = new TupColorSlider(Qt::Horizontal, QColor(0, 0, 0), QColor(0, 0, 255));
+    k->blue = new TupColorSlider(Qt::Horizontal, TupColorSlider::Color, QColor(0, 0, 0), QColor(0, 0, 255));
     k->blue->setRange(0, 255);
     k->blue->setValue(k->b);
     connect(k->blue, SIGNAL(valueChanged(int)), this, SLOT(updateBlueCompound(int)));

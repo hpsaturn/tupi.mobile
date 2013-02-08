@@ -47,6 +47,7 @@ class TupStrokeSizeDialog : public QDialog
     public:
         TupStrokeSizeDialog(QPen pen, double opacity, QWidget *parent);
         ~TupStrokeSizeDialog();
+        void setStrokSize(int value);
 
     signals:
         void updatePen(int width);
