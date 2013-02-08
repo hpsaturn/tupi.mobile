@@ -32,6 +32,7 @@ static JavaVM* s_javaVM = 0;
 static jclass s_androidIntentClassID = 0;
 static jmethodID s_androidIntentConstructorMethodID=0;
 static jmethodID s_androidIntentSetUrlMethodID=0;
+static jmethodID s_androidIntentGetMediaStorageMethodID=0;
 
 TupAndroidIntents::TupAndroidIntents()
 {
@@ -86,6 +87,29 @@ bool TupAndroidIntents::setUrl(const QString &url)
     return res;
 }
 
+QString TupAndroidIntents::getMediaStorage()
+{
+    if (!m_intentObject)
+        return 0;
+
+    JNIEnv* env;
+    if (s_javaVM->AttachCurrentThread(&env, NULL) < 0) {
+        qCritical()<<"AttachCurrentThread failed";
+        return 0;
+    }
+
+    jobject jsout  = env->CallObjectMethod(m_intentObject, s_androidIntentGetMediaStorageMethodID);
+    const char *resultCStr = env->GetStringUTFChars((jstring)jsout, 0);
+
+    QByteArray qbArry(resultCStr);
+    QString str(qbArry);
+
+    /* TODO: REVISAR SI TOCA HACER RELEASE DE LOS STRINGS! */
+    s_javaVM->DetachCurrentThread();
+
+    return str;
+}
+
 // our native method, it is called by the java code above
 static int addTwoNumbers(JNIEnv * /*env*/, jobject /*thiz*/,int a, int b)
 {
@@ -129,5 +153,12 @@ JNIEXPORT jint JNI_OnLoad(JavaVM* vm, void* /*reserved*/)
         return -1;
     }
 
+    // search for getMediaStorage method
+    s_androidIntentGetMediaStorageMethodID = env->GetMethodID(s_androidIntentClassID, "getMediaStorage", "()Ljava/lang/String;");
+
+    if (!s_androidIntentSetUrlMethodID) {
+        qCritical()<<"Can't find setUrl method";
+        return -1;
+    }
     return JNI_VERSION_1_6;
 }

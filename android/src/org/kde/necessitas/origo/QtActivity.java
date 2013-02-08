@@ -1034,7 +1034,11 @@ public class QtActivity extends Activity
     {
         return true;
     }
-
+    
+    String getMediaStorage()
+    {
+        return "" ;
+    }
 
     @Override
     protected void onUserLeaveHint()
@@ -1077,85 +1081,85 @@ public class QtActivity extends Activity
 
     //////////////// Activity API 5 /////////////
 //@ANDROID-5
-//QtCreator     @Override
-//QtCreator     public void onAttachedToWindow()
-//QtCreator     {
-//QtCreator         if (!QtApplication.invokeDelegate().invoked)
-//QtCreator             super.onAttachedToWindow();
-//QtCreator     }
-//QtCreator     public void super_onAttachedToWindow()
-//QtCreator     {
-//QtCreator         super.onAttachedToWindow();
-//QtCreator     }
-//QtCreator     //---------------------------------------------------------------------------
-//QtCreator 
-//QtCreator     @Override
-//QtCreator     public void onBackPressed()
-//QtCreator     {
-//QtCreator         if (!QtApplication.invokeDelegate().invoked)
-//QtCreator             super.onBackPressed();
-//QtCreator     }
-//QtCreator     public void super_onBackPressed()
-//QtCreator     {
-//QtCreator         super.onBackPressed();
-//QtCreator     }
-//QtCreator     //---------------------------------------------------------------------------
-//QtCreator 
-//QtCreator     @Override
-//QtCreator     public void onDetachedFromWindow()
-//QtCreator     {
-//QtCreator         if (!QtApplication.invokeDelegate().invoked)
-//QtCreator             super.onDetachedFromWindow();
-//QtCreator     }
-//QtCreator     public void super_onDetachedFromWindow()
-//QtCreator     {
-//QtCreator         super.onDetachedFromWindow();
-//QtCreator     }
-//QtCreator     //---------------------------------------------------------------------------
-//QtCreator 
-//QtCreator     @Override
-//QtCreator     public boolean onKeyLongPress(int keyCode, KeyEvent event)
-//QtCreator     {
-//QtCreator         if (QtApplication.m_delegateObject != null  && QtApplication.onKeyLongPress != null)
-//QtCreator             return (Boolean) QtApplication.invokeDelegateMethod(QtApplication.onKeyLongPress, keyCode, event);
-//QtCreator         else
-//QtCreator             return super.onKeyLongPress(keyCode, event);
-//QtCreator     }
-//QtCreator     public boolean super_onKeyLongPress(int keyCode, KeyEvent event)
-//QtCreator     {
-//QtCreator         return super.onKeyLongPress(keyCode, event);
-//QtCreator     }
-//QtCreator     //---------------------------------------------------------------------------
+    @Override
+    public void onAttachedToWindow()
+    {
+        if (!QtApplication.invokeDelegate().invoked)
+            super.onAttachedToWindow();
+    }
+    public void super_onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+    }
+    //---------------------------------------------------------------------------
+
+    @Override
+    public void onBackPressed()
+    {
+        if (!QtApplication.invokeDelegate().invoked)
+            super.onBackPressed();
+    }
+    public void super_onBackPressed()
+    {
+        super.onBackPressed();
+    }
+    //---------------------------------------------------------------------------
+
+    @Override
+    public void onDetachedFromWindow()
+    {
+        if (!QtApplication.invokeDelegate().invoked)
+            super.onDetachedFromWindow();
+    }
+    public void super_onDetachedFromWindow()
+    {
+        super.onDetachedFromWindow();
+    }
+    //---------------------------------------------------------------------------
+
+    @Override
+    public boolean onKeyLongPress(int keyCode, KeyEvent event)
+    {
+        if (QtApplication.m_delegateObject != null  && QtApplication.onKeyLongPress != null)
+            return (Boolean) QtApplication.invokeDelegateMethod(QtApplication.onKeyLongPress, keyCode, event);
+        else
+            return super.onKeyLongPress(keyCode, event);
+    }
+    public boolean super_onKeyLongPress(int keyCode, KeyEvent event)
+    {
+        return super.onKeyLongPress(keyCode, event);
+    }
+    //---------------------------------------------------------------------------
 //@ANDROID-5
 
 //////////////// Activity API 8 /////////////
 //@ANDROID-8
-//QtCreator @Override
-//QtCreator     protected Dialog onCreateDialog(int id, Bundle args)
-//QtCreator     {
-//QtCreator         QtApplication.InvokeResult res = QtApplication.invokeDelegate(id, args);
-//QtCreator         if (res.invoked)
-//QtCreator             return (Dialog)res.methodReturns;
-//QtCreator         else
-//QtCreator             return super.onCreateDialog(id, args);
-//QtCreator     }
-//QtCreator     public Dialog super_onCreateDialog(int id, Bundle args)
-//QtCreator     {
-//QtCreator         return super.onCreateDialog(id, args);
-//QtCreator     }
-//QtCreator     //---------------------------------------------------------------------------
-//QtCreator 
-//QtCreator     @Override
-//QtCreator     protected void onPrepareDialog(int id, Dialog dialog, Bundle args)
-//QtCreator     {
-//QtCreator         if (!QtApplication.invokeDelegate(id, dialog, args).invoked)
-//QtCreator             super.onPrepareDialog(id, dialog, args);
-//QtCreator     }
-//QtCreator     public void super_onPrepareDialog(int id, Dialog dialog, Bundle args)
-//QtCreator     {
-//QtCreator         super.onPrepareDialog(id, dialog, args);
-//QtCreator     }
-//QtCreator     //---------------------------------------------------------------------------
+@Override
+    protected Dialog onCreateDialog(int id, Bundle args)
+    {
+        QtApplication.InvokeResult res = QtApplication.invokeDelegate(id, args);
+        if (res.invoked)
+            return (Dialog)res.methodReturns;
+        else
+            return super.onCreateDialog(id, args);
+    }
+    public Dialog super_onCreateDialog(int id, Bundle args)
+    {
+        return super.onCreateDialog(id, args);
+    }
+    //---------------------------------------------------------------------------
+
+    @Override
+    protected void onPrepareDialog(int id, Dialog dialog, Bundle args)
+    {
+        if (!QtApplication.invokeDelegate(id, dialog, args).invoked)
+            super.onPrepareDialog(id, dialog, args);
+    }
+    public void super_onPrepareDialog(int id, Dialog dialog, Bundle args)
+    {
+        super.onPrepareDialog(id, dialog, args);
+    }
+    //---------------------------------------------------------------------------
 //@ANDROID-8
     //////////////// Activity API 11 /////////////
 

@@ -37,6 +37,7 @@ class TupAndroidIntents
         TupAndroidIntents();
         ~TupAndroidIntents();
         bool setUrl(const QString &url);
+        QString getMediaStorage();
 
     private:
         jobject m_intentObject;

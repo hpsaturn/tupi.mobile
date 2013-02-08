@@ -342,6 +342,8 @@ void TupMainWindow::shareURL(const QString &url)
 #ifdef Q_OS_ANDROID
     TupAndroidIntents intent;
     intent.setUrl(url);
+    // TEST: getMediaStorage
+    // qDebug() << "QT MEDIA STORAGE: " << intent.getMediaStorage();
 #else
     QDesktopServices::openUrl(url);
 #endif

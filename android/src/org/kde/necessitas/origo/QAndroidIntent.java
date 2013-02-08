@@ -29,23 +29,26 @@
 package org.kde.necessitas.origo;
  
 import android.content.Intent;
+import android.os.Environment;
 import android.util.Log;
-import android.net.Uri;
-
-import org.kde.necessitas.origo.QtActivity;
 
 public class QAndroidIntent {
  
+	private final String TAG = QAndroidIntent.class.getSimpleName();
+	private static final boolean DEBUG = Config.DEBUG;
+	
     public QAndroidIntent() {
     }
  
     boolean setUrl(String data)
     {
         try {
+        	if(DEBUG)Log.d(TAG,"SHARE INTENT");
             Intent sharingIntent = new Intent(Intent.ACTION_SEND);
             sharingIntent.setType("text/plain");
             sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT,  data );
             QtActivity.getQtActivityInstance().startActivity(Intent.createChooser(sharingIntent,"Share using"));
+            //if(DEBUG)Log.d(TAG,"MEDIA STORAGE: "+getMediaStorage());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -53,6 +56,14 @@ public class QAndroidIntent {
         }
         Log.i("Qt", "Intent returned");
         return true;
+    }
+    
+    String getMediaStorage(){
+    	
+    	if(DEBUG)Log.d(TAG,"MEDIA STORAGE: ");
+    	String uri=Environment.getExternalStorageDirectory().toString();
+    	if(DEBUG)Log.d(TAG,""+uri);
+    	return uri;
     }
 
     boolean release()
