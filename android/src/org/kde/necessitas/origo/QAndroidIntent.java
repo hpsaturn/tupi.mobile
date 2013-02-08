@@ -27,55 +27,84 @@
  ***************************************************************************/
 
 package org.kde.necessitas.origo;
- 
+
+import org.kde.necessitas.example.tupi.R;
+import org.kde.necessitas.origo.Util.OnTaskCompleted;
+
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Environment;
 import android.util.Log;
 
-public class QAndroidIntent {
- 
+public class QAndroidIntent implements OnTaskCompleted {
+
 	private final String TAG = QAndroidIntent.class.getSimpleName();
 	private static final boolean DEBUG = Config.DEBUG;
-	
-    public QAndroidIntent() {
-    }
- 
-    boolean setUrl(String data)
-    {
-        try {
-        	if(DEBUG)Log.d(TAG,"SHARE INTENT");
-            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-            sharingIntent.setType("text/plain");
-            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT,  data );
-            QtActivity.getQtActivityInstance().startActivity(Intent.createChooser(sharingIntent,"Share using"));
-            //if(DEBUG)Log.d(TAG,"MEDIA STORAGE: "+getMediaStorage());
+	private static final int TASK_DIALOG = 0;
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        Log.i("Qt", "Intent returned");
-        return true;
-    }
-    
-    String getMediaStorage(){
-    	
-    	if(DEBUG)Log.d(TAG,"MEDIA STORAGE: ");
-    	String uri=Environment.getExternalStorageDirectory().toString();
-    	if(DEBUG)Log.d(TAG,""+uri);
-    	return uri;
-    }
+	public QAndroidIntent() {
+	}
 
-    boolean release()
-    {
-        try {
-            //m_i.release();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
+	boolean setUrl(String data) {
+		try {
+			if (DEBUG)Log.d(TAG, "SHARE INTENT");
+			Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+			sharingIntent.setType("text/plain");
+			sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, data);
+			QtActivity.getQtActivityInstance().startActivity(Intent.createChooser(sharingIntent, "Share using"));
+			// if(DEBUG)Log.d(TAG,"MEDIA STORAGE: "+getMediaStorage());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		Log.i(TAG, "setUrlStart");
+		return true;
+	}
+
+	String getMediaStorage() {
+		
+		if (DEBUG)Log.d(TAG, "MEDIA STORAGE: ");
+
+		try {
+			QtActivity.getQtActivityInstance().startActivity(new Intent(QtActivity.getQtActivityInstance(),DetailsActivity.class));
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		//dialog.show();
+
+		// Util.getStringForDialog(QtActivity.getQtActivityInstance(), this,
+		// TASK_DIALOG);
+
+		if (DEBUG)Log.d(TAG, "MEDIA STORAGE: ");
+		String uri = Environment.getExternalStorageDirectory().toString();
+		if (DEBUG)Log.d(TAG, "" + uri);
+		return uri;
+	}
+
+	boolean release() {
+		try {
+			// m_i.release();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public void onTaskComplete(String response, int id_task) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onTaskError(int errorCode, String errorMsg, int id_task) {
+		// TODO Auto-generated method stub
+
+	}
 
 }

@@ -64,6 +64,7 @@ class TupMainWindow : public QMainWindow
         void postIt();
         void setMetadata();
         void shareURL(const QString &url);
+        void showDialog();
         void penStrokeSizeDialog();
         void colorDialog();
         void opacityDialog();
