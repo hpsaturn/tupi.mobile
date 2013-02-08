@@ -53,6 +53,8 @@ class TupColorSlider : public QGraphicsView
         void setRange(int min, int max);
         void setColors(const QColor& start, const QColor& end);
         void setValue(int value);
+        void setEnabled(bool flag);
+        bool isEnabled();
 
     protected:
         void mousePressEvent(QMouseEvent *event);

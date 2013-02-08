@@ -47,6 +47,7 @@ struct TupColorSlider::Private
     QColor endColor;
     QImage *image;
     int value;
+    bool enabled;
     Qt::Orientation orientation;
 };
 
@@ -56,6 +57,7 @@ TupColorSlider::TupColorSlider(Qt::Orientation orientation, const QColor &start,
     k->startColor = start;
     k->endColor = end;
     k->value = 0;
+    k->enabled = true;
 
     if (k->orientation == Qt::Vertical)
         k->image = new QImage(QString(":/images/tip_v.png"));
@@ -90,6 +92,17 @@ void TupColorSlider::setValue(int value)
     this->update();
 }
 
+void TupColorSlider::setEnabled(bool flag)
+{
+    k->enabled = flag;
+    this->update();
+}
+
+bool TupColorSlider::isEnabled()
+{
+    return k->enabled;
+}
+
 void TupColorSlider::setColors(const QColor &start, const QColor &end)
 {
     k->startColor = start;
@@ -99,6 +112,9 @@ void TupColorSlider::setColors(const QColor &start, const QColor &end)
 
 void TupColorSlider::mousePressEvent(QMouseEvent *event)
 {
+    if (!k->enabled)
+        return;
+
     int pos = -1;
     if (k->orientation == Qt::Vertical)
         pos = event->y();
@@ -110,6 +126,9 @@ void TupColorSlider::mousePressEvent(QMouseEvent *event)
 
 void TupColorSlider::mouseMoveEvent(QMouseEvent *event)
 {
+    if (!k->enabled) 
+        return;
+
     int pos = -1;
     if (k->orientation == Qt::Vertical) 
         pos = event->y();
@@ -149,10 +168,6 @@ void TupColorSlider::calculateColorIndex(int pos)
     else 
         value = k->min + (k->max - k->min) * (float(pos)/float(length));
 
-#ifdef TUP_DEBUG
-       qDebug() << "mouseMoveEvent =  " << value << " - " <<  float(pos)/float(length);
-#endif
-
     if (k->value < 0)
         k->value = 0;
 
@@ -166,6 +181,15 @@ void TupColorSlider::calculateColorIndex(int pos)
 void TupColorSlider::paintScales()
 {
     QPainter painter(viewport());
+
+    if (!k->enabled) {
+        QColor color(232, 232, 232);
+        painter.setPen(color);
+        painter.setBrush(color);
+        painter.drawRect(0, 0, viewport()->width(), viewport()->height());
+        return;
+    }
+
     int segments = 32;
     int length = -1;
 

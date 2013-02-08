@@ -9,6 +9,7 @@
  *    Gustavo Gonzalez / @xtingray                                         *
  *    Andres Calderon / @andresfcalderon                                   *
  *    Antonio Vanegas / @hpsaturn                                          *
+ *    Offray Luna / @offrayLC                                              *
  *                                                                         *
  *   Tupi is a fork of the KTooN project                                   *
  *   KTooN's versions:                                                     *
