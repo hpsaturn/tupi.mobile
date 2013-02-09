@@ -1095,8 +1095,8 @@ public class QtActivity extends Activity
     @Override
     public void onBackPressed()
     {
-        if (!QtApplication.invokeDelegate().invoked)
-            super.onBackPressed();
+//        if (!QtApplication.invokeDelegate().invoked)
+//            super.onBackPressed();
     }
     public void super_onBackPressed()
     {
