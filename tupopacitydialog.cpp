@@ -175,5 +175,5 @@ void TupOpacityDialog::modifySize(int value)
 void TupOpacityDialog::setOpacityValue(int value)
 {
     k->slider->setValue(value);
-    modifySize(value);
+    // modifySize(value);
 }

@@ -378,6 +378,7 @@ void TupMainWindow::opacityDialog()
     TupOpacityDialog *dialog = new TupOpacityDialog(k->pen, k->opacity, this);
     connect(dialog, SIGNAL(updateOpacity(double)), this, SLOT(updatePenOpacity(double)));
     dialog->showMaximized();
+    qDebug() << "TupMainWindow::opacityDialog() - opacity: " << k->opacity;
     dialog->setOpacityValue(k->opacity);
 }
 
