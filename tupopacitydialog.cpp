@@ -37,7 +37,7 @@
 
 #include "tupopacitydialog.h"
 #include "tuppenpreviewcanvas.h"
-#include "tupcolorslider.h"
+#include "tupslider.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -53,7 +53,7 @@ struct TupOpacityDialog::Private
     TupPenPreviewCanvas *opacityPreview;
     QLabel *sizeLabel;
     QPen pen;
-    TupColorSlider *slider;
+    TupSlider *slider;
     double currentOpacity;
 };
 
@@ -135,7 +135,7 @@ void TupOpacityDialog::setLabelPanel()
 
 void TupOpacityDialog::setSlider()
 {
-    k->slider = new TupColorSlider(Qt::Horizontal, TupColorSlider::Opacity, k->pen.color(), k->pen.color());
+    k->slider = new TupSlider(Qt::Horizontal, TupSlider::Opacity, k->pen.color(), k->pen.color());
     k->slider->setRange(0, 100);
     k->slider->setBrushSettings(k->pen.brush().style(), k->currentOpacity);
     k->slider->setValue(k->currentOpacity*100);
@@ -172,8 +172,7 @@ void TupOpacityDialog::modifySize(int value)
     emit updateOpacity(k->currentOpacity);
 }
 
-void TupOpacityDialog::setOpacityValue(int value)
+void TupOpacityDialog::setOpacityValue(double value)
 {
-    k->slider->setValue(value);
-    // modifySize(value);
+    k->slider->setValue(value*100);
 }

@@ -48,7 +48,7 @@ class TupOpacityDialog : public QDialog
     public:
         TupOpacityDialog(QPen pen, double opacity, QWidget *parent);
         ~TupOpacityDialog();
-        void setOpacityValue(int value);
+        void setOpacityValue(double value);
 
     signals:
         void updateOpacity(double);

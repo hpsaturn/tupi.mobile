@@ -35,11 +35,11 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
 
-#include "tupcolorslider.h"
+#include "tupslider.h"
 
 #include <QDebug>
 
-struct TupColorSlider::Private
+struct TupSlider::Private
 {
     int min;
     int max;
@@ -49,12 +49,12 @@ struct TupColorSlider::Private
     int value;
     bool enabled;
     Qt::Orientation orientation;
-    TupColorSlider::Mode mode;
+    TupSlider::Mode mode;
     Qt::BrushStyle style;
     double opacity;
 };
 
-TupColorSlider::TupColorSlider(Qt::Orientation orientation, TupColorSlider::Mode mode, const QColor &start, const QColor &end, QWidget *parent) : QGraphicsView(parent), k(new Private)
+TupSlider::TupSlider(Qt::Orientation orientation, TupSlider::Mode mode, const QColor &start, const QColor &end, QWidget *parent) : QGraphicsView(parent), k(new Private)
 {
     k->orientation = orientation; 
     k->mode = mode;
@@ -71,64 +71,66 @@ TupColorSlider::TupColorSlider(Qt::Orientation orientation, TupColorSlider::Mode
     setUpdatesEnabled(true);
 }
 
-TupColorSlider::~TupColorSlider()
+TupSlider::~TupSlider()
 {
 }
 
-void TupColorSlider::setBrushSettings(Qt::BrushStyle style, double opacity)
+void TupSlider::setBrushSettings(Qt::BrushStyle style, double opacity)
 {
     k->style = style;
     k->opacity = opacity;
 }
 
-void TupColorSlider::setRange(int min, int max)
+void TupSlider::setRange(int min, int max)
 {
     k->min = min;
     k->max = max;
 }
 
-void TupColorSlider::setValue(int value)
+void TupSlider::setValue(int value)
 {
     if (k->orientation == Qt::Vertical) {
+        int height = viewport()->height();
         if (value == k->max) {
-            k->value = k->value - k->image->size().height();
+            k->value = height - k->image->size().height();
         } else if (value == k->min) {
             k->value = 0;
         } else {
-            k->value = viewport()->height()*value/k->max;
+            k->value = height*value/k->max;
         }
     } else {
+        int width = viewport()->width();
         if (value == k->max) {
-            k->value = k->value - k->image->size().width();
+            k->value = width - k->image->size().width();
         } else if (value == k->min) {
             k->value = 0;
         } else {
-            k->value = viewport()->width()*value/k->max;
+            k->value = width*value/k->max;
         }
     }
 
     this->update();
 }
 
-void TupColorSlider::setEnabled(bool flag)
+void TupSlider::setEnabled(bool flag)
 {
     k->enabled = flag;
     this->update();
 }
 
-bool TupColorSlider::isEnabled()
+bool TupSlider::isEnabled()
 {
     return k->enabled;
 }
 
-void TupColorSlider::setColors(const QColor &start, const QColor &end)
+void TupSlider::setColors(const QColor &start, const QColor &end)
 {
     k->startColor = start;
     k->endColor = end;
     this->update();
 }
 
-void TupColorSlider::mousePressEvent(QMouseEvent *event)
+void TupSlider::mousePressEvent(QMouseEvent *event)
 {
     if (!k->enabled)
         return;
@@ -142,7 +144,7 @@ void TupColorSlider::mousePressEvent(QMouseEvent *event)
     calculateColorIndex(pos);
 }
 
-void TupColorSlider::mouseMoveEvent(QMouseEvent *event)
+void TupSlider::mouseMoveEvent(QMouseEvent *event)
 {
     if (!k->enabled) 
         return;
@@ -156,7 +158,7 @@ void TupColorSlider::mouseMoveEvent(QMouseEvent *event)
     calculateColorIndex(pos);
 }
 
-void TupColorSlider::calculateColorIndex(int pos)
+void TupSlider::calculateColorIndex(int pos)
 {
     int length = -1;
 
@@ -196,7 +198,7 @@ void TupColorSlider::calculateColorIndex(int pos)
     emit valueChanged(value);
 }
 
-void TupColorSlider::paintScales()
+void TupSlider::paintScales()
 {
     QPainter painter(viewport());
 
@@ -291,7 +293,7 @@ void TupColorSlider::paintScales()
     }
 }
 
-void TupColorSlider::paintEvent(QPaintEvent *event)
+void TupSlider::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
     paintScales();

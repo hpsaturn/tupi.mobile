@@ -35,22 +35,22 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
 
-#ifndef TUPCOLORSLIDER_H
-#define TUPCOLORSLIDER_H
+#ifndef TUPSLIDER_H
+#define TUPSLIDER_H
 
 #include <QGraphicsView>
 #include <QMouseEvent>
 #include <QImage>
 
-class TupColorSlider : public QGraphicsView
+class TupSlider : public QGraphicsView
 {
     Q_OBJECT
 
     public:
         enum Mode { Color = 0, Size, Opacity };
 
-        explicit TupColorSlider(Qt::Orientation orientation, Mode mode, const QColor& start, const QColor& end, QWidget *parent = 0);
-        ~TupColorSlider();
+        explicit TupSlider(Qt::Orientation orientation, Mode mode, const QColor& start, const QColor& end, QWidget *parent = 0);
+        ~TupSlider();
 
         void setBrushSettings(Qt::BrushStyle style, double opacity);
         void setRange(int min, int max);

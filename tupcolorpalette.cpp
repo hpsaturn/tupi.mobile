@@ -39,7 +39,7 @@
 #include "tupcolorpalette.h"
 #include "tupcolorwidget.h"
 #include "tupseparator.h"
-#include "tupcolorslider.h"
+#include "tupslider.h"
 
 #include <cmath>
 #include <QTabWidget>
@@ -64,7 +64,7 @@ struct TupColorPalette::Private
     QColor color;
     int rows;
     int columns;
-    TupColorSlider *slider;
+    TupSlider *slider;
     TupColorWidget *top;
     TupColorWidget *bottom;
 };
@@ -120,7 +120,7 @@ void TupColorPalette::setSliderPanel()
 
     sliderLayout->addLayout(topLayout);
 
-    k->slider = new TupColorSlider(Qt::Vertical, TupColorSlider::Color, QColor(255, 0, 0), QColor(0, 0, 0));
+    k->slider = new TupSlider(Qt::Vertical, TupSlider::Color, QColor(255, 0, 0), QColor(0, 0, 0));
     k->slider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     k->slider->setRange(0, 255);
 

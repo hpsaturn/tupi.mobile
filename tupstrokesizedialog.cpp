@@ -37,12 +37,11 @@
 
 #include "tupstrokesizedialog.h"
 #include "tuppenpreviewcanvas.h"
-#include "tupcolorslider.h"
+#include "tupslider.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QSlider>
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QDebug>
@@ -52,7 +51,7 @@ struct TupStrokeSizeDialog::Private
     QVBoxLayout *innerLayout;
     TupPenPreviewCanvas *thickPreview;
     QPen pen;
-    TupColorSlider *slider;
+    TupSlider *slider;
     double opacity;
     QLabel *sizeLabel;
     int currentSize;
@@ -126,7 +125,7 @@ void TupStrokeSizeDialog::setLabelPanel()
 
 void TupStrokeSizeDialog::setSlider()
 {
-    k->slider = new TupColorSlider(Qt::Horizontal, TupColorSlider::Size, k->pen.color(), k->pen.color());
+    k->slider = new TupSlider(Qt::Horizontal, TupSlider::Size, k->pen.color(), k->pen.color());
     k->slider->setBrushSettings(k->pen.brush().style(), k->opacity);
     k->slider->setRange(1, 100);
     connect(k->slider, SIGNAL(valueChanged(int)), this, SLOT(modifySize(int)));
