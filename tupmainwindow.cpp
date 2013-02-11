@@ -208,7 +208,7 @@ void TupMainWindow::setToolBar()
 #endif
     QImage image7(":images/metadata.png");
     QAction *metadata = new QAction(QIcon(QPixmap::fromImage(image7)), titleLabel, this);
-    connect(metadata, SIGNAL(triggered()), this, SLOT(showDialog()));
+    connect(metadata, SIGNAL(triggered()), this, SLOT(setMetadata()));
 
 #ifndef Q_OS_ANDROID
     QString postLabel = "Post Image";
@@ -265,8 +265,12 @@ void TupMainWindow::setToolBar()
 void TupMainWindow::setMetadata()
 {
 #ifdef Q_OS_ANDROID
+    TupAndroidIntents intent;
+    intent.getMediaStorage();
+    /*
     TupMetadataAndroidDialog *dialog = new TupMetadataAndroidDialog(k->title, k->topics, k->description, this);
     dialog->showMaximized();
+    */
 #else
     TupMetadataDialog *dialog = new TupMetadataDialog(k->title, k->topics, k->description, this);
     dialog->show();
@@ -353,14 +357,6 @@ void TupMainWindow::shareURL(const QString &url)
 #endif
 }
 
-void TupMainWindow::showDialog()
-{
-#ifdef Q_OS_ANDROID
-    TupAndroidIntents intent;
-    intent.getMediaStorage();
-#else
-#endif
-}
 void TupMainWindow::penStrokeSizeDialog()
 {
     TupStrokeSizeDialog *dialog = new TupStrokeSizeDialog(k->pen, k->opacity, this);

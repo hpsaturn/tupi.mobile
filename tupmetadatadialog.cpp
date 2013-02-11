@@ -103,11 +103,20 @@ TupMetadataDialog::TupMetadataDialog(const QString &title, const QString &topics
     QHBoxLayout *buttonLayout = new QHBoxLayout;
     buttonLayout->addStretch(1);
 
-    QPixmap pixmap(":images/ok.png");
-    QIcon buttonIcon(pixmap);
+    QPixmap newPixmap(":images/new.png");
+    QIcon newIcon(newPixmap);
+    QPushButton *newButton = new QPushButton(this);
+    newButton->setToolTip(tr("Clear"));
+    newButton->setIcon(newIcon);
+    connect(newButton, SIGNAL(clicked()), this, SLOT(clean()));
+    newButton->setDefault(true);
+    buttonLayout->addWidget(newButton);
+
+    QPixmap okPixmap(":images/ok.png");
+    QIcon okIcon(okPixmap);
     QPushButton *okButton = new QPushButton(this);
     okButton->setToolTip(tr("Ok"));
-    okButton->setIcon(buttonIcon);
+    okButton->setIcon(okIcon);
     connect(okButton, SIGNAL(clicked()), this, SLOT(accept()));
     okButton->setDefault(true);
     buttonLayout->addWidget(okButton);
@@ -143,5 +152,12 @@ QString TupMetadataDialog::imageTopics() const
 QString TupMetadataDialog::imageDescription() const
 {
     return QString::fromUtf8(k->descText->toPlainText().toUtf8());
+}
+
+void TupMetadataDialog::clean()
+{
+    k->titleEdit->clear();
+    k->topicEdit->clear();
+    k->descText->clear();
 }
 
