@@ -51,6 +51,8 @@ class TupFrame : public QObject
        TupPathItem * takeItem(int index);
        void clear();
        int count();
+       void restore();
+       QList<TupPathItem *> previousWork();
        
     public:
        QDomElement toXml(QDomDocument &doc) const;

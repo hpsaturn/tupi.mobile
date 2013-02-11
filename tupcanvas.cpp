@@ -51,6 +51,7 @@ struct TupCanvas::Private
    TupPathItem *item;
    QGraphicsTextItem *message;
    QList<TupPathItem *> undoList;
+   QList<TupPathItem *> previousWork;
 
    QPainterPath path;
    QPointF firstPoint;
@@ -61,6 +62,7 @@ struct TupCanvas::Private
    double opacity;
 
    bool pressed;
+   bool globalUndo;
 };
 
 TupCanvas::TupCanvas(QGraphicsScene *scene, const QPen pen, double opacity, QWidget *parent) : QGraphicsView(scene, parent), k(new Private)
@@ -76,6 +78,7 @@ TupCanvas::TupCanvas(QGraphicsScene *scene, const QPen pen, double opacity, QWid
     k->pressed = false;
     k->size = 8;
     k->opacity = opacity;
+    k->globalUndo = false;
 }
 
 TupCanvas::~TupCanvas()
@@ -107,6 +110,7 @@ int TupCanvas::alphaValue(double opacity)
 {
     double alpha = 255 * opacity;
     int value = (int) alpha;
+
     return value;
 }
 
@@ -139,6 +143,11 @@ void TupCanvas::mouseReleaseEvent(QMouseEvent *event)
     k->pressed = false;
 
     k->frame->addItem(k->item);
+
+    if (k->globalUndo) {
+        k->globalUndo = false;
+        k->previousWork.clear();
+    }
 }
 
 void TupCanvas::smoothPath(QPainterPath &path, double smoothness, int from, int to)
@@ -213,29 +222,47 @@ void TupCanvas::updatePenBrush(Qt::BrushStyle brushStyle)
 
 void TupCanvas::undo()
 {
-    int index = k->scene->items().count();
-    if (index > 0) {
-        TupPathItem *item = (TupPathItem *) k->frame->takeItem(index - 1);
-        k->scene->removeItem(item);
-        k->undoList.append(item);
+    if (k->globalUndo) {
+        k->frame->restore();
+        for (int i=0; i < k->previousWork.size(); i++) {
+             TupPathItem *item = (TupPathItem *) k->previousWork.at(i);
+             k->scene->addItem(item);
+        }
+    } else {
+        int index = k->scene->items().count();
+        if (index > 0) {
+            TupPathItem *item = (TupPathItem *) k->frame->takeItem(index - 1);
+            k->scene->removeItem(item);
+            k->undoList.append(item);
+        }
     }
 }
 
 void TupCanvas::redo()
 {
-    int index = k->undoList.size();
-    if (index > 0) {
-        TupPathItem *item = (TupPathItem *) k->undoList.takeAt(index - 1);
-        k->scene->addItem(item);
-        k->frame->addItem(item);
+    if (k->globalUndo) {
+        clear();
+    } else {
+        int index = k->undoList.size();
+        if (index > 0) {
+            TupPathItem *item = (TupPathItem *) k->undoList.takeAt(index - 1);
+            k->scene->addItem(item);
+            k->frame->addItem(item);
+        }
     }
 }
 
 void TupCanvas::clear()
 {
-    k->scene->clear();
     k->frame->clear();
+    k->previousWork = (QList<TupPathItem *>) k->frame->previousWork();
+    QList<QGraphicsItem*> items = k->scene->items();
+    for (int i=0; i<items.size(); i++)
+         k->scene->removeItem(items.at(i)); 
+
     k->undoList.clear();
+
+    k->globalUndo = true;
 }
 
 bool TupCanvas::isEmpty()
@@ -274,13 +301,13 @@ void TupCanvas::notify(TupCanvas::Type type, const QString &msg)
     QRectF rect = k->scene->sceneRect();
     QPointF left = rect.bottomLeft();
 
-#ifndef Q_OS_ANDROID
     int fontSize = 16;
     k->message->setFont(QFont("Helvetica", fontSize, QFont::Normal));
     QRectF textRect = k->message->boundingRect();
     int width = textRect.width();
     int height = textRect.height();
     int screenW = k->scene->sceneRect().width();
+
     while (width > screenW) {
            fontSize--;
            k->message->setFont(QFont("Helvetica", fontSize, QFont::Normal));
@@ -288,11 +315,8 @@ void TupCanvas::notify(TupCanvas::Type type, const QString &msg)
            width = textRect.width();
            height = textRect.height();
     }
+
     k->message->setPos(QPointF(left.x() + 1, left.y() - height));
-#else
-    k->message->setFont(QFont("Helvetica", 9, QFont::Normal));
-    k->message->setPos(QPointF(left.x() + 1, left.y() - 50));
-#endif
     k->scene->addItem(k->message);
 
     QTimer::singleShot(2000, this, SLOT(removeNotification()));

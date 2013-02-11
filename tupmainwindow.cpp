@@ -44,7 +44,6 @@
 #include "tupcolordialog.h"
 
 #ifdef Q_OS_ANDROID
-#include "tupmetadataandroiddialog.h"
 #include "tupbrushandroiddialog.h"
 #include "tupandroidintents.h"
 #else
@@ -340,6 +339,7 @@ void TupMainWindow::postIt()
         root.appendChild(package);
 
         k->net->sendPackage(doc);
+        k->canvas->notify(TupCanvas::Info, "Posting! :D");
     }
 }
 
@@ -442,5 +442,5 @@ void TupMainWindow::showAbout()
 
 void TupMainWindow::showNetError(const QString &msg)
 {
-    k->canvas->notify(TupCanvas::Warning, msg);
+    k->canvas->notify(TupCanvas::Error, msg);
 }

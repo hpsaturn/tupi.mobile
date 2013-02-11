@@ -45,6 +45,7 @@
 struct TupFrame::Private
 {
     QHash<int, TupPathItem *> graphics;
+    QHash<int, TupPathItem *> previousWork;
 };
 
 TupFrame::TupFrame() : QObject(), k(new Private)
@@ -97,10 +98,22 @@ TupPathItem * TupFrame::takeItem(int index)
 
 void TupFrame::clear()
 {
+    k->previousWork = k->graphics;
     k->graphics.clear();
 }
 
 int TupFrame::count()
 {
     return k->graphics.size();
+}
+
+void TupFrame::restore()
+{
+    k->graphics = k->previousWork;
+    k->previousWork.clear();
+}
+
+QList<TupPathItem *> TupFrame::previousWork()
+{
+    return k->previousWork.values();
 }

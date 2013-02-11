@@ -53,11 +53,9 @@ SOURCES += tupmetadatadialog.cpp \
 android {
     SOURCES += tupbrushandroiddialog.cpp \
                tupcolorandroidpalette.h \
-               tupmetadataandroiddialog.cpp \
                tupandroidintents.cpp
     HEADERS += tupbrushandroiddialog.h \
                tupcolorandroidpalette.cpp \
-               tupmetadataandroiddialog.h \
                tupandroidintents.h
 
 OTHER_FILES += \
