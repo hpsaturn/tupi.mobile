@@ -69,6 +69,7 @@ class TupCanvas : public QGraphicsView
         void mousePressEvent(QMouseEvent *event);
         void mouseMoveEvent(QMouseEvent *event);
         void mouseReleaseEvent(QMouseEvent *event);
+        // SQA: Multi-touch support
         // bool event(QEvent *event);
 #ifndef Q_OS_ANDROID
         virtual void enterEvent(QEvent *event);
