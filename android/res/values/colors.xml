@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<drawable name="red">#7f00</drawable>
+	<drawable name="red_terpel">#ee2e24</drawable>
+	<drawable name="blue">#770000ff</drawable>
+	<drawable name="blue_terpel">#0095da</drawable>
+	<drawable name="green">#7700ff00</drawable>
+	<drawable name="yellow">#77ffff00</drawable>
+	<drawable name="white">#ffffff</drawable>
+	<drawable name="greyprofileon">#f5f5f5</drawable>
+	<drawable name="greyprofileoff">#d8d8d8</drawable>
+	
+	<drawable name="header_incidentes">#b21414</drawable>
+	<drawable name="header_locations">#36bfff</drawable>
+	<drawable name="header_ratings">#ececec</drawable>
+	<drawable name="header_routes">@color/purple</drawable>
+	<drawable name="body_route">#e3e3e3</drawable>
+	<drawable name="screen_background_black">#ff000000</drawable>
+	<drawable name="translucent_background">#e0000000</drawable>
+	<drawable name="transparent_background">#00000000</drawable>
+	<drawable name="splash_background">#a0000000</drawable>
+	
+	<color name="red">#f00</color>
+	<color name="blue">#0000ff</color>
+	<color name="blue_ballon">#30a2d7</color>
+	<color name="red_ballon">#ed2d23</color>
+	<color name="red_incident">#a00a03</color>
+	<color name="red_terpel">#ee2e24</color>
+	<color name="purple_ballon">#8b43ac</color>
+	
+	<color name="blue_terpel">#0095da</color>
+	<color name="green">#f0f0</color>
+	<color name="yellow">#ffffff00</color>
+	<color name="yellow1">#fffffff0</color>
+	<color name="yellow2">#ffffff08</color>
+	<color name="grey">#ffa0a0a0</color>
+	<color name="greyprofileon">#ffa0a0a0</color>
+	<color name="greyprofileoff">#ffa0a0a0</color>
+	<color name="black">#ff000000</color>
+	<color name="white">#ffffffff</color>
+	<color name="transp2">#0106000d</color>
+	<color name="transp">#50000000</color>
+	<color name="brown">#584949</color>
+	<color name="purple">#950ad7</color>
+	<color name="terpel_white_bg">#e6e6e6</color>
+	<color name="menu_over_red">#ee2e24</color>
+	<color name="profile_btn_color">#f9b747</color>
+	
+	<color name="list_item_focused">#ffb6b6</color>
+	<color name="list_item_focused_pressed">#f87373</color>
+	<color name="list_item_pressed">#ee2e24</color>
+	<color name="list_item_default">#fdfdfd</color>
+	
+	<!-- 	Colores lista transparente -->
+	<color name="list_item_trans_default">#b4000000</color>
+	<color name="help_map_header">#a0000000</color>
+	<color name="cache_color_hint">#00000000</color>
+	<!-- 	Colores lista por default para items opcionales -->
+	<color name="list_item_optional_focused">#2c9fd5</color>
+	<color name="list_item_optional_focused_pressed">#2c9fd5</color>
+	<color name="list_item_optional_pressed">#50c7ff</color>
+	<color name="list_item_optional_default">#bbe9ff</color>
+	<!-- 	Colores lista por default para items opcionales seleccionados -->
+	<color name="list_item_optional_select_focused">#2095cb</color>
+	<color name="list_item_optional_select_focused_pressed">#2095cb</color>
+	<color name="list_item_optional_select_pressed">#2c9fd5</color>
+	<color name="list_item_optional_select_default">#50c7ff</color>
+	<!-- 	Colores lista por default para items opcionales incidentes -->
+	<color name="list_item_optional_focused_red">#ed2d23</color>
+	<color name="list_item_optional_focused_pressed_red">#ed2d23</color>
+	<color name="list_item_optional_pressed_red">#ed2d23</color>
+	<color name="list_item_optional_default_red">#f3c0bd</color>
+	<!-- 	Colores lista por default para items opcionales seleccionados incidentes -->
+	<color name="list_item_optional_select_focused_red">#ed2d23</color>
+	<color name="list_item_optional_select_focused_pressed_red">#ed2d23</color>
+	<color name="list_item_optional_select_pressed_red">#ed2d23</color>
+	<color name="list_item_optional_select_default_red">#920e0e</color>
+	
+</resources>
