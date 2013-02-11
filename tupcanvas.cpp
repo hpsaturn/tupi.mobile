@@ -241,7 +241,8 @@ void TupCanvas::undo()
 void TupCanvas::redo()
 {
     if (k->globalUndo) {
-        clear();
+        if (k->frame->count() > 0)
+            clear();
     } else {
         int index = k->undoList.size();
         if (index > 0) {
