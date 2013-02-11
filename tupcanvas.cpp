@@ -246,16 +246,49 @@ bool TupCanvas::isEmpty()
     return true;
 }
 
-void TupCanvas::notify(const QString &msg)
+void TupCanvas::notify(TupCanvas::Type type, const QString &msg)
 {
     k->message = new QGraphicsTextItem(msg);  
-    k->message->setDefaultTextColor(QColor(0, 100, 0));
+    QColor color;
+
+    switch (type) {
+      case TupCanvas::Error:
+      {
+          color = QColor(230, 0, 0);
+      }
+      break;
+      case TupCanvas::Warning:
+      {
+          color = QColor(255, 120, 0);
+      }
+      break;
+      case TupCanvas::Info:
+      {
+          color = QColor(0, 100, 0);
+      }
+      break;
+    }
+
+    k->message->setDefaultTextColor(color);
+
     QRectF rect = k->scene->sceneRect();
     QPointF left = rect.bottomLeft();
 
 #ifndef Q_OS_ANDROID
-    k->message->setFont(QFont("Helvetica", 16, QFont::Normal));
-    k->message->setPos(QPointF(left.x() + 1, left.y() - 30));
+    int fontSize = 16;
+    k->message->setFont(QFont("Helvetica", fontSize, QFont::Normal));
+    QRectF textRect = k->message->boundingRect();
+    int width = textRect.width();
+    int height = textRect.height();
+    int screenW = k->scene->sceneRect().width();
+    while (width > screenW) {
+           fontSize--;
+           k->message->setFont(QFont("Helvetica", fontSize, QFont::Normal));
+           textRect = k->message->boundingRect();
+           width = textRect.width();
+           height = textRect.height();
+    }
+    k->message->setPos(QPointF(left.x() + 1, left.y() - height));
 #else
     k->message->setFont(QFont("Helvetica", 9, QFont::Normal));
     k->message->setPos(QPointF(left.x() + 1, left.y() - 50));

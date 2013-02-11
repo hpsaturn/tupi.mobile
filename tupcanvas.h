@@ -49,6 +49,7 @@ class TupCanvas : public QGraphicsView
     Q_OBJECT
 
     public:
+        enum Type { Error = 0, Warning, Info };
         TupCanvas(QGraphicsScene *scene, const QPen pen, double opacity, QWidget *parent);
         ~TupCanvas();
         TupFrame * frame();
@@ -56,7 +57,7 @@ class TupCanvas : public QGraphicsView
         void updatePenColor(const QColor color);
         void updatePenOpacity(double opacity);
         void updatePenBrush(Qt::BrushStyle brushStyle);
-        void notify(const QString &msg);
+        void notify(TupCanvas::Type type, const QString &msg);
 
         void undo();
         void redo();

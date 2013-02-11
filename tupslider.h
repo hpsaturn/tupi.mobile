@@ -70,7 +70,7 @@ class TupSlider : public QGraphicsView
         void valueChanged(int v);
 
     private:
-       void calculateColorIndex(int pos);
+       void calculateNewPosition(int pos);
        struct Private;
        Private *const k;
 };

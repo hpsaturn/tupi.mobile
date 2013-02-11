@@ -36,7 +36,6 @@
  ***************************************************************************/
 
 #include "tupnethandler.h"
-#include <QMessageBox>
 
 struct TupNetHandler::Private
 {
@@ -60,11 +59,7 @@ void TupNetHandler::sendPackage(const QDomDocument &doc)
     qDebug() << data;
 #endif
 
-    k->socket = new QTcpSocket;
-    k->socket->connectToHost("tupitube.com", 8080, QIODevice::ReadWrite);
-    connect(k->socket, SIGNAL(readyRead ()), this, SLOT(readFromServer()));
-    connect(k->socket, SIGNAL(error(QAbstractSocket::SocketError)),
-            this, SLOT(displayError(QAbstractSocket::SocketError)));
+    initSocket();
 
     bool connected = k->socket->waitForConnected(1000);
     if (connected) {
@@ -75,6 +70,15 @@ void TupNetHandler::sendPackage(const QDomDocument &doc)
     } else {
         errorDialog();
     }
+}
+
+void TupNetHandler::initSocket()
+{
+    k->socket = new QTcpSocket;
+    k->socket->connectToHost("tupitube.com", 8080, QIODevice::ReadWrite);
+    connect(k->socket, SIGNAL(readyRead ()), this, SLOT(readFromServer()));
+    connect(k->socket, SIGNAL(error(QAbstractSocket::SocketError)),
+            this, SLOT(displayError(QAbstractSocket::SocketError)));
 }
 
 void TupNetHandler::readFromServer()
@@ -103,13 +107,14 @@ void TupNetHandler::readFromServer()
 void TupNetHandler::displayError(QAbstractSocket::SocketError error)
 {
     Q_UNUSED(error);
+    
     errorDialog();
 }
 
 void TupNetHandler::errorDialog()
 {
-    QMessageBox msgBox(QMessageBox::Warning, tr("Fatal Error"),
-                       tr("Tupitube service is down! :( \nPlease, try it later."), 0);
-    msgBox.addButton(tr("Ok"), QMessageBox::AcceptRole);
-    msgBox.exec();
+    k->socket->close();
+    initSocket();
+
+    emit netError(tr("Tupitube service is down! Please, try it later :("));
 }

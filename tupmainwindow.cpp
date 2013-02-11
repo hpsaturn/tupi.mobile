@@ -97,6 +97,7 @@ TupMainWindow::TupMainWindow() : QMainWindow(), k(new Private)
 
     k->net = new TupNetHandler();
     connect(k->net, SIGNAL(postReady(const QString &)), this, SLOT(shareURL(const QString &)));
+    connect(k->net, SIGNAL(netError(const QString &)), this, SLOT(showNetError(const QString &)));
 }
 
 TupMainWindow::~TupMainWindow()
@@ -284,7 +285,7 @@ void TupMainWindow::setMetadata()
 void TupMainWindow::postIt()
 {
     if (k->canvas->isEmpty()) {
-        k->canvas->notify("Wow! The canvas is empty. Please, draw something first! ;)");
+        k->canvas->notify(TupCanvas::Warning, "Wow! The canvas is empty. Please, draw something first! ;)");
 #ifdef TUP_DEBUG
         qDebug() << "TupMainWindow::postIt() -> Canvas is empty. Please, draw something! ;)";
 #endif
@@ -340,6 +341,8 @@ void TupMainWindow::postIt()
 
 void TupMainWindow::shareURL(const QString &url)
 {
+    k->canvas->notify(TupCanvas::Info, "Your work has been successfully posted at tupitube.com :D");
+
 #ifdef Q_OS_ANDROID
     TupAndroidIntents intent;
     intent.setUrl(url);
@@ -439,4 +442,9 @@ void TupMainWindow::showAbout()
 {
     TupAbout *dialog = new TupAbout(this);
     dialog->showMaximized();
+}
+
+void TupMainWindow::showNetError(const QString &msg)
+{
+    k->canvas->notify(TupCanvas::Warning, msg);
 }

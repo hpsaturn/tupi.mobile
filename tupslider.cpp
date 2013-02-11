@@ -141,7 +141,7 @@ void TupSlider::mousePressEvent(QMouseEvent *event)
     else
         pos = event->x();
 
-    calculateColorIndex(pos);
+    calculateNewPosition(pos);
 }
 
 void TupSlider::mouseMoveEvent(QMouseEvent *event)
@@ -155,10 +155,10 @@ void TupSlider::mouseMoveEvent(QMouseEvent *event)
     else
         pos = event->x();
 
-    calculateColorIndex(pos);
+    calculateNewPosition(pos);
 }
 
-void TupSlider::calculateColorIndex(int pos)
+void TupSlider::calculateNewPosition(int pos)
 {
     int length = -1;
 
@@ -168,7 +168,7 @@ void TupSlider::calculateColorIndex(int pos)
         if (pos > (length - k->image->size().height())) {
             k->value = length - k->image->size().height();
             this->update();
-            emit valueChanged(k->max);
+            emit valueChanged(k->min);
             return;
         }
     } else {

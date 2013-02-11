@@ -51,13 +51,15 @@ class TupNetHandler : public QObject
         void sendPackage(const QDomDocument &doc);
 
     signals:
-        void postReady(const QString &);
+        void postReady(const QString &url);
+        void netError(const QString &msg);
 
     private slots:
         void readFromServer();
         void displayError(QAbstractSocket::SocketError error);
 
     private:
+        void initSocket();
         void errorDialog();
         struct Private;
         Private *const k;

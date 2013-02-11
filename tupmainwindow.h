@@ -79,6 +79,8 @@ class TupMainWindow : public QMainWindow
         void redo();
         void newCanvas();
         void showAbout();
+
+        void showNetError(const QString &msg);
 };
 
 #endif
