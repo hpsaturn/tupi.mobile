@@ -74,8 +74,12 @@ void TupColorWidget::paintEvent(QPaintEvent *event)
     QRect border = rect();
     if (k->selected && k->editable) {
         if (k->isCell) {
-            painter.setPen(QPen(QColor(255, 255, 255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+#ifndef Q_OS_ANDROID
+            painter.setPen(QPen(Qt::white, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
             painter.drawRect(border);
+            painter.setPen(QPen(QColor(255, 255, 255, 50), 10, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+            painter.drawRect(border);
+#endif
         } else {
 #ifdef Q_OS_ANDROID
             int width = 20;

@@ -77,19 +77,23 @@ TupColorPalette::TupColorPalette(const QBrush brush, const QSize size, QWidget *
     k->currentColorIndex = -1;
     int w = size.width();
     int h = size.height();
+
+#ifndef Q_OS_ANDROID
     k->columns = w/70;
     k->rows = h/40;
+#else
+    k->columns = w/75;
+    k->rows = h/45;
+#endif
 
     QBoxLayout *layout = new QVBoxLayout(this);
     layout->setContentsMargins(3, 3, 3, 3);
     layout->setSpacing(0);
 
     k->colorMatrixLayout = new QGridLayout;
-    // k->colorMatrixLayout->setContentsMargins(0, 0, 0, 0);
-    // k->colorMatrixLayout->setSpacing(0);
 
-    QBoxLayout *test = new QVBoxLayout;
-    test->addLayout(k->colorMatrixLayout);
+    QBoxLayout *box = new QVBoxLayout;
+    box->addLayout(k->colorMatrixLayout);
 
     k->paletteGlobalLayout = new QVBoxLayout;
     k->centralLayout = new QHBoxLayout;
@@ -98,8 +102,7 @@ TupColorPalette::TupColorPalette(const QBrush brush, const QSize size, QWidget *
     setSliderPanel();
 
     k->centralLayout->addWidget(new TupSeparator(Qt::Vertical));
-    // k->centralLayout->addLayout(k->colorMatrixLayout);
-    k->centralLayout->addLayout(test);
+    k->centralLayout->addLayout(box);
     k->paletteGlobalLayout->addLayout(k->centralLayout);
 
     setBaseColorsPanel();
@@ -150,29 +153,35 @@ void TupColorPalette::setSliderPanel()
 
 void TupColorPalette::setBaseColorsPanel()
 {
+#ifndef Q_OS_ANDROID
+    QSize cellSize(50, 30);
+#else
+    QSize cellSize(60, 40);
+#endif
+
     k->currentBaseColor = 0;
     QColor redColor(255, 0, 0);
     QBrush redBrush(redColor, k->brush.style());
-    TupColorWidget *red = new TupColorWidget(0, redBrush, QSize(50, 30), false);
+    TupColorWidget *red = new TupColorWidget(0, redBrush, cellSize, false);
     red->selected();
     connect(red, SIGNAL(clicked(int)), this, SLOT(updateMatrix(int)));
     k->baseColors << red;
 
     QColor greenColor(0, 255, 0);
     QBrush greenBrush(greenColor, k->brush.style());
-    TupColorWidget *green = new TupColorWidget(1, greenBrush, QSize(50, 30), false);
+    TupColorWidget *green = new TupColorWidget(1, greenBrush, cellSize, false);
     connect(green, SIGNAL(clicked(int)), this, SLOT(updateMatrix(int)));
     k->baseColors << green;
 
     QColor blueColor(0, 0, 255);
     QBrush blueBrush(blueColor, k->brush.style());
-    TupColorWidget *blue = new TupColorWidget(2, blueBrush, QSize(50, 30), false);
+    TupColorWidget *blue = new TupColorWidget(2, blueBrush, cellSize, false);
     connect(blue, SIGNAL(clicked(int)), this, SLOT(updateMatrix(int)));
     k->baseColors << blue;
 
     QColor whiteColor(255, 255, 255);
     QBrush whiteBrush(whiteColor, k->brush.style());
-    TupColorWidget *white = new TupColorWidget(3, whiteBrush, QSize(50, 30), false);
+    TupColorWidget *white = new TupColorWidget(3, whiteBrush, cellSize, false);
     connect(white, SIGNAL(clicked(int)), this, SLOT(updateMatrix(int)));
     k->baseColors << white;
 
@@ -198,12 +207,7 @@ void TupColorPalette::initColorsArray()
     int b = 0;
     int index = 0;
 
-    // QGridLayout *layout = new QGridLayout;
-
     for (int i=0; i < k->rows; i++) {
-         // QBoxLayout *matrix = new QHBoxLayout;
-         // matrix->setContentsMargins(0, 0, 0, 0);
-         // matrix->setSpacing(0);
          for (int j=0; j < k->columns; j++) {
               g = (i*deltaY); 
               b = (j*deltaX);
@@ -215,17 +219,14 @@ void TupColorPalette::initColorsArray()
 
               QColor cellColor(r, g, b);
               QBrush brush(cellColor, k->brush.style());
-              TupColorWidget *button = new TupColorWidget(index, brush, QSize(50, 30), true);
+              QSize cellSize(50, 30);
+              TupColorWidget *button = new TupColorWidget(index, brush, cellSize, true);
               connect(button, SIGNAL(clicked(int)), this, SLOT(updateSelection(int)));
               index++;
               k->colors << button;
-              // matrix->addWidget(button);
               k->colorMatrixLayout->addWidget(button, i, j);
          }
-         // k->colorMatrixLayout->addLayout(matrix);
     }
-
-    // k->colorMatrixLayout->addLayout(layout);
 }
 
 void TupColorPalette::updateSelection(int index)
@@ -293,7 +294,7 @@ void TupColorPalette::updateMatrix(int newColor, bool fromSlider)
               switch (color) {
                       case TupColorPalette::Red :
                            r = k->currentLeadColor;
-                           g = (i*deltaY);
+                           g = (j*deltaY);
                            b = (j*deltaX);
                       break;
                       case TupColorPalette::Green :
