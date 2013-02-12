@@ -20,7 +20,9 @@ HEADERS += tupmainwindow.h \
            tupcolorpalette.h \
            tupseparator.h \
            tupabout.h \
-           tupslider.h
+           tupslider.h \
+    QtWebsocket/QWsSocket.h \
+    QtWebsocket/QWsServer.h
 
 SOURCES += tupmainwindow.cpp \
            tupcanvas.cpp \
@@ -39,7 +41,9 @@ SOURCES += tupmainwindow.cpp \
            tupcolorpalette.cpp \
            tupseparator.cpp \
            tupslider.cpp \
-           main.cpp
+           main.cpp \
+    QtWebsocket/QWsSocket.cpp \
+    QtWebsocket/QWsServer.cpp
 
 !android {
 HEADERS += tupmetadatadialog.h \
@@ -126,4 +130,8 @@ OTHER_FILES += \
     android/res/drawable-hdpi/icon.png \
     android/res/drawable-ldpi/icon.png \
     android/res/drawable/icon.png \
-    android/res/drawable/logo.png
+    android/res/drawable/logo.png \
+    android/src/org/kde/necessitas/ministro/IMinistro.aidl \
+    android/src/org/kde/necessitas/ministro/IMinistroCallback.aidl \
+    android/version.xml \
+    android/res/layout/poi_add_dialog.xml

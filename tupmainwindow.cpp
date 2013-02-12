@@ -276,13 +276,13 @@ void TupMainWindow::setMetadata()
     QDesktopWidget desktop;
     dialog->move((int) (desktop.screenGeometry().width() - dialog->width())/2,
                  (int) (desktop.screenGeometry().height() - dialog->height())/2);
-#endif
 
     if (dialog->exec() == QDialog::Accepted) {
         k->title = dialog->imageTitle();
         k->topics = dialog->imageTopics();
         k->description = dialog->imageDescription();
     }
+#endif
 }
 
 void TupMainWindow::postIt()
