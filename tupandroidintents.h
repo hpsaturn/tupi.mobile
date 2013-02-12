@@ -38,6 +38,10 @@ class TupAndroidIntents
         ~TupAndroidIntents();
         bool setUrl(const QString &url);
         QString getMediaStorage();
+        bool setStringById(jmethodID id,const QString &qstr);
+        QString getStringFromId(jmethodID id);
+        bool setLastFrameString(const QString &qstr);
+        QString getLastFrameString();
 
     private:
         jobject m_intentObject;

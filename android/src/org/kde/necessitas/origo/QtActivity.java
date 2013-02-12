@@ -1,5 +1,10 @@
+package org.kde.necessitas.origo;
+
 /*
-    Copyright (c) 2009-2011, BogDan Vatra <bog_dan_ro@yahoo.com>
+    
+
+
+Copyright (c) 2009-2011, BogDan Vatra <bog_dan_ro@yahoo.com>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -25,7 +30,7 @@
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-package org.kde.necessitas.origo;
+
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

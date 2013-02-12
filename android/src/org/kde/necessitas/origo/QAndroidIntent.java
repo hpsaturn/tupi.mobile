@@ -28,13 +28,12 @@
 
 package org.kde.necessitas.origo;
 
-import org.kde.necessitas.example.tupi.R;
 import org.kde.necessitas.origo.Util.OnTaskCompleted;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class QAndroidIntent implements OnTaskCompleted {
@@ -83,6 +82,31 @@ public class QAndroidIntent implements OnTaskCompleted {
 		String uri = Environment.getExternalStorageDirectory().toString();
 		if (DEBUG)Log.d(TAG, "" + uri);
 		return uri;
+	}
+	
+	public boolean isFirstTime(){
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(QtActivity.getQtActivityInstance());
+		return preferences.getBoolean(SettingsFields.firstTime, false);
+	}
+	
+	public void  setFirstTime(){
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(QtActivity.getQtActivityInstance());
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putBoolean(SettingsFields.firstTime, true);
+		editor.commit();
+	}
+	
+	public String getLastSave(){
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(QtActivity.getQtActivityInstance());
+		return preferences.getString(SettingsFields.lastSave, "");
+	}
+	
+	public boolean  setLastSave(String frameString){
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(QtActivity.getQtActivityInstance());
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putString(SettingsFields.lastSave, frameString);
+		editor.commit();
+		return true;
 	}
 
 	boolean release() {

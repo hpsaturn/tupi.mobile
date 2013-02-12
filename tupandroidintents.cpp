@@ -29,10 +29,13 @@
 #include <QDebug>
 
 static JavaVM* s_javaVM = 0;
-static jclass s_androidIntentClassID = 0;
-static jmethodID s_androidIntentConstructorMethodID=0;
-static jmethodID s_androidIntentSetUrlMethodID=0;
-static jmethodID s_androidIntentGetMediaStorageMethodID=0;
+static jclass androidIntentClassID = 0;
+static jmethodID constructorMethodID=0;
+static jmethodID setUrlMethodID=0;
+static jmethodID getMediaStorageMethodID=0;
+static jmethodID getLastSaveMethodID=0;
+static jmethodID setLastSaveMethodID=0;
+
 
 TupAndroidIntents::TupAndroidIntents()
 {
@@ -44,7 +47,7 @@ TupAndroidIntents::TupAndroidIntents()
     }
 
     // Create a new instance of QSimpleAudioPlayer
-    m_intentObject = env->NewGlobalRef(env->NewObject(s_androidIntentClassID, s_androidIntentConstructorMethodID));
+    m_intentObject = env->NewGlobalRef(env->NewObject(androidIntentClassID, constructorMethodID));
     if (!m_intentObject) {
         qCritical()<<"Can't create the player";
         return;
@@ -68,10 +71,29 @@ TupAndroidIntents::~TupAndroidIntents()
     s_javaVM->DetachCurrentThread();
 }
 
+QString TupAndroidIntents::getLastFrameString()
+{
+    return getStringFromId(getLastSaveMethodID);
+}
+
+bool TupAndroidIntents::setLastFrameString(const QString &qstr)
+{
+    return setStringById(setLastSaveMethodID,qstr);
+}
+
 bool TupAndroidIntents::setUrl(const QString &url)
 {
-    if (!m_intentObject)
-        return false;
+    return setStringById(setUrlMethodID,url); 
+}
+
+QString TupAndroidIntents::getMediaStorage()
+{
+    return getStringFromId(getMediaStorageMethodID);
+}
+
+bool TupAndroidIntents::setStringById(jmethodID id,const QString &qstr)
+{
+    if (!m_intentObject)return false;
 
     JNIEnv* env;
     if (s_javaVM->AttachCurrentThread(&env, NULL) < 0) {
@@ -79,18 +101,17 @@ bool TupAndroidIntents::setUrl(const QString &url)
         return false;
     }
 
-    jstring str = env->NewString(reinterpret_cast<const jchar*>(url.constData()), url.length());
-    jboolean res = env->CallBooleanMethod(m_intentObject, s_androidIntentSetUrlMethodID, str);
+    jstring str = env->NewString(reinterpret_cast<const jchar*>(qstr.constData()), qstr.length());
+    jboolean res = env->CallBooleanMethod(m_intentObject, id, str);
     env->DeleteLocalRef(str);
     s_javaVM->DetachCurrentThread();
 
     return res;
 }
 
-QString TupAndroidIntents::getMediaStorage()
+QString TupAndroidIntents::getStringFromId(jmethodID id)
 {
-    if (!m_intentObject)
-        return 0;
+    if (!m_intentObject)return 0;
 
     JNIEnv* env;
     if (s_javaVM->AttachCurrentThread(&env, NULL) < 0) {
@@ -98,27 +119,15 @@ QString TupAndroidIntents::getMediaStorage()
         return 0;
     }
 
-    jobject jsout  = env->CallObjectMethod(m_intentObject, s_androidIntentGetMediaStorageMethodID);
+    jobject jsout  = env->CallObjectMethod(m_intentObject,id);
     const char *resultCStr = env->GetStringUTFChars((jstring)jsout, 0);
 
     QByteArray qbArry(resultCStr);
     QString str(qbArry);
-
-    /* TODO: REVISAR SI TOCA HACER RELEASE DE LOS STRINGS! */
     s_javaVM->DetachCurrentThread();
 
     return str;
 }
-
-// our native method, it is called by the java code above
-static int addTwoNumbers(JNIEnv * /*env*/, jobject /*thiz*/,int a, int b)
-{
-    return a + b;
-}
-
-static JNINativeMethod methods[] = {
-    {"addTwoNumbers", "(II)I", (void *)addTwoNumbers}
-};
 
 // this method is called immediately after the module is load
 JNIEXPORT jint JNI_OnLoad(JavaVM* vm, void* /*reserved*/)
@@ -137,28 +146,42 @@ JNIEXPORT jint JNI_OnLoad(JavaVM* vm, void* /*reserved*/)
         return -1;
     }
     // keep a global reference to it
-    s_androidIntentClassID = (jclass)env->NewGlobalRef(clazz);
+    androidIntentClassID = (jclass)env->NewGlobalRef(clazz);
 
     // search for its contructor
-    s_androidIntentConstructorMethodID = env->GetMethodID(s_androidIntentClassID, "<init>", "()V");
-    if (!s_androidIntentConstructorMethodID) {
+    constructorMethodID = env->GetMethodID(androidIntentClassID, "<init>", "()V");
+    if (!constructorMethodID) {
         qCritical()<<"Can't find QSimpleAudioPlayer class contructor";
         return -1;
     }
 
     // search for setUrl method
-    s_androidIntentSetUrlMethodID = env->GetMethodID(s_androidIntentClassID, "setUrl", "(Ljava/lang/String;)Z");
-    if (!s_androidIntentSetUrlMethodID) {
+    setUrlMethodID = env->GetMethodID(androidIntentClassID, "setUrl", "(Ljava/lang/String;)Z");
+    if (!setUrlMethodID) {
         qCritical()<<"Can't find setUrl method";
         return -1;
     }
 
     // search for getMediaStorage method
-    s_androidIntentGetMediaStorageMethodID = env->GetMethodID(s_androidIntentClassID, "getMediaStorage", "()Ljava/lang/String;");
-
-    if (!s_androidIntentSetUrlMethodID) {
+    getMediaStorageMethodID = env->GetMethodID(androidIntentClassID, "getMediaStorage", "()Ljava/lang/String;");
+    if (!getMediaStorageMethodID) {
         qCritical()<<"Can't find setUrl method";
         return -1;
     }
+
+    // getLastFrameStringID
+    getLastSaveMethodID = env->GetMethodID(androidIntentClassID, "getLastSave", "()Ljava/lang/String;");
+    if (!getLastSaveMethodID) {
+        qCritical()<<"Can't find setUrl method";
+        return -1;
+    }
+
+    // getLastFrameStringID
+    setLastSaveMethodID = env->GetMethodID(androidIntentClassID, "setLastSave", "(Ljava/lang/String;)Z");
+    if (!getLastSaveMethodID) {
+        qCritical()<<"Can't find setUrl method";
+        return -1;
+    }
+
     return JNI_VERSION_1_6;
 }
