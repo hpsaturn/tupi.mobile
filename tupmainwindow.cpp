@@ -292,6 +292,8 @@ void TupMainWindow::postIt()
         qDebug() << "TupMainWindow::postIt() -> Canvas is empty. Please, draw something! ;)";
 #endif
     } else {
+        k->canvas->notify(TupCanvas::Info, "Posting! :D");
+
         int w = k->screen.width();
         int h = k->screen.height();
         TupFrame *frame = k->canvas->frame();
@@ -338,7 +340,6 @@ void TupMainWindow::postIt()
         root.appendChild(package);
 
         k->net->sendPackage(doc);
-        k->canvas->notify(TupCanvas::Info, "Posting! :D");
     }
 }
 

@@ -49,7 +49,8 @@ struct TupCanvas::Private
    QGraphicsScene *scene;
    TupFrame *frame;
    TupPathItem *item;
-   QGraphicsTextItem *message;
+   QHash<int, QGraphicsTextItem *> messages;
+ 
    QList<TupPathItem *> undoList;
    QList<TupPathItem *> previousWork;
 
@@ -276,8 +277,12 @@ bool TupCanvas::isEmpty()
 
 void TupCanvas::notify(TupCanvas::Type type, const QString &msg)
 {
-    k->message = new QGraphicsTextItem(msg);  
     QColor color;
+
+    for (int i=0; i<k->messages.size(); i++) {
+         QGraphicsTextItem *text = (QGraphicsTextItem *) k->messages.take(i);
+         k->scene->removeItem(text);
+    }
 
     switch (type) {
       case TupCanvas::Error:
@@ -297,35 +302,40 @@ void TupCanvas::notify(TupCanvas::Type type, const QString &msg)
       break;
     }
 
-    k->message->setDefaultTextColor(color);
+    QGraphicsTextItem *message = new QGraphicsTextItem(msg); 
+    message->setDefaultTextColor(color);
 
     QRectF rect = k->scene->sceneRect();
     QPointF left = rect.bottomLeft();
 
     int fontSize = 16;
-    k->message->setFont(QFont("Helvetica", fontSize, QFont::Normal));
-    QRectF textRect = k->message->boundingRect();
+    message->setFont(QFont("Helvetica", fontSize, QFont::Normal));
+    QRectF textRect = message->boundingRect();
     int width = textRect.width();
     int height = textRect.height();
     int screenW = k->scene->sceneRect().width();
 
     while (width > screenW) {
            fontSize--;
-           k->message->setFont(QFont("Helvetica", fontSize, QFont::Normal));
-           textRect = k->message->boundingRect();
+           message->setFont(QFont("Helvetica", fontSize, QFont::Normal));
+           textRect = message->boundingRect();
            width = textRect.width();
            height = textRect.height();
     }
 
-    k->message->setPos(QPointF(left.x() + 1, left.y() - height));
-    k->scene->addItem(k->message);
+    message->setPos(QPointF(left.x() + 1, left.y() - height));
+    k->scene->addItem(message);
 
+    k->messages.insert(0, message);
     QTimer::singleShot(2000, this, SLOT(removeNotification()));
 }
 
 void TupCanvas::removeNotification()
 {
-    k->scene->removeItem(k->message);
+    if (k->messages.size() == 1) {
+        QGraphicsTextItem *msg = (QGraphicsTextItem *) k->messages.take(0);
+        k->scene->removeItem(msg);
+    }
 }
 
 #ifndef Q_OS_ANDROID

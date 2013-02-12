@@ -113,8 +113,10 @@ void TupNetHandler::displayError(QAbstractSocket::SocketError error)
 
 void TupNetHandler::errorDialog()
 {
-    k->socket->close();
-    initSocket();
-
     emit netError(tr("Tupitube service is down! Please, try it later :("));
+
+    disconnect(k->socket, SIGNAL(readyRead ()), this, SLOT(readFromServer()));
+    disconnect(k->socket, SIGNAL(error(QAbstractSocket::SocketError)),
+               this, SLOT(displayError(QAbstractSocket::SocketError)));
+    k->socket->close();
 }
