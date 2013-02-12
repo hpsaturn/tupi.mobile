@@ -277,13 +277,14 @@ bool TupCanvas::isEmpty()
 
 void TupCanvas::notify(TupCanvas::Type type, const QString &msg)
 {
-    QColor color;
-
-    for (int i=0; i<k->messages.size(); i++) {
-         QGraphicsTextItem *text = (QGraphicsTextItem *) k->messages.take(i);
-         k->scene->removeItem(text);
+    if (!k->messages.isEmpty()) {
+        for (int i=0; i<k->messages.size(); i++) {
+             QGraphicsTextItem *text = (QGraphicsTextItem *) k->messages.take(i);
+             k->scene->removeItem(text);
+        }
     }
 
+    QColor color;
     switch (type) {
       case TupCanvas::Error:
       {
