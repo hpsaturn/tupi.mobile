@@ -69,11 +69,7 @@ TupColorDialog::TupColorDialog(const QBrush brush, const QSize size, QWidget *pa
     k->layout->setContentsMargins(3, 3, 3, 3);
     k->layout->setSpacing(10);
 
-#ifdef Q_OS_ANDROID
     TupColorPalette *palette = new TupColorPalette(brush, size, this);
-#else
-    TupColorPalette *palette = new TupColorPalette(brush, size, this);
-#endif
     connect(palette, SIGNAL(updateColor(const QColor)), this, SLOT(setCurrentColor(const QColor)));
 
     QTabWidget *tabs = new QTabWidget;
@@ -89,7 +85,9 @@ TupColorDialog::TupColorDialog(const QBrush brush, const QSize size, QWidget *pa
 
     k->layout->addWidget(tabs);
 
+#ifndef Q_OS_ANDROID
     setClosePanel();
+#endif
 }
 
 TupColorDialog::~TupColorDialog()
@@ -122,4 +120,8 @@ void TupColorDialog::closeDialog()
 void TupColorDialog::setCurrentColor(const QColor color)
 {
     k->color = color;
+
+#ifdef Q_OS_ANDROID
+    closeDialog();
+#endif
 }

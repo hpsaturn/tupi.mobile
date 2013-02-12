@@ -94,7 +94,7 @@ void TupBrushDialog::setBrushOptions()
          for (int i=0; i<4; i++) {
               if (index < 15) {
                   QBrush brush(k->pen.color(), Qt::BrushStyle(index));
-                  TupColorWidget *button = new TupColorWidget(index, brush, QSize(50, 50));
+                  TupColorWidget *button = new TupColorWidget(index, brush, QSize(50, 50), false);
                   connect(button, SIGNAL(clicked(int)), this, SLOT(updateSelection(int)));
                   index++;
                   k->brushes << button;
