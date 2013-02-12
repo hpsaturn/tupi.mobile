@@ -99,6 +99,7 @@ TupColorPalette::TupColorPalette(const QBrush brush, const QSize size, QWidget *
     k->paletteGlobalLayout = new QVBoxLayout;
     // k->centralLayout = new QHBoxLayout;
     k->centralLayout = new QGridLayout;
+    k->centralLayout->setHorizontalSpacing(0);
 
     initColorsArray();
     setSliderPanel();
@@ -125,6 +126,7 @@ void TupColorPalette::setSliderPanel()
     sliderLayout->setContentsMargins(3, 3, 3, 3);
     sliderLayout->setSpacing(5);
 
+    /*
     QColor topColor(255, 0, 0);
     QBrush topBrush(topColor, k->brush.style());
     k->top = new TupColorWidget(1, topBrush, QSize(30, 20), false);
@@ -135,6 +137,7 @@ void TupColorPalette::setSliderPanel()
     topLayout->addWidget(k->top);
 
     sliderLayout->addLayout(topLayout);
+    */
 
     k->slider = new TupSlider(Qt::Vertical, TupSlider::Color, QColor(255, 0, 0), QColor(0, 0, 0));
     k->slider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -143,6 +146,7 @@ void TupColorPalette::setSliderPanel()
     sliderLayout->addWidget(k->slider);
     connect(k->slider, SIGNAL(valueChanged(int)), this, SLOT(updateMatrixFromSlider(int)));
 
+    /*
     QColor bottomColor(0, 0, 0);
     QBrush bottomBrush(bottomColor, k->brush.style());
     k->bottom = new TupColorWidget(1, bottomBrush, QSize(30, 20), false);
@@ -153,6 +157,7 @@ void TupColorPalette::setSliderPanel()
     bottomLayout->addWidget(k->bottom);
 
     sliderLayout->addLayout(bottomLayout);
+    */
     k->centralLayout->addLayout(sliderLayout, 0, 0);
     // k->centralLayout->addLayout(sliderLayout);
 }
