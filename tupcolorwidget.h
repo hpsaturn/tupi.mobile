@@ -48,7 +48,7 @@ class TupColorWidget : public QWidget
     Q_OBJECT
 
     public:
-        TupColorWidget(int index, const QBrush &brush, const QSize &size);
+        TupColorWidget(int index, const QBrush &brush, const QSize &size, bool isCell);
         ~TupColorWidget();
         QSize sizeHint() const;
         QColor color();

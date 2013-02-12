@@ -67,7 +67,7 @@ TupRGBEditor::TupRGBEditor(const QBrush brush, QWidget *parent) : QWidget(parent
     k->b = brush.color().blue();
     k->style = brush.style();
 
-    k->panel = new TupColorWidget(1, brush, QSize(150, 150));
+    k->panel = new TupColorWidget(1, brush, QSize(150, 150), false);
     k->panel->setEditable(false);
 
     QVBoxLayout *colorPanel = new QVBoxLayout;

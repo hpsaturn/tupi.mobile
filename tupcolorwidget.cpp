@@ -44,15 +44,17 @@ struct TupColorWidget::Private
     int index;
     bool editable;
     bool selected;
+    bool isCell;
 };
 
-TupColorWidget::TupColorWidget(int index, const QBrush &brush, const QSize &size) : k(new Private)
+TupColorWidget::TupColorWidget(int index, const QBrush &brush, const QSize &size, bool isCell) : k(new Private)
 {
     k->index = index;
     k->editable = true;
     k->selected = false;
     k->brush = brush;
     setFixedSize(size);
+    k->isCell = isCell;
 }
 
 TupColorWidget::~TupColorWidget()
@@ -69,20 +71,25 @@ void TupColorWidget::paintEvent(QPaintEvent *event)
     Q_UNUSED(event);
     QPainter painter(this);
     painter.fillRect(rect(), k->brush);
+    QRect border = rect();
     if (k->selected && k->editable) {
-        QRect border = rect();
+        if (k->isCell) {
+            painter.setPen(QPen(QColor(255, 255, 255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+            painter.drawRect(border);
+        } else {
 #ifdef Q_OS_ANDROID
-        painter.setPen(QPen(QColor(200, 200, 200), 20, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+            int width = 20;
 #else
-        painter.setPen(QPen(QColor(200, 200, 200), 10, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+            int width = 10;
 #endif
-        painter.drawRect(border);
-        painter.setPen(QPen(QColor(190, 190, 190), 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-        painter.drawRect(border);
-        painter.setPen(QPen(QColor(150, 150, 150), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-        painter.drawRect(border);
+            painter.setPen(QPen(QColor(200, 200, 200), width, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+            painter.drawRect(border);
+            painter.setPen(QPen(QColor(190, 190, 190), 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+            painter.drawRect(border);
+            painter.setPen(QPen(QColor(150, 150, 150), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+            painter.drawRect(border);
+        }
     } else {
-        QRect border = rect();
         painter.setPen(QPen(QColor(190, 190, 190), 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
         painter.drawRect(border);
     }
