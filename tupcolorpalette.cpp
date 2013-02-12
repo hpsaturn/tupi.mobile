@@ -55,7 +55,8 @@ struct TupColorPalette::Private
 {
     QBoxLayout *paletteGlobalLayout;
     QGridLayout *colorMatrixLayout;
-    QBoxLayout *centralLayout;
+    // QBoxLayout *centralLayout;
+    QGridLayout *centralLayout;
     QList<TupColorWidget *> colors;
     QList<TupColorWidget *> baseColors;
     int currentColorIndex;
@@ -96,13 +97,17 @@ TupColorPalette::TupColorPalette(const QBrush brush, const QSize size, QWidget *
     box->addLayout(k->colorMatrixLayout);
 
     k->paletteGlobalLayout = new QVBoxLayout;
-    k->centralLayout = new QHBoxLayout;
+    // k->centralLayout = new QHBoxLayout;
+    k->centralLayout = new QGridLayout;
 
     initColorsArray();
     setSliderPanel();
 
-    k->centralLayout->addWidget(new TupSeparator(Qt::Vertical));
-    k->centralLayout->addLayout(box);
+    k->centralLayout->addWidget(new TupSeparator(Qt::Vertical), 0, 1);
+    k->centralLayout->addLayout(box, 0, 2);
+
+    // k->centralLayout->addWidget(new TupSeparator(Qt::Vertical));
+    // k->centralLayout->addLayout(box);
     k->paletteGlobalLayout->addLayout(k->centralLayout);
 
     setBaseColorsPanel();
@@ -148,7 +153,8 @@ void TupColorPalette::setSliderPanel()
     bottomLayout->addWidget(k->bottom);
 
     sliderLayout->addLayout(bottomLayout);
-    k->centralLayout->addLayout(sliderLayout);
+    k->centralLayout->addLayout(sliderLayout, 0, 0);
+    // k->centralLayout->addLayout(sliderLayout);
 }
 
 void TupColorPalette::setBaseColorsPanel()
@@ -188,7 +194,13 @@ void TupColorPalette::setBaseColorsPanel()
     QBoxLayout *bottomLayout = new QHBoxLayout;
     bottomLayout->setAlignment(Qt::AlignHCenter);
     bottomLayout->setContentsMargins(3, 3, 3, 3);
+
+#ifndef Q_OS_ANDROID
     bottomLayout->setSpacing(10);
+#else
+    bottomLayout->setSpacing(25);
+#endif
+
     bottomLayout->addWidget(red);
     bottomLayout->addWidget(green);
     bottomLayout->addWidget(blue);
