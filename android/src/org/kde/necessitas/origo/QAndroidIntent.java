@@ -109,6 +109,19 @@ public class QAndroidIntent implements OnTaskCompleted {
 		return true;
 	}
 
+        public String getStringFromKey(String key){
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(QtActivity.getQtActivityInstance());
+                return preferences.getString(key, "");
+        }
+
+        public boolean  setStringByKey(String key,String str){
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(QtActivity.getQtActivityInstance());
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString(key, str);
+                editor.commit();
+                return true;
+        }
+
 	boolean release() {
 		try {
 			// m_i.release();

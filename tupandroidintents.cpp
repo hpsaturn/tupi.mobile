@@ -35,6 +35,8 @@ static jmethodID setUrlMethodID=0;
 static jmethodID getMediaStorageMethodID=0;
 static jmethodID getLastSaveMethodID=0;
 static jmethodID setLastSaveMethodID=0;
+static jmethodID getStringFromKeyID=0;
+static jmethodID setStringByKeyID=0;
 
 
 TupAndroidIntents::TupAndroidIntents()
@@ -59,8 +61,7 @@ TupAndroidIntents::TupAndroidIntents()
 
 TupAndroidIntents::~TupAndroidIntents()
 {
-    if (!m_intentObject)
-        return;
+    if (!m_intentObject)return;
 
     JNIEnv* env;
     if (s_javaVM->AttachCurrentThread(&env, NULL) < 0) {
@@ -81,6 +82,46 @@ bool TupAndroidIntents::setLastFrameString(const QString &qstr)
     return setStringById(setLastSaveMethodID,qstr);
 }
 
+QString TupAndroidIntents::getStringFromKey(const QString &qkey)
+{
+    if (!m_intentObject)return 0;
+
+    JNIEnv* env;
+    if (s_javaVM->AttachCurrentThread(&env, NULL) < 0) {
+        qCritical()<<"AttachCurrentThread failed";
+        return 0;
+    }
+
+    jobject jsout  = env->CallObjectMethod(m_intentObject,getStringFromKeyID,qkey);
+    const char *resultCStr = env->GetStringUTFChars((jstring)jsout, 0);
+
+    QByteArray qbArry(resultCStr);
+    QString str(qbArry);
+    s_javaVM->DetachCurrentThread();
+
+    return str;
+}
+
+bool TupAndroidIntents::setStringByKey(const QString &qkey,const QString &qdata)
+{
+    if (!m_intentObject)return false;
+
+    JNIEnv* env;
+    if (s_javaVM->AttachCurrentThread(&env, NULL) < 0) {
+        qCritical()<<"AttachCurrentThread failed";
+        return false;
+    }
+
+    jstring key = env->NewString(reinterpret_cast<const jchar*>(qkey.constData()), qkey.length());
+    jstring data = env->NewString(reinterpret_cast<const jchar*>(qdata.constData()), qdata.length());
+    jboolean res = env->CallBooleanMethod(m_intentObject, setStringByKeyID, key, data);
+    env->DeleteLocalRef(key);
+    env->DeleteLocalRef(data);
+    s_javaVM->DetachCurrentThread();
+
+    return res;
+}
+
 bool TupAndroidIntents::setUrl(const QString &url)
 {
     return setStringById(setUrlMethodID,url); 
@@ -90,6 +131,8 @@ QString TupAndroidIntents::getMediaStorage()
 {
     return getStringFromId(getMediaStorageMethodID);
 }
+
+/* PRIMITIVAS */
 
 bool TupAndroidIntents::setStringById(jmethodID id,const QString &qstr)
 {
@@ -182,6 +225,22 @@ JNIEXPORT jint JNI_OnLoad(JavaVM* vm, void* /*reserved*/)
         qCritical()<<"Can't find setUrl method";
         return -1;
     }
+
+    // getStringFromKeyID
+    getStringFromKeyID = env->GetMethodID(androidIntentClassID, "getStringFromKey", "(Ljava/lang/String;)Ljava/lang/String;");
+    if (!getStringFromKeyID) {
+        qCritical()<<"Can't find setUrl method";
+        return -1;
+    }
+
+
+    // setStringByKeyID
+    setStringByKeyID = env->GetMethodID(androidIntentClassID, "setStringByKey", "(Ljava/lang/String;Ljava/lang/String;)Z");
+    if (!setStringByKeyID) {
+        qCritical()<<"Can't find setUrl method";
+        return -1;
+    }
+
 
     return JNI_VERSION_1_6;
 }

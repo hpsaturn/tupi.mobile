@@ -42,6 +42,8 @@ class TupAndroidIntents
         QString getStringFromId(jmethodID id);
         bool setLastFrameString(const QString &qstr);
         QString getLastFrameString();
+        QString getStringFromKey(const QString &qkey);
+        bool setStringByKey(const QString &qkey,const QString &qdata);
 
     private:
         jobject m_intentObject;
