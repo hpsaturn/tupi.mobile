@@ -82,8 +82,8 @@ TupColorPalette::TupColorPalette(const QBrush brush, const QSize size, QWidget *
     k->columns = w/70;
     k->rows = h/40;
 #else
-    k->columns = w/75;
-    k->rows = h/45;
+    k->columns = w/80;
+    k->rows = h/50;
 #endif
 
     QBoxLayout *layout = new QVBoxLayout(this);
@@ -156,7 +156,7 @@ void TupColorPalette::setBaseColorsPanel()
 #ifndef Q_OS_ANDROID
     QSize cellSize(50, 30);
 #else
-    QSize cellSize(60, 40);
+    QSize cellSize(70, 50);
 #endif
 
     k->currentBaseColor = 0;
@@ -294,8 +294,13 @@ void TupColorPalette::updateMatrix(int newColor, bool fromSlider)
               switch (color) {
                       case TupColorPalette::Red :
                            r = k->currentLeadColor;
-                           g = (j*deltaY);
-                           b = (j*deltaX);
+                           if (k->rows > k->columns) {
+                               g = (i*deltaY);
+                               b = (j*deltaX);
+                           } else {
+                               g = (j*deltaY);
+                               b = (i*deltaX);
+                           }
                       break;
                       case TupColorPalette::Green :
                            r = (i*deltaX);
