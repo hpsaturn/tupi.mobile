@@ -21,8 +21,9 @@ HEADERS += tupmainwindow.h \
            tupseparator.h \
            tupabout.h \
            tupslider.h \
-    QtWebsocket/QWsSocket.h \
-    QtWebsocket/QWsServer.h
+           tupbrushdialog.h \
+           QtWebsocket/QWsSocket.h \
+           QtWebsocket/QWsServer.h
 
 SOURCES += tupmainwindow.cpp \
            tupcanvas.cpp \
@@ -42,24 +43,22 @@ SOURCES += tupmainwindow.cpp \
            tupseparator.cpp \
            tupslider.cpp \
            main.cpp \
-    QtWebsocket/QWsSocket.cpp \
-    QtWebsocket/QWsServer.cpp
+           tupbrushdialog.cpp \
+           QtWebsocket/QWsSocket.cpp \
+           QtWebsocket/QWsServer.cpp
 
 !android {
 HEADERS += tupmetadatadialog.h \
            tuprgbeditor.h \
            tupbrushdialog.h
 SOURCES += tupmetadatadialog.cpp \
-           tuprgbeditor.cpp \
-           tupbrushdialog.cpp
+           tuprgbeditor.cpp
 }
 
 android {
-    SOURCES += tupbrushandroiddialog.cpp \
-               tupcolorandroidpalette.h \
+    SOURCES += tupcolorandroidpalette.h \
                tupandroidintents.cpp
-    HEADERS += tupbrushandroiddialog.h \
-               tupcolorandroidpalette.cpp \
+    HEADERS += tupcolorandroidpalette.cpp \
                tupandroidintents.h
 
 OTHER_FILES += \

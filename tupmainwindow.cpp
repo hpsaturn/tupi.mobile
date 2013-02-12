@@ -42,13 +42,12 @@
 #include "tupnethandler.h"
 #include "tupabout.h"
 #include "tupcolordialog.h"
+#include "tupbrushdialog.h"
 
 #ifdef Q_OS_ANDROID
-#include "tupbrushandroiddialog.h"
 #include "tupandroidintents.h"
 #else
 #include "tupmetadatadialog.h"
-#include "tupbrushdialog.h"
 #endif
 
 #include <QtGui>
@@ -382,11 +381,8 @@ void TupMainWindow::opacityDialog()
 
 void TupMainWindow::brushDialog()
 {
-#ifdef Q_OS_ANDROID
-    TupBrushAndroidDialog *dialog = new TupBrushAndroidDialog(k->pen, k->screen, this);
-#else
     TupBrushDialog *dialog = new TupBrushDialog(k->pen, this);
-#endif
+
     connect(dialog, SIGNAL(updatePenBrush(Qt::BrushStyle)), this, SLOT(updatePenBrush(Qt::BrushStyle)));
     dialog->showMaximized();
 }
